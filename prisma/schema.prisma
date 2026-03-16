@@ -20,4 +20,59 @@ model User {
   name         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // Skill: Grocery List
+  groceryCategories GroceryCategory[]
+  groceryProducts   GroceryProduct[]
+  groceryItems      GroceryItem[]
+}
+
+// ─── Skill: Grocery List ───────────────────────────────────────────
+
+/// Catégorie de produit (optionnel — "Sans catégorie" par défaut)
+model GroceryCategory {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items    GroceryItem[]
+  products GroceryProduct[]
+
+  @@unique([userId, name])
+}
+
+/// Produit récurrent — le "catalogue" personnel pour l'autocomplétion
+model GroceryProduct {
+  id         String           @id @default(cuid())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  name       String
+  categoryId String?
+  category   GroceryCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  usageCount Int              @default(1)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([userId, name])
+}
+
+/// Item sur la liste de courses active
+model GroceryItem {
+  id         String           @id @default(cuid())
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  name       String
+  quantity   Int              @default(1)
+  unit       String?
+  categoryId String?
+  category   GroceryCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  checked    Boolean          @default(false)
+  checkedAt  DateTime?
+  sortOrder  Int              @default(0)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 }
