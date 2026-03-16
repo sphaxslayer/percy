@@ -1,17 +1,30 @@
 /**
  * vitest.config.ts — Vitest configuration for unit tests.
- * Uses @nuxt/test-utils for Nuxt-aware test environment.
- * Tests live in tests/unit/ and follow the *.test.ts naming convention.
+ * Uses vitest projects to separate frontend (nuxt env) and server (node env) tests.
  */
-import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { defineConfig } from 'vitest/config'
 
-export default defineVitestConfig({
+export default defineConfig({
   test: {
-    // Where to look for test files
-    include: ['tests/unit/**/*.test.ts'],
-    // Nuxt environment for auto-imports and composables
-    environment: 'nuxt',
-    // Global test utilities available without importing
     globals: true,
+    projects: [
+      // Frontend tests — Vue components, composables (needs Nuxt environment)
+      {
+        extends: './vitest.config.nuxt.ts',
+        test: {
+          name: 'frontend',
+          include: ['tests/unit/**/*.test.ts'],
+          exclude: ['tests/unit/**/*-api.test.ts'],
+        },
+      },
+      // Server tests — API routes (plain Node environment, no Nuxt aliases)
+      {
+        extends: './vitest.config.server.ts',
+        test: {
+          name: 'server',
+          include: ['tests/unit/**/*-api.test.ts'],
+        },
+      },
+    ],
   },
 })

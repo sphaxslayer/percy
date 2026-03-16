@@ -127,6 +127,32 @@ pnpm dev
 | `vue-sonner` | Toast notification system |
 | `@vueuse/core` | Vue composition utilities (used by some shadcn components) |
 
+## Skills
+
+### Grocery List (Liste de courses)
+
+A fast, offline-capable grocery list for adding products anytime and checking them off in-store.
+
+**Status:** Phase A complete (database + API)
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/skills/grocery/items` | List all items (active + checked) |
+| POST | `/api/skills/grocery/items` | Add an item (auto-creates catalog entry) |
+| PATCH | `/api/skills/grocery/items/:id` | Update item (name, quantity, checked...) |
+| DELETE | `/api/skills/grocery/items/:id` | Remove an item |
+| DELETE | `/api/skills/grocery/items/checked` | Clear all checked items |
+| GET | `/api/skills/grocery/products` | Product catalog (for autocomplete) |
+| DELETE | `/api/skills/grocery/products/:id` | Remove a catalog product |
+| GET | `/api/skills/grocery/categories` | List categories |
+| POST | `/api/skills/grocery/categories` | Create a category |
+| PATCH | `/api/skills/grocery/categories/:id` | Update a category |
+| DELETE | `/api/skills/grocery/categories/:id` | Delete a category (items become uncategorized) |
+
+**Data models:** `GroceryCategory`, `GroceryProduct` (personal catalog with usage frequency), `GroceryItem` (active list)
+
 ## Project Structure
 
 ```
