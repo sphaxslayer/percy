@@ -66,13 +66,16 @@ Skills are added incrementally. Here is the planned order:
 - [ ] Auth: registration, login, session management
 - [ ] Dashboard: shell layout, sidebar, skill grid
 - [ ] Skill registry: dynamic skill loading from config
-- [ ] First skill: **TBD — user to define**
+- [ ] Shared model: HouseholdMember (reusable across skills)
+- [ ] First skill: **Grocery List** (see `skill_spec_grocery.md`)
+- [ ] Second skill: **TodoAtHome** (see `skill_spec_todo_at_home.md`)
 
 ### P1 — Essential Skills
 - [ ] Notes / quick capture
 - [ ] Bookmarks / link manager
 - [ ] Reminders / simple scheduling
 - [ ] Weather widget
+- [ ] TodoAtHome extensions: domains "Vie scolaire", "Santé", "Voiture"
 
 ### P2 — Power Skills
 - [ ] Expense tracker
@@ -85,6 +88,14 @@ Skills are added incrementally. Here is the planned order:
 - [ ] Email digest (Gmail summary)
 - [ ] Automation rules (IFTTT-like: if X then Y)
 - [ ] Mobile PWA with push notifications
+- [ ] Visual reskin: cohesive "feel good" design language (illustrations, color palette, dark mode)
+
+## Shared Models (cross-skill)
+Some data models are shared between skills and live OUTSIDE of any skill directory:
+- **HouseholdMember**: represents family/household members (Moi, Conjoint, Enfant 1...). Used by TodoAtHome for task assignment, potentially by Grocery for "who added this", by future medical/school skills for "whose appointment is this".
+- API: `/api/household/members`
+- Composable: `composables/use-household-members.ts`
+- When a new skill needs HouseholdMember, it imports the existing composable. It does NOT create its own.
 
 ## Scope Control Rules
 - Each new skill is a separate PR.
