@@ -2,9 +2,6 @@
  * DELETE /api/skills/grocery/items/checked — Remove all checked items for the current user.
  * Used by the "Vider" button in the "Déjà acheté" section.
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
 

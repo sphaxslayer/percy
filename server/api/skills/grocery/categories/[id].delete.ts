@@ -3,9 +3,6 @@
  * Items and products in this category get their categoryId set to null
  * (handled by Prisma's onDelete: SetNull in the schema).
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
   const id = getRouterParam(event, 'id')

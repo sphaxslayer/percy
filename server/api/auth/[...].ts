@@ -7,7 +7,6 @@
 import { NuxtAuthHandler } from '#auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcrypt'
-import { prisma } from '~/server/utils/prisma'
 
 export default NuxtAuthHandler({
   // Secret used to sign/encrypt JWTs — set via NUXT_AUTH_SECRET env var
@@ -18,8 +17,8 @@ export default NuxtAuthHandler({
   },
 
   providers: [
-    // @ts-expect-error — NextAuth types expect a different module shape in Nuxt context
-    CredentialsProvider.default({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (CredentialsProvider as any).default({
       name: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
@@ -63,7 +62,8 @@ export default NuxtAuthHandler({
 
   callbacks: {
     // Include user.id in the JWT token so we can use it in API routes
-    jwt({ token, user }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    jwt({ token, user }: any) {
       if (user) {
         token.id = user.id
       }
@@ -71,10 +71,10 @@ export default NuxtAuthHandler({
     },
 
     // Include user.id in the session object so the client can access it
-    session({ session, token }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    session({ session, token }: any) {
       if (session.user && token.id) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(session.user as any).id = token.id
+        session.user.id = token.id
       }
       return session
     },
