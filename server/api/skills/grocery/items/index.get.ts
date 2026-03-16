@@ -2,9 +2,6 @@
  * GET /api/skills/grocery/items — List all grocery items for the current user.
  * Returns both active (unchecked) and checked items, with category info.
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
 

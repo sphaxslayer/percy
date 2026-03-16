@@ -2,9 +2,6 @@
  * GET /api/skills/grocery/categories — List the user's grocery categories.
  * Sorted by sortOrder for consistent display.
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
 

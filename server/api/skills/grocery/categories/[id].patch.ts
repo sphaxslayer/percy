@@ -2,8 +2,6 @@
  * PATCH /api/skills/grocery/categories/:id — Update a grocery category.
  */
 import { z } from 'zod'
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
 
 const updateCategorySchema = z.object({
   name: z.string().min(1).max(100).optional(),

@@ -2,8 +2,6 @@
  * POST /api/skills/grocery/categories — Create a new grocery category.
  */
 import { z } from 'zod'
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
 
 const createCategorySchema = z.object({
   name: z.string().min(1).max(100),
