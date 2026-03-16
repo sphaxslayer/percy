@@ -1,0 +1,20 @@
+<!-- DialogDescription.vue — Accessible description text for the dialog. -->
+<script setup lang="ts">
+import type { HTMLAttributes } from 'vue'
+import { DialogDescription, type DialogDescriptionProps } from 'reka-ui'
+import { cn } from '@/lib/utils'
+
+interface Props extends DialogDescriptionProps {
+  class?: HTMLAttributes['class']
+}
+
+const props = defineProps<Props>()
+</script>
+
+<template>
+  <DialogDescription
+    :class="cn('text-sm text-muted-foreground', props.class)"
+  >
+    <slot />
+  </DialogDescription>
+</template>
