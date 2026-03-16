@@ -1,0 +1,60 @@
+# .github/workflows/ci.yml — Continuous integration pipeline.
+# Runs lint + type-check + unit tests on every push/PR.
+# E2E tests run only on main branch merges.
+
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test:unit
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: quality
+    if: github.ref == 'refs/heads/main'
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: percy_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps
+      - run: pnpm db:push
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/percy_test
+      - run: pnpm test:e2e
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/percy_test
+          NUXT_AUTH_SECRET: test-secret
+          NUXT_AUTH_ORIGIN: http://localhost:3000
