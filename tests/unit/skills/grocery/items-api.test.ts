@@ -33,7 +33,7 @@ vi.mock('~/server/utils/auth', () => ({
 
 // ─── Mock Nitro globals ────────────────────────────────────────────
 // defineEventHandler just returns the function it receives
-vi.stubGlobal('defineEventHandler', (fn: Function) => fn)
+vi.stubGlobal('defineEventHandler', (fn: (...args: unknown[]) => unknown) => fn)
 vi.stubGlobal('createError', (opts: { statusCode: number; message: string; data?: unknown }) => {
   const err = new Error(opts.message) as Error & { statusCode: number; data?: unknown }
   err.statusCode = opts.statusCode
