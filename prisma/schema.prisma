@@ -1,0 +1,23 @@
+// prisma/schema.prisma — Database schema definition.
+// Defines the data models for Percy. Each skill that needs persistent data
+// adds its models here (prefixed with "Skill" + skill name).
+// Run `pnpm db:migrate` to create/apply migrations.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Core user model — every skill references this via userId.
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

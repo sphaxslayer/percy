@@ -1,0 +1,23 @@
+# docker-compose.yml — Local development services.
+# Start with: docker compose up -d db
+# This only runs PostgreSQL. The Nuxt app runs natively with `pnpm dev`.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: percy
+      POSTGRES_PASSWORD: percy
+      POSTGRES_DB: percy
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U percy']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
