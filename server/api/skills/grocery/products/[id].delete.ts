@@ -2,9 +2,6 @@
  * DELETE /api/skills/grocery/products/:id — Remove a product from the catalog.
  * Does NOT remove existing items on the grocery list that used this product.
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
   const id = getRouterParam(event, 'id')

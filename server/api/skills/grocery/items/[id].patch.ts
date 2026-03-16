@@ -4,8 +4,6 @@
  * When `checked` transitions to true, sets checkedAt automatically.
  */
 import { z } from 'zod'
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
 
 const updateItemSchema = z.object({
   name: z.string().min(1).max(255).optional(),

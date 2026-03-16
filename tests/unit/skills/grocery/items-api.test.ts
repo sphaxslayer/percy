@@ -4,7 +4,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// ─── Mock Prisma ───────────────────────────────────────────────────
+// ─── Mock Prisma (stubbed as Nitro auto-import global) ──────────────
 const mockPrisma = {
   groceryItem: {
     findMany: vi.fn(),
@@ -22,14 +22,11 @@ const mockPrisma = {
   },
   $transaction: vi.fn(),
 }
+vi.stubGlobal('prisma', mockPrisma)
 
-vi.mock('~/server/utils/prisma', () => ({ prisma: mockPrisma }))
-
-// ─── Mock Auth ─────────────────────────────────────────────────────
+// ─── Mock Auth (stubbed as Nitro auto-import global) ────────────────
 const mockRequireUserId = vi.fn()
-vi.mock('~/server/utils/auth', () => ({
-  requireUserId: (...args: unknown[]) => mockRequireUserId(...args),
-}))
+vi.stubGlobal('requireUserId', (...args: unknown[]) => mockRequireUserId(...args))
 
 // ─── Mock Nitro globals ────────────────────────────────────────────
 // defineEventHandler just returns the function it receives

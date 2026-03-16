@@ -3,9 +3,6 @@
  * Used for autocomplete, sorted by usageCount descending (most used first).
  * Supports optional ?search= query parameter for filtering.
  */
-import { prisma } from '~/server/utils/prisma'
-import { requireUserId } from '~/server/utils/auth'
-
 export default defineEventHandler(async (event) => {
   const userId = await requireUserId(event)
   const query = getQuery(event)

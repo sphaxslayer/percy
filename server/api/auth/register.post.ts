@@ -6,7 +6,6 @@
  */
 import { z } from 'zod'
 import bcrypt from 'bcrypt'
-import { prisma } from '~/server/utils/prisma'
 
 // Zod schema for registration input validation
 const registerSchema = z.object({
@@ -26,7 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       message: 'Données invalides',
-      data: parsed.error.flatten(),
+      data: parsed.error.issues,
     })
   }
 
