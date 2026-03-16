@@ -9,6 +9,7 @@
  * 3. Add a SkillDefinition entry to the `skills` array below
  */
 import type { Component } from 'vue'
+import { ShoppingCart } from 'lucide-vue-next'
 
 /**
  * Defines metadata for a skill module.
@@ -38,15 +39,13 @@ export interface SkillDefinition {
  * Skills with enabled: false won't appear in the sidebar or dashboard.
  */
 export const skills: SkillDefinition[] = [
-  // No skills yet — the first one will be added in the next phase.
-  // Example:
-  // {
-  //   id: 'grocery-list',
-  //   name: 'Liste de courses',
-  //   description: 'Gérez vos listes de courses intelligemment',
-  //   icon: 'ShoppingCart',
-  //   iconComponent: ShoppingCart,
-  //   route: '/skills/grocery-list',
-  //   enabled: true,
-  // },
+  {
+    id: 'grocery-list',
+    name: 'Liste de courses',
+    description: 'Gérez vos listes de courses intelligemment',
+    icon: 'ShoppingCart',
+    iconComponent: ShoppingCart as Component,
+    route: '/skills/grocery-list',
+    enabled: true,
+  },
 ]

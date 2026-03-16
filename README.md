@@ -114,7 +114,7 @@ pnpm dev
 | Tool | Role | Why |
 |------|------|-----|
 | [**Docker**](https://www.docker.com) | Containerization | Multi-stage `Dockerfile` for production. `docker-compose.yml` for local PostgreSQL. |
-| [**GitHub Actions**](https://github.com/features/actions) | CI/CD | Lint + type-check + unit tests on every PR. E2E tests on merge to main. Config in `.github/workflows/ci.yml`. |
+| [**GitHub Actions**](https://github.com/features/actions) | CI/CD | Lint + type-check + unit tests + e2e tests on every PR. Both `quality` and `e2e` checks required to merge. Config in `.github/workflows/ci.yml`. |
 | **pnpm** | Package manager | Fast, disk-efficient. Strict dependency resolution. |
 
 ### Key Libraries (supporting)
@@ -133,7 +133,14 @@ pnpm dev
 
 A fast, offline-capable grocery list for adding products anytime and checking them off in-store.
 
-**Status:** Phase A complete (database + API)
+**Features:**
+- Quick-add input with autocomplete from personal product catalog
+- Input parsing for quantities: "Bananes x6", "Lait 2L", "Oeufs 6"
+- Items grouped by category (collapsible sections) or flat list
+- Check items off in-store — checked items move to "Déjà acheté" section
+- Bulk clear checked items with confirmation
+- Offline-resilient: optimistic UI with localStorage-backed sync queue
+- Automatic product catalog building (usage frequency tracking for autocomplete sorting)
 
 **API Endpoints:**
 
@@ -152,6 +159,11 @@ A fast, offline-capable grocery list for adding products anytime and checking th
 | DELETE | `/api/skills/grocery/categories/:id` | Delete a category (items become uncategorized) |
 
 **Data models:** `GroceryCategory`, `GroceryProduct` (personal catalog with usage frequency), `GroceryItem` (active list)
+
+**Composables:**
+- `useGroceryList()` — CRUD operations with optimistic updates, computed groups by category
+- `useGroceryAutocomplete()` — Debounced product search with input parsing
+- `useOfflineQueue()` — Generic offline queue with FIFO processing, retry, deduplication
 
 ## Project Structure
 
