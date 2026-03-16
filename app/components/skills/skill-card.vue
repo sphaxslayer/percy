@@ -2,6 +2,7 @@
   components/skills/skill-card.vue — Dashboard skill card.
   Displays a skill's icon, name, and description in a clickable card.
   Used on the dashboard page to show all available skills.
+  Supports a default slot for skill-specific summary content (e.g. item counts).
 -->
 <script setup lang="ts">
 import type { SkillDefinition } from '~/config/skills'
@@ -35,6 +36,8 @@ defineProps<{
         <p class="text-sm text-muted-foreground">
           {{ skill.description }}
         </p>
+        <!-- Skill-specific summary content -->
+        <slot />
       </CardContent>
     </Card>
   </NuxtLink>

@@ -33,7 +33,10 @@ const enabledSkills = computed(() => skills.filter((s) => s.enabled))
         v-for="skill in enabledSkills"
         :key="skill.id"
         :skill="skill"
-      />
+      >
+        <!-- Skill-specific dashboard summaries -->
+        <GrocerySummary v-if="skill.id === 'grocery-list'" />
+      </SkillCard>
     </div>
 
     <!-- Empty state — shown when no skills are enabled -->
