@@ -5,24 +5,19 @@
  */
 import { test, expect } from '@playwright/test'
 
-/** Register a new user and log in. Returns the unique email for the test. */
+/** Register a new user and auto-login. The register page auto-logs in and redirects to /dashboard. */
 async function registerAndLogin(page: import('@playwright/test').Page) {
   const email = `test-grocery-${Date.now()}@example.com`
   const password = 'testpassword123'
 
-  // Register
   await page.goto('/register')
   await page.getByTestId('name').fill('Test User')
   await page.getByTestId('email').fill(email)
   await page.getByTestId('password').fill(password)
   await page.getByTestId('confirm-password').fill(password)
   await page.getByTestId('register-button').click()
-  await page.waitForURL(/\/login/)
 
-  // Login
-  await page.getByTestId('email').fill(email)
-  await page.getByTestId('password').fill(password)
-  await page.getByTestId('login-button').click()
+  // Register auto-logs in and redirects to /dashboard
   await page.waitForURL(/\/dashboard/)
 
   return email
