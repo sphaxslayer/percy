@@ -61,29 +61,8 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Debug: check what's on the page
-    const currentUrl = page.url()
-    if (!currentUrl.includes('grocery')) {
-      throw new Error(`Expected grocery page, but at: ${currentUrl}`)
-    }
-
-    // Wait for hydration
-    await page.waitForFunction(
-      () => (document.querySelector('#__nuxt') as HTMLElement | null)?.__vue_app__ !== undefined,
-      { timeout: 15_000 },
-    )
-
     // Verify the page loaded
-    await expect(page.getByTestId('grocery-title')).toBeVisible({ timeout: 10_000 })
-
-    // Debug: check what testid elements exist on the page
-    const testids = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('[data-testid]')).map(
-        (el) => `${el.tagName}[${el.getAttribute('data-testid')}]`,
-      ),
-    )
-    // eslint-disable-next-line no-console
-    console.log('Found data-testid elements:', testids)
+    await expect(page.getByTestId('grocery-title')).toBeVisible()
 
     // Verify empty state
     await expect(page.getByTestId('grocery-empty')).toBeVisible()

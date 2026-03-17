@@ -31,9 +31,11 @@ export default defineConfig({
     },
   ],
 
-  // Start the Nuxt dev server before running tests
+  // Start the Nuxt server before running tests.
+  // In CI, use a production build (pnpm build && node .output/server/index.mjs)
+  // for reliability. Locally, reuse any running dev server.
   webServer: {
-    command: 'pnpm dev',
+    command: process.env.CI ? 'pnpm build && node .output/server/index.mjs' : 'pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
