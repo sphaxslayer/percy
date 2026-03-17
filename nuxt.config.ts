@@ -38,7 +38,9 @@ export default defineNuxtConfig({
 
   // Auth module configuration — configured in server/api/auth/[...].ts
   auth: {
-    // baseURL is set via NUXT_AUTH_ORIGIN env var
+    // Explicit baseURL avoids /session recursion in production where sidebase
+    // may construct the wrong path without AUTH_ORIGIN properly propagated.
+    baseURL: '/api/auth',
     provider: {
       type: 'authjs',
     },
