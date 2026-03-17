@@ -1,27 +1,27 @@
 <!-- DropdownMenuContent.vue — The popover container for dropdown menu items. -->
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue';
 import {
   DropdownMenuContent,
   type DropdownMenuContentEmits,
   type DropdownMenuContentProps,
   DropdownMenuPortal,
   useForwardPropsEmits,
-} from 'reka-ui'
-import { cn } from '@/lib/utils'
+} from 'reka-ui';
+import { cn } from '@/lib/utils';
 
 interface Props extends DropdownMenuContentProps {
-  class?: HTMLAttributes['class']
+  class?: HTMLAttributes['class'];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sideOffset: 4,
   class: undefined,
-})
+});
 
-const emits = defineEmits<DropdownMenuContentEmits>()
+const emits = defineEmits<DropdownMenuContentEmits>();
 
-const forwarded = useForwardPropsEmits(props, emits)
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>

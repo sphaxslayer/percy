@@ -2,7 +2,7 @@
  * vitest.config.ts — Vitest configuration for unit tests.
  * Uses vitest projects to separate frontend (nuxt env) and server (node env) tests.
  */
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -27,4 +27,4 @@ export default defineConfig({
       },
     ],
   },
-})
+});

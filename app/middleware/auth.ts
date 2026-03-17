@@ -5,17 +5,17 @@
  */
 export default defineNuxtRouteMiddleware((to) => {
   // Only protect dashboard and skills routes
-  const protectedPaths = ['/dashboard', '/skills']
-  const isProtected = protectedPaths.some((path) => to.path.startsWith(path))
+  const protectedPaths = ['/dashboard', '/skills'];
+  const isProtected = protectedPaths.some((path) => to.path.startsWith(path));
 
   if (!isProtected) {
-    return
+    return;
   }
 
   // useAuth() comes from @sidebase/nuxt-auth — provides session state
-  const { status } = useAuth()
+  const { status } = useAuth();
 
   if (status.value === 'unauthenticated') {
-    return navigateTo('/login')
+    return navigateTo('/login');
   }
-})
+});

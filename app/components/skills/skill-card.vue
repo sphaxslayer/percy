@@ -5,11 +5,11 @@
   Supports a default slot for skill-specific summary content (e.g. item counts).
 -->
 <script setup lang="ts">
-import type { SkillDefinition } from '~/config/skills'
+import type { SkillDefinition } from '~/config/skills';
 
 defineProps<{
-  skill: SkillDefinition
-}>()
+  skill: SkillDefinition;
+}>();
 </script>
 
 <template>

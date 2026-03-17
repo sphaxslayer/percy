@@ -4,12 +4,12 @@
   Fetches data on mount — displays nothing while loading to avoid layout shift.
 -->
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useGroceryList } from '~/composables/use-grocery-list'
+import { onMounted } from 'vue';
+import { useGroceryList } from '~/composables/use-grocery-list';
 
-const { activeCount, checkedCount, lastAddedName, fetchItems } = useGroceryList()
+const { activeCount, checkedCount, lastAddedName, fetchItems } = useGroceryList();
 
-onMounted(() => fetchItems())
+onMounted(() => fetchItems());
 </script>
 
 <template>
@@ -20,17 +20,8 @@ onMounted(() => fetchItems())
     <p v-if="activeCount > 0">
       {{ activeCount }} article{{ activeCount > 1 ? 's' : '' }} à acheter
     </p>
-    <p v-if="checkedCount > 0">
-      {{ checkedCount }} déjà pris
-    </p>
-    <p v-if="activeCount === 0 && checkedCount === 0">
-      Liste vide
-    </p>
-    <p
-      v-if="lastAddedName"
-      class="truncate text-slate-400"
-    >
-      Dernier ajout : {{ lastAddedName }}
-    </p>
+    <p v-if="checkedCount > 0">{{ checkedCount }} déjà pris</p>
+    <p v-if="activeCount === 0 && checkedCount === 0">Liste vide</p>
+    <p v-if="lastAddedName" class="truncate text-slate-400">Dernier ajout : {{ lastAddedName }}</p>
   </div>
 </template>

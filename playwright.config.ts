@@ -3,7 +3,7 @@
  * Tests live in tests/e2e/ and follow the *.spec.ts naming convention.
  * The dev server must be running before tests (or use webServer option).
  */
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -42,4 +42,4 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-})
+});

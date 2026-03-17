@@ -1,2 +1,2 @@
 // index.ts — Barrel export for Input component.
-export { default as Input } from './Input.vue'
+export { default as Input } from './Input.vue';

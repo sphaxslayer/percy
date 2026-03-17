@@ -3,34 +3,31 @@
   Collapsed by default, shows count badge. Includes "Vider" button with confirmation.
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ChevronDown, Trash2 } from 'lucide-vue-next'
-import type { GroceryItem } from '~/types/grocery'
+import { ref } from 'vue';
+import { ChevronDown, Trash2 } from 'lucide-vue-next';
+import type { GroceryItem } from '~/types/grocery';
 
 const props = defineProps<{
-  items: GroceryItem[]
-}>()
+  items: GroceryItem[];
+}>();
 
 const emit = defineEmits<{
-  toggle: [id: string]
-  remove: [id: string]
-  clearAll: []
-}>()
+  toggle: [id: string];
+  remove: [id: string];
+  clearAll: [];
+}>();
 
-const expanded = ref(false)
-const showConfirm = ref(false)
+const expanded = ref(false);
+const showConfirm = ref(false);
 
 function handleClear() {
-  showConfirm.value = false
-  emit('clearAll')
+  showConfirm.value = false;
+  emit('clearAll');
 }
 </script>
 
 <template>
-  <div
-    v-if="props.items.length > 0"
-    class="border-t border-slate-200 pt-3"
-  >
+  <div v-if="props.items.length > 0" class="border-t border-slate-200 pt-3">
     <div class="flex items-center justify-between">
       <button
         class="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100"
@@ -48,10 +45,7 @@ function handleClear() {
       </button>
 
       <!-- Confirm dialog inline -->
-      <div
-        v-if="showConfirm"
-        class="flex items-center gap-2 text-sm"
-      >
+      <div v-if="showConfirm" class="flex items-center gap-2 text-sm">
         <span class="text-slate-500">Supprimer tout ?</span>
         <Button
           variant="destructive"
@@ -61,13 +55,7 @@ function handleClear() {
         >
           Oui
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          @click="showConfirm = false"
-        >
-          Non
-        </Button>
+        <Button variant="ghost" size="sm" @click="showConfirm = false"> Non </Button>
       </div>
 
       <Button
@@ -83,10 +71,7 @@ function handleClear() {
       </Button>
     </div>
 
-    <div
-      v-if="expanded"
-      class="mt-1 space-y-0.5 pl-2"
-    >
+    <div v-if="expanded" class="mt-1 space-y-0.5 pl-2">
       <GroceryItemRow
         v-for="item in props.items"
         :key="item.id"
