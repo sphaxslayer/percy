@@ -25,19 +25,33 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
   })
   expect(regResponse.ok()).toBeTruthy()
 
-  // Navigate to login
+  // Navigate to login page first to establish the browser context origin
   await page.goto('/login')
 
-  // Wait for Vue/Nuxt hydration by checking for the __vue_app__ property on the root element
-  await page.waitForFunction(
-    () => document.querySelector('#__nuxt')?.__vue_app__ !== undefined,
-    { timeout: 15_000 },
+  // Authenticate by making fetch calls directly in the browser.
+  // This sets the session cookie in the browser context.
+  const csrfToken = await page.evaluate(async (url) => {
+    const res = await fetch(`${url}/api/auth/csrf`)
+    const data = await res.json()
+    return data.csrfToken
+  }, baseURL)
+
+  // Submit credentials via browser fetch to set session cookie
+  await page.evaluate(
+    async ({ url, email: e, password: p, csrf }) => {
+      await fetch(`${url}/api/auth/callback/credentials`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email: e, password: p, csrfToken: csrf, json: 'true' }),
+        redirect: 'follow',
+      })
+    },
+    { url: baseURL, email, password, csrf: csrfToken },
   )
 
-  await page.getByTestId('email').fill(email)
-  await page.getByTestId('password').fill(password)
-  await page.getByTestId('login-button').click()
-  await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
+  // Now the session cookie is set in the browser — navigate to dashboard
+  await page.goto('/dashboard')
+  await expect(page.getByTestId('dashboard-title')).toBeVisible({ timeout: 10_000 })
 
   return email
 }
