@@ -13,6 +13,15 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  // Disable path-based prefixing for component auto-imports.
+  // Without this, components in subdirectories (e.g., skills/grocery/) get
+  // prefixed (SkillsGroceryAddInput) which breaks templates using short names
+  // (GroceryAddInput). Works in dev due to flexible resolution, but the
+  // production build requires exact names.
+  components: [
+    { path: '~/components', pathPrefix: false },
+  ],
+
   // Nuxt modules — order matters: Tailwind must load before shadcn
   modules: [
     '@nuxtjs/tailwindcss',
