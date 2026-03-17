@@ -59,7 +59,13 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
 test.describe('Grocery List Skill', () => {
   test('can add an item to the list', async ({ page, baseURL }) => {
     await registerAndLogin(page, baseURL!)
-    await page.goto('/skills/grocery-list')
+    await page.goto('/skills/grocery-list', { waitUntil: 'networkidle' })
+
+    // Debug: check if we're actually on the grocery page
+    const currentUrl = page.url()
+    if (!currentUrl.includes('grocery')) {
+      throw new Error(`Expected grocery page, but at: ${currentUrl}`)
+    }
 
     // Verify the page loaded
     await expect(page.getByTestId('grocery-title')).toBeVisible()
