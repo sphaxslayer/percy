@@ -59,16 +59,22 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
 test.describe('Grocery List Skill', () => {
   test('can add an item to the list', async ({ page, baseURL }) => {
     await registerAndLogin(page, baseURL!)
-    await page.goto('/skills/grocery-list', { waitUntil: 'networkidle' })
+    await page.goto('/skills/grocery-list')
 
-    // Debug: check if we're actually on the grocery page
+    // Debug: check what's on the page
     const currentUrl = page.url()
     if (!currentUrl.includes('grocery')) {
       throw new Error(`Expected grocery page, but at: ${currentUrl}`)
     }
 
+    // Wait for hydration
+    await page.waitForFunction(
+      () => (document.querySelector('#__nuxt') as HTMLElement | null)?.__vue_app__ !== undefined,
+      { timeout: 15_000 },
+    )
+
     // Verify the page loaded
-    await expect(page.getByTestId('grocery-title')).toBeVisible()
+    await expect(page.getByTestId('grocery-title')).toBeVisible({ timeout: 10_000 })
 
     // Verify empty state
     await expect(page.getByTestId('grocery-empty')).toBeVisible()
