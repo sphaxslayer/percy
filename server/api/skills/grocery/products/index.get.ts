@@ -4,9 +4,9 @@
  * Supports optional ?search= query parameter for filtering.
  */
 export default defineEventHandler(async (event) => {
-  const userId = await requireUserId(event)
-  const query = getQuery(event)
-  const search = typeof query.search === 'string' ? query.search.trim() : ''
+  const userId = await requireUserId(event);
+  const query = getQuery(event);
+  const search = typeof query.search === 'string' ? query.search.trim() : '';
 
   const products = await prisma.groceryProduct.findMany({
     where: {
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     },
     orderBy: { usageCount: 'desc' },
     take: 20,
-  })
+  });
 
-  return { data: products }
-})
+  return { data: products };
+});

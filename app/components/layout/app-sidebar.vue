@@ -4,19 +4,19 @@
   Collapses to icons-only mode on toggle. Hidden on mobile (replaced by mobile-nav).
 -->
 <script setup lang="ts">
-import { LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import { skills } from '~/config/skills'
+import { LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { skills } from '~/config/skills';
 
 const props = defineProps<{
-  collapsed: boolean
-}>()
+  collapsed: boolean;
+}>();
 
 const emit = defineEmits<{
-  'update:collapsed': [value: boolean]
-}>()
+  'update:collapsed': [value: boolean];
+}>();
 
 function toggleCollapsed() {
-  emit('update:collapsed', !props.collapsed)
+  emit('update:collapsed', !props.collapsed);
 }
 </script>
 
@@ -28,17 +28,9 @@ function toggleCollapsed() {
   >
     <!-- Sidebar header with app name -->
     <div class="flex h-14 items-center border-b border-slate-200 px-4">
-      <NuxtLink
-        to="/dashboard"
-        class="flex items-center gap-2 overflow-hidden"
-      >
+      <NuxtLink to="/dashboard" class="flex items-center gap-2 overflow-hidden">
         <LayoutDashboard class="h-5 w-5 shrink-0 text-primary" />
-        <span
-          v-if="!collapsed"
-          class="text-lg font-semibold text-slate-900"
-        >
-          Percy
-        </span>
+        <span v-if="!collapsed" class="text-lg font-semibold text-slate-900"> Percy </span>
       </NuxtLink>
     </div>
 
@@ -56,7 +48,7 @@ function toggleCollapsed() {
 
       <!-- Dynamic skill links from registry -->
       <NuxtLink
-        v-for="skill in skills.filter(s => s.enabled)"
+        v-for="skill in skills.filter((s) => s.enabled)"
         :key="skill.id"
         :to="skill.route"
         class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
@@ -64,11 +56,7 @@ function toggleCollapsed() {
         :data-testid="`sidebar-skill-${skill.id}`"
       >
         <!-- Skill icon rendered dynamically from lucide-vue-next -->
-        <component
-          :is="skill.iconComponent"
-          v-if="skill.iconComponent"
-          class="h-4 w-4 shrink-0"
-        />
+        <component :is="skill.iconComponent" v-if="skill.iconComponent" class="h-4 w-4 shrink-0" />
         <span v-if="!collapsed">{{ skill.name }}</span>
       </NuxtLink>
     </nav>

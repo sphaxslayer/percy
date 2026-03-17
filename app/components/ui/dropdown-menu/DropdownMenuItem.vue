@@ -1,18 +1,23 @@
 <!-- DropdownMenuItem.vue — A single selectable item in the dropdown menu. -->
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { DropdownMenuItem, type DropdownMenuItemEmits, type DropdownMenuItemProps, useForwardPropsEmits } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue';
+import {
+  DropdownMenuItem,
+  type DropdownMenuItemEmits,
+  type DropdownMenuItemProps,
+  useForwardPropsEmits,
+} from 'reka-ui';
+import { cn } from '@/lib/utils';
 
 interface Props extends DropdownMenuItemProps {
-  class?: HTMLAttributes['class']
-  inset?: boolean
+  class?: HTMLAttributes['class'];
+  inset?: boolean;
 }
 
-const props = defineProps<Props>()
-const emits = defineEmits<DropdownMenuItemEmits>()
+const props = defineProps<Props>();
+const emits = defineEmits<DropdownMenuItemEmits>();
 
-const forwarded = useForwardPropsEmits(props, emits)
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>

@@ -4,20 +4,22 @@
   The user dropdown contains the logout action.
 -->
 <script setup lang="ts">
-import { Menu, LogOut, User } from 'lucide-vue-next'
+import { Menu, LogOut, User } from 'lucide-vue-next';
 
 const emit = defineEmits<{
-  'toggle-mobile-nav': []
-}>()
+  'toggle-mobile-nav': [];
+}>();
 
 // Get the current user session from nuxt-auth
-const { data: session, signOut } = useAuth()
+const { data: session, signOut } = useAuth();
 
 // Extract user info from session
-const userName = computed(() => session.value?.user?.name || session.value?.user?.email || 'Utilisateur')
+const userName = computed(
+  () => session.value?.user?.name || session.value?.user?.email || 'Utilisateur',
+);
 
 async function handleLogout() {
-  await signOut({ redirect: true, callbackUrl: '/login' })
+  await signOut({ redirect: true, callbackUrl: '/login' });
 }
 </script>
 
@@ -37,9 +39,7 @@ async function handleLogout() {
       </button>
 
       <!-- App name visible only on mobile (sidebar hidden) -->
-      <span class="text-lg font-semibold text-slate-900 md:hidden">
-        Percy
-      </span>
+      <span class="text-lg font-semibold text-slate-900 md:hidden"> Percy </span>
     </div>
 
     <!-- Right side: user dropdown -->

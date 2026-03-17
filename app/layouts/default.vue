@@ -6,16 +6,16 @@
   - Main content area via <slot />
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 // Sidebar collapsed state — persisted in component (not in URL)
-const sidebarCollapsed = ref(false)
+const sidebarCollapsed = ref(false);
 
 // Mobile navigation open state
-const mobileNavOpen = ref(false)
+const mobileNavOpen = ref(false);
 
 function toggleMobileNav() {
-  mobileNavOpen.value = !mobileNavOpen.value
+  mobileNavOpen.value = !mobileNavOpen.value;
 }
 </script>
 
