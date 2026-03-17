@@ -23,9 +23,11 @@ export default defineNuxtConfig({
   ],
 
   // TypeScript strict mode everywhere
+  // typeCheck is disabled in CI — CI runs lint + typecheck separately, and
+  // vite-plugin-checker crashes the dev server on Node 20 in GitHub Actions.
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: !process.env.CI,
   },
 
   // shadcn-vue configuration
