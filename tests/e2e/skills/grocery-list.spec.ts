@@ -94,7 +94,12 @@ test.describe('Grocery List Skill', () => {
     await page.goto('/skills/grocery-list')
 
     await page.getByTestId('grocery-add-input').fill('Lait')
-    await page.getByTestId('grocery-add-button').click()
+    // Wait for the API to create the item (replaces temp ID with real ID)
+    const [addResponse] = await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/api/skills/grocery/items') && r.request().method() === 'POST'),
+      page.getByTestId('grocery-add-button').click(),
+    ])
+    expect(addResponse.ok()).toBeTruthy()
     await expect(page.getByText('Lait')).toBeVisible()
 
     const itemRow = page.locator('[data-testid^="grocery-item-"]').first()
@@ -110,7 +115,10 @@ test.describe('Grocery List Skill', () => {
     await page.goto('/skills/grocery-list')
 
     await page.getByTestId('grocery-add-input').fill('Pain')
-    await page.getByTestId('grocery-add-button').click()
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/api/skills/grocery/items') && r.request().method() === 'POST'),
+      page.getByTestId('grocery-add-button').click(),
+    ])
     await expect(page.getByText('Pain')).toBeVisible()
 
     const checkbox = page.locator('[data-testid^="grocery-checkbox-"]').first()
@@ -133,11 +141,17 @@ test.describe('Grocery List Skill', () => {
     await page.goto('/skills/grocery-list')
 
     await page.getByTestId('grocery-add-input').fill('Oeufs')
-    await page.getByTestId('grocery-add-button').click()
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/api/skills/grocery/items') && r.request().method() === 'POST'),
+      page.getByTestId('grocery-add-button').click(),
+    ])
     await expect(page.getByText('Oeufs')).toBeVisible()
 
     await page.getByTestId('grocery-add-input').fill('Beurre')
-    await page.getByTestId('grocery-add-button').click()
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes('/api/skills/grocery/items') && r.request().method() === 'POST'),
+      page.getByTestId('grocery-add-button').click(),
+    ])
     await expect(page.getByText('Beurre')).toBeVisible()
 
     const checkboxes = page.locator('[data-testid^="grocery-checkbox-"]')
