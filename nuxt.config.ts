@@ -49,6 +49,14 @@ export default defineNuxtConfig({
     cssPath: '~/assets/css/main.css',
   },
 
+  // Fix production build: bundle Vue in the SSR build to avoid CJS-to-ESM
+  // default-export interop issues in Nitro's Rollup step.
+  vite: {
+    ssr: {
+      noExternal: ['vue'],
+    },
+  },
+
   // Runtime config: secrets (server-only) and public (client + server)
   runtimeConfig: {
     authSecret: '', // NUXT_AUTH_SECRET env var
