@@ -40,7 +40,13 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
 
   // Click login and wait for navigation
   await loginButton.click({ timeout: 10_000 })
-  await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
+  try {
+    await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
+  } catch {
+    const url = page.url()
+    const content = await page.textContent('body')
+    throw new Error(`Login redirect failed. URL: ${url}\nContent: ${content?.slice(0, 800)}`)
+  }
 
   return email
 }
