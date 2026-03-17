@@ -1,8 +1,8 @@
 <!-- DropdownMenuTrigger.vue — Element that toggles the dropdown menu open/closed. -->
 <script setup lang="ts">
-import { DropdownMenuTrigger, type DropdownMenuTriggerProps } from 'reka-ui'
+import { DropdownMenuTrigger, type DropdownMenuTriggerProps } from 'reka-ui';
 
-const props = defineProps<DropdownMenuTriggerProps>()
+const props = defineProps<DropdownMenuTriggerProps>();
 </script>
 
 <template>

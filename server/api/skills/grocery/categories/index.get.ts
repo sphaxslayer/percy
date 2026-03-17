@@ -3,7 +3,7 @@
  * Sorted by sortOrder for consistent display.
  */
 export default defineEventHandler(async (event) => {
-  const userId = await requireUserId(event)
+  const userId = await requireUserId(event);
 
   const categories = await prisma.groceryCategory.findMany({
     where: { userId },
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
       _count: { select: { items: true } },
     },
     orderBy: { sortOrder: 'asc' },
-  })
+  });
 
-  return { data: categories }
-})
+  return { data: categories };
+});

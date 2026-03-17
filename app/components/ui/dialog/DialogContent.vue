@@ -1,6 +1,6 @@
 <!-- DialogContent.vue — Main content area of the dialog, rendered in a portal with overlay. -->
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
+import type { HTMLAttributes } from 'vue';
 import {
   DialogClose,
   DialogContent,
@@ -9,18 +9,18 @@ import {
   DialogOverlay,
   DialogPortal,
   useForwardPropsEmits,
-} from 'reka-ui'
-import { X } from 'lucide-vue-next'
-import { cn } from '@/lib/utils'
+} from 'reka-ui';
+import { X } from 'lucide-vue-next';
+import { cn } from '@/lib/utils';
 
 interface Props extends DialogContentProps {
-  class?: HTMLAttributes['class']
+  class?: HTMLAttributes['class'];
 }
 
-const props = defineProps<Props>()
-const emits = defineEmits<DialogContentEmits>()
+const props = defineProps<Props>();
+const emits = defineEmits<DialogContentEmits>();
 
-const forwarded = useForwardPropsEmits(props, emits)
+const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <template>

@@ -2,8 +2,8 @@
  * eslint.config.mjs — ESLint flat config for Nuxt 3 + Vue 3 + TypeScript.
  * Uses @nuxt/eslint for Nuxt-aware rules and prettier integration.
  */
-import withNuxt from './.nuxt/eslint.config.mjs'
-import eslintConfigPrettier from 'eslint-config-prettier'
+import withNuxt from './.nuxt/eslint.config.mjs';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default withNuxt(
   // Prettier config — disables ESLint rules that conflict with Prettier
@@ -17,4 +17,4 @@ export default withNuxt(
       'vue/multi-word-component-names': 'off', // shadcn components are single-word
     },
   },
-)
+);

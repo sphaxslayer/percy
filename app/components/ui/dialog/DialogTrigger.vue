@@ -1,8 +1,8 @@
 <!-- DialogTrigger.vue — Button or element that opens the dialog. -->
 <script setup lang="ts">
-import { DialogTrigger, type DialogTriggerProps } from 'reka-ui'
+import { DialogTrigger, type DialogTriggerProps } from 'reka-ui';
 
-const props = defineProps<DialogTriggerProps>()
+const props = defineProps<DialogTriggerProps>();
 </script>
 
 <template>

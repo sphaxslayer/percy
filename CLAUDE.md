@@ -58,6 +58,7 @@ percy/
 
 ### General
 - TypeScript strict mode everywhere. No `any` unless explicitly justified with a comment.
+- Always end JS/TS statements with a semicolon, even when not mandatory.
 - Use ESLint + Prettier. Run `pnpm lint` before committing.
 - All files use kebab-case naming: `my-component.vue`, `user-service.ts`.
 - Prefer small, focused files. Max ~200 lines per file. If bigger, split.

@@ -3,67 +3,63 @@
   Parses quantity from input (e.g. "Bananes x6") and shows product suggestions.
 -->
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Plus } from 'lucide-vue-next'
-import { useGroceryAutocomplete, parseItemInput } from '~/composables/use-grocery-autocomplete'
-import type { GroceryProduct, GroceryItemInput } from '~/types/grocery'
+import { ref, computed } from 'vue';
+import { Plus } from 'lucide-vue-next';
+import { useGroceryAutocomplete, parseItemInput } from '~/composables/use-grocery-autocomplete';
+import type { GroceryProduct, GroceryItemInput } from '~/types/grocery';
 
 const emit = defineEmits<{
-  add: [input: GroceryItemInput]
-}>()
+  add: [input: GroceryItemInput];
+}>();
 
 const { query, suggestions, loading, selectedIndex, selectSuggestion, clear, moveUp, moveDown } =
-  useGroceryAutocomplete()
+  useGroceryAutocomplete();
 
-const inputRef = ref<HTMLInputElement | null>(null)
-const showDropdown = computed(() => suggestions.value.length > 0)
+const inputRef = ref<HTMLInputElement | null>(null);
+const showDropdown = computed(() => suggestions.value.length > 0);
 
 function submit() {
   if (selectedIndex.value >= 0 && suggestions.value[selectedIndex.value]) {
-    submitSuggestion(suggestions.value[selectedIndex.value]!)
-    return
+    submitSuggestion(suggestions.value[selectedIndex.value]!);
+    return;
   }
 
-  const parsed = parseItemInput(query.value)
-  if (!parsed.name.trim()) return
+  const parsed = parseItemInput(query.value);
+  if (!parsed.name.trim()) return;
 
   emit('add', {
     name: parsed.name,
     quantity: parsed.quantity,
     unit: parsed.unit,
-  })
-  clear()
+  });
+  clear();
 }
 
 function submitSuggestion(product: GroceryProduct) {
-  const result = selectSuggestion(product)
+  const result = selectSuggestion(product);
   emit('add', {
     name: result.name,
     quantity: result.quantity,
     unit: result.unit,
     categoryId: product.categoryId ?? undefined,
-  })
+  });
 }
 
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'ArrowDown') {
-    e.preventDefault()
-    moveDown()
+    e.preventDefault();
+    moveDown();
   } else if (e.key === 'ArrowUp') {
-    e.preventDefault()
-    moveUp()
+    e.preventDefault();
+    moveUp();
   } else if (e.key === 'Escape') {
-    clear()
+    clear();
   }
 }
 </script>
 
 <template>
-  <form
-    class="relative"
-    data-testid="grocery-add-form"
-    @submit.prevent="submit"
-  >
+  <form class="relative" data-testid="grocery-add-form" @submit.prevent="submit">
     <div class="flex gap-2">
       <div class="relative flex-1">
         <input
@@ -93,30 +89,19 @@ function handleKeydown(e: KeyboardEvent) {
             @click="submitSuggestion(product)"
           >
             <span>{{ product.name }}</span>
-            <span
-              v-if="product.category"
-              class="text-xs text-slate-400"
-            >
+            <span v-if="product.category" class="text-xs text-slate-400">
               {{ product.category.name }}
             </span>
           </button>
         </div>
       </div>
 
-      <Button
-        type="submit"
-        size="icon"
-        :disabled="!query.trim()"
-        data-testid="grocery-add-button"
-      >
+      <Button type="submit" size="icon" :disabled="!query.trim()" data-testid="grocery-add-button">
         <Plus class="h-4 w-4" />
       </Button>
     </div>
 
-    <div
-      v-if="loading"
-      class="absolute right-14 top-2.5"
-    >
+    <div v-if="loading" class="absolute right-14 top-2.5">
       <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-primary" />
     </div>
   </form>

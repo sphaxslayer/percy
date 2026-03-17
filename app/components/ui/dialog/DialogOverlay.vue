@@ -1,14 +1,14 @@
 <!-- DialogOverlay.vue — Semi-transparent backdrop behind the dialog. -->
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { DialogOverlay, type DialogOverlayProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue';
+import { DialogOverlay, type DialogOverlayProps } from 'reka-ui';
+import { cn } from '@/lib/utils';
 
 interface Props extends DialogOverlayProps {
-  class?: HTMLAttributes['class']
+  class?: HTMLAttributes['class'];
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 </script>
 
 <template>

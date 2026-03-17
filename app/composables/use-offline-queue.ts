@@ -8,27 +8,27 @@
  *
  * The queue is persisted in localStorage to survive page refreshes.
  */
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 export interface QueuedAction {
-  id: string
+  id: string;
   /** Key used for deduplication (e.g. "item:abc123" or "item:temp-xyz") */
-  entityKey: string
-  type: 'create' | 'update' | 'delete'
-  endpoint: string
-  method: 'POST' | 'PATCH' | 'DELETE'
-  body?: Record<string, unknown>
-  timestamp: number
-  retryCount: number
+  entityKey: string;
+  type: 'create' | 'update' | 'delete';
+  endpoint: string;
+  method: 'POST' | 'PATCH' | 'DELETE';
+  body?: Record<string, unknown>;
+  timestamp: number;
+  retryCount: number;
 }
 
-export type RollbackFn = () => void
+export type RollbackFn = () => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type SuccessFn = (data: any) => void
+export type SuccessFn = (data: any) => void;
 
-const STORAGE_KEY = 'percy:offline-queue'
-const MAX_RETRIES = 5
-const RETRY_INTERVAL_MS = 10_000
+const STORAGE_KEY = 'percy:offline-queue';
+const MAX_RETRIES = 5;
+const RETRY_INTERVAL_MS = 10_000;
 
 /**
  * Creates an offline-resilient action queue.
@@ -36,19 +36,19 @@ const RETRY_INTERVAL_MS = 10_000
  * instance with a unique storage key prefix.
  */
 export function useOfflineQueue(storagePrefix = '') {
-  const queue = ref<QueuedAction[]>([])
-  const isSyncing = ref(false)
-  const isOnline = ref(true)
+  const queue = ref<QueuedAction[]>([]);
+  const isSyncing = ref(false);
+  const isOnline = ref(true);
 
-  const pendingCount = computed(() => queue.value.length)
-  const hasPending = computed(() => queue.value.length > 0)
+  const pendingCount = computed(() => queue.value.length);
+  const hasPending = computed(() => queue.value.length > 0);
 
-  const storageKey = storagePrefix ? `${STORAGE_KEY}:${storagePrefix}` : STORAGE_KEY
+  const storageKey = storagePrefix ? `${STORAGE_KEY}:${storagePrefix}` : STORAGE_KEY;
 
   // ─── Persistence ──────────────────────────────────────────────────
   function saveToStorage() {
     try {
-      localStorage.setItem(storageKey, JSON.stringify(queue.value))
+      localStorage.setItem(storageKey, JSON.stringify(queue.value));
     } catch {
       // localStorage full or unavailable — queue stays in memory only
     }
@@ -56,47 +56,47 @@ export function useOfflineQueue(storagePrefix = '') {
 
   function loadFromStorage() {
     try {
-      const stored = localStorage.getItem(storageKey)
+      const stored = localStorage.getItem(storageKey);
       if (stored) {
-        queue.value = JSON.parse(stored)
+        queue.value = JSON.parse(stored);
       }
     } catch {
-      queue.value = []
+      queue.value = [];
     }
   }
 
   // ─── Deduplication ────────────────────────────────────────────────
   function deduplicateQueue(newAction: QueuedAction): QueuedAction[] {
-    const existing = queue.value
-    const key = newAction.entityKey
+    const existing = queue.value;
+    const key = newAction.entityKey;
 
     // Delete always wins — remove any pending create/update for this entity
     if (newAction.type === 'delete') {
-      const filtered = existing.filter((a) => a.entityKey !== key)
-      return [...filtered, newAction]
+      const filtered = existing.filter((a) => a.entityKey !== key);
+      return [...filtered, newAction];
     }
 
     // Update replaces a previous update for the same entity
     if (newAction.type === 'update') {
-      const pendingCreate = existing.find((a) => a.entityKey === key && a.type === 'create')
+      const pendingCreate = existing.find((a) => a.entityKey === key && a.type === 'create');
       if (pendingCreate) {
         // Merge update data into the pending create's body
         return existing.map((a) =>
           a.id === pendingCreate.id
             ? { ...a, body: { ...a.body, ...newAction.body }, timestamp: newAction.timestamp }
             : a,
-        )
+        );
       }
       // Replace previous update for the same entity
-      const hasUpdate = existing.some((a) => a.entityKey === key && a.type === 'update')
+      const hasUpdate = existing.some((a) => a.entityKey === key && a.type === 'update');
       if (hasUpdate) {
         return existing.map((a) =>
           a.entityKey === key && a.type === 'update' ? { ...newAction, id: a.id } : a,
-        )
+        );
       }
     }
 
-    return [...existing, newAction]
+    return [...existing, newAction];
   }
 
   // ─── Queue Management ─────────────────────────────────────────────
@@ -105,105 +105,105 @@ export function useOfflineQueue(storagePrefix = '') {
     rollback?: RollbackFn,
     onSuccess?: SuccessFn,
   ): string {
-    const id = crypto.randomUUID()
+    const id = crypto.randomUUID();
     const queuedAction: QueuedAction = {
       ...action,
       id,
       timestamp: Date.now(),
       retryCount: 0,
-    }
+    };
 
-    queue.value = deduplicateQueue(queuedAction)
-    saveToStorage()
+    queue.value = deduplicateQueue(queuedAction);
+    saveToStorage();
 
     // Try to flush immediately if online
     if (isOnline.value) {
-      flush(rollback, onSuccess)
+      flush(rollback, onSuccess);
     }
 
-    return id
+    return id;
   }
 
   async function flush(rollback?: RollbackFn, onSuccess?: SuccessFn) {
-    if (isSyncing.value || queue.value.length === 0) return
-    isSyncing.value = true
+    if (isSyncing.value || queue.value.length === 0) return;
+    isSyncing.value = true;
 
     // Process queue in FIFO order
     while (queue.value.length > 0) {
-      const action = queue.value[0]!
+      const action = queue.value[0]!;
       try {
         const data = await $fetch(action.endpoint, {
           method: action.method,
           body: action.body,
-        })
+        });
         // Success — remove from queue and notify caller
-        queue.value = queue.value.slice(1)
-        saveToStorage()
-        onSuccess?.(data)
+        queue.value = queue.value.slice(1);
+        saveToStorage();
+        onSuccess?.(data);
       } catch (error: unknown) {
-        const fetchError = error as { status?: number; statusCode?: number }
-        const status = fetchError?.status ?? fetchError?.statusCode ?? 0
+        const fetchError = error as { status?: number; statusCode?: number };
+        const status = fetchError?.status ?? fetchError?.statusCode ?? 0;
 
         if (status >= 400 && status < 500) {
           // Client error (validation, not found, etc.) — remove from queue + rollback
-          queue.value = queue.value.slice(1)
-          saveToStorage()
-          rollback?.()
-          break
+          queue.value = queue.value.slice(1);
+          saveToStorage();
+          rollback?.();
+          break;
         }
 
         // Network error or server error — increment retry and stop flushing
-        action.retryCount++
+        action.retryCount++;
         if (action.retryCount >= MAX_RETRIES) {
-          queue.value = queue.value.slice(1)
-          saveToStorage()
-          rollback?.()
+          queue.value = queue.value.slice(1);
+          saveToStorage();
+          rollback?.();
         }
-        break
+        break;
       }
     }
 
-    isSyncing.value = false
+    isSyncing.value = false;
   }
 
   // ─── Online/Offline Detection ─────────────────────────────────────
-  let retryTimer: ReturnType<typeof setInterval> | null = null
+  let retryTimer: ReturnType<typeof setInterval> | null = null;
 
   function handleOnline() {
-    isOnline.value = true
-    flush()
+    isOnline.value = true;
+    flush();
   }
 
   function handleOffline() {
-    isOnline.value = false
+    isOnline.value = false;
   }
 
   function startRetryTimer() {
     retryTimer = setInterval(() => {
       if (isOnline.value && queue.value.length > 0) {
-        flush()
+        flush();
       }
-    }, RETRY_INTERVAL_MS)
+    }, RETRY_INTERVAL_MS);
   }
 
   onMounted(() => {
-    isOnline.value = navigator.onLine
-    loadFromStorage()
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-    startRetryTimer()
+    isOnline.value = navigator.onLine;
+    loadFromStorage();
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    startRetryTimer();
 
     // Flush any persisted actions from a previous session
     if (isOnline.value && queue.value.length > 0) {
-      flush()
+      flush();
     }
-  })
+  });
 
   onUnmounted(() => {
-    window.removeEventListener('online', handleOnline)
-    window.removeEventListener('offline', handleOffline)
-    if (retryTimer) clearInterval(retryTimer)
-  })
+    window.removeEventListener('online', handleOnline);
+    window.removeEventListener('offline', handleOffline);
+    if (retryTimer) clearInterval(retryTimer);
+  });
 
   return {
     queue,
@@ -213,5 +213,5 @@ export function useOfflineQueue(storagePrefix = '') {
     isOnline,
     enqueue,
     flush,
-  }
+  };
 }
