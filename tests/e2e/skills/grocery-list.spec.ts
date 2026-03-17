@@ -25,18 +25,21 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
   })
   expect(regResponse.ok()).toBeTruthy()
 
-  // Navigate to login and fill credentials
-  await page.goto('/login', { waitUntil: 'networkidle' })
-  await page.getByTestId('email').fill(email)
-  await page.getByTestId('password').fill(password)
+  // Navigate to login — use 'load' and then wait for hydration
+  await page.goto('/login')
 
-  // Submit the form via JavaScript to bypass any hydration timing issues
-  await page.evaluate(() => {
-    const form = document.querySelector('form')
-    form?.requestSubmit()
-  })
+  // Wait for Vue hydration: the login button becomes enabled only after Vue mounts
+  const loginButton = page.getByTestId('login-button')
+  await expect(loginButton).toBeEnabled({ timeout: 10_000 })
 
-  // Wait for redirect to dashboard
+  // Use type() instead of fill() to simulate real keyboard input
+  await page.getByTestId('email').click()
+  await page.getByTestId('email').type(email)
+  await page.getByTestId('password').click()
+  await page.getByTestId('password').type(password)
+
+  // Click login and wait for navigation
+  await loginButton.click({ timeout: 10_000 })
   await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
 
   return email
