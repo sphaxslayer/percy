@@ -10,33 +10,34 @@ test.describe.configure({ mode: 'serial' })
 
 let testCounter = 0
 
-/** Register a new user and auto-login. The register page auto-logs in and redirects to /dashboard. */
-async function registerAndLogin(page: import('@playwright/test').Page) {
+/**
+ * Register a new user via API, then log in via the login page.
+ * Using the API for registration is more reliable in CI than form submission.
+ */
+async function registerAndLogin(page: import('@playwright/test').Page, baseURL: string) {
   testCounter++
   const email = `test-grocery-${Date.now()}-${testCounter}@example.com`
   const password = 'testpassword123'
 
-  // Navigate and wait for full load + hydration
-  await page.goto('/register', { waitUntil: 'networkidle' })
+  // Register via API directly — avoids form hydration timing issues
+  const response = await page.request.post(`${baseURL}/api/auth/register`, {
+    data: { email, password, name: 'Test User' },
+  })
+  expect(response.ok()).toBeTruthy()
 
-  await page.getByTestId('name').fill('Test User')
+  // Login via the UI form
+  await page.goto('/login')
   await page.getByTestId('email').fill(email)
   await page.getByTestId('password').fill(password)
-  await page.getByTestId('confirm-password').fill(password)
-
-  // Use Promise.all to click and wait simultaneously — prevents race condition
-  // where navigation happens before waitForURL is set up
-  await Promise.all([
-    page.waitForURL(/\/dashboard/, { timeout: 15_000 }),
-    page.getByTestId('register-button').click(),
-  ])
+  await page.getByTestId('login-button').click()
+  await page.waitForURL(/\/dashboard/, { timeout: 15_000 })
 
   return email
 }
 
 test.describe('Grocery List Skill', () => {
-  test('can add an item to the list', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can add an item to the list', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Verify the page loaded
@@ -56,8 +57,8 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByTestId('grocery-empty')).not.toBeVisible()
   })
 
-  test('can add an item with quantity parsing', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can add an item with quantity parsing', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Add item with quantity syntax "Bananes x6"
@@ -69,8 +70,8 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByText('× 6')).toBeVisible()
   })
 
-  test('can check off an item', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can check off an item', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Add an item
@@ -78,8 +79,7 @@ test.describe('Grocery List Skill', () => {
     await page.getByTestId('grocery-add-button').click()
     await expect(page.getByText('Lait')).toBeVisible()
 
-    // Find the checkbox and check it — the item row uses dynamic testid with the item's ID,
-    // so we target the checkbox within the visible item row
+    // Find the checkbox and check it
     const itemRow = page.locator('[data-testid^="grocery-item-"]').first()
     const checkbox = itemRow.locator('[data-testid^="grocery-checkbox-"]')
     await checkbox.click()
@@ -89,8 +89,8 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByTestId('grocery-checked-toggle')).toContainText('1')
   })
 
-  test('can expand checked section and uncheck an item', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can expand checked section and uncheck an item', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Add and check an item
@@ -104,7 +104,7 @@ test.describe('Grocery List Skill', () => {
     // Expand checked section
     await page.getByTestId('grocery-checked-toggle').click()
 
-    // Item should be visible in the checked section with strikethrough
+    // Item should be visible in the checked section
     const checkedItem = page.locator('[data-testid^="grocery-item-"]').first()
     await expect(checkedItem).toBeVisible()
 
@@ -119,8 +119,8 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByText('Pain')).toBeVisible()
   })
 
-  test('can clear all checked items with confirmation', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can clear all checked items with confirmation', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Add two items
@@ -153,8 +153,8 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByTestId('grocery-empty')).toBeVisible()
   })
 
-  test('can submit item with Enter key', async ({ page }) => {
-    await registerAndLogin(page)
+  test('can submit item with Enter key', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Type and press Enter
@@ -165,24 +165,24 @@ test.describe('Grocery List Skill', () => {
     await expect(page.getByText('Tomates')).toBeVisible()
   })
 
-  test('add button is disabled when input is empty', async ({ page }) => {
-    await registerAndLogin(page)
+  test('add button is disabled when input is empty', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
     // Button should be disabled with empty input
     await expect(page.getByTestId('grocery-add-button')).toBeDisabled()
   })
 
-  test('dashboard shows grocery skill card', async ({ page }) => {
-    await registerAndLogin(page)
+  test('dashboard shows grocery skill card', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
 
     // Dashboard should show the grocery skill card
     await expect(page.getByTestId('skill-card-grocery-list')).toBeVisible()
     await expect(page.getByText('Liste de courses')).toBeVisible()
   })
 
-  test('dashboard grocery card links to skill page', async ({ page }) => {
-    await registerAndLogin(page)
+  test('dashboard grocery card links to skill page', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!)
 
     // Click the grocery card
     await page.getByTestId('skill-card-grocery-list').click()
