@@ -133,6 +133,13 @@ export function useGroceryList() {
       () => {
         items.value = items.value.filter((i) => i.id !== tempId)
       },
+      // On success: replace temp ID with the real ID from the server
+      (data: { id: string }) => {
+        const item = items.value.find((i) => i.id === tempId)
+        if (item) {
+          item.id = data.id
+        }
+      },
     )
   }
 
