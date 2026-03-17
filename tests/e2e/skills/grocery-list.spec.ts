@@ -29,7 +29,7 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
   const csrfResponse = await page.request.get(`${baseURL}/api/auth/csrf`)
   const { csrfToken } = await csrfResponse.json()
 
-  const loginResponse = await page.request.post(`${baseURL}/api/auth/callback/credentials`, {
+  await page.request.post(`${baseURL}/api/auth/callback/credentials`, {
     form: {
       email,
       password,
@@ -37,7 +37,11 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
       json: 'true',
     },
   })
-  expect(loginResponse.ok()).toBeTruthy()
+
+  // Verify session is established by checking the session endpoint
+  const sessionResponse = await page.request.get(`${baseURL}/api/auth/session`)
+  const session = await sessionResponse.json()
+  expect(session.user).toBeTruthy()
 
   return email
 }
