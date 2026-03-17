@@ -23,8 +23,9 @@ async function registerAndLogin(page: import('@playwright/test').Page) {
   await page.getByTestId('confirm-password').fill(password)
   await page.getByTestId('register-button').click()
 
-  // Register auto-logs in and redirects to /dashboard
-  await page.waitForURL(/\/dashboard/, { timeout: 15_000 })
+  // Wait for the dashboard to actually render rather than relying on URL change.
+  // The navigation might complete via client-side routing (no full page load).
+  await expect(page.getByTestId('dashboard-title')).toBeVisible({ timeout: 15_000 })
 
   return email
 }
