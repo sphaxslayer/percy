@@ -34,8 +34,10 @@ const enabledSkills = computed(() => skills.filter((s) => s.enabled))
         :key="skill.id"
         :skill="skill"
       >
-        <!-- Skill-specific dashboard summaries -->
-        <GrocerySummary v-if="skill.id === 'grocery-list'" />
+        <!-- Skill-specific dashboard summaries (client-only: use browser APIs) -->
+        <ClientOnly>
+          <GrocerySummary v-if="skill.id === 'grocery-list'" />
+        </ClientOnly>
       </SkillCard>
     </div>
 
