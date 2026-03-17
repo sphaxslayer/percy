@@ -61,4 +61,4 @@ jobs:
           DATABASE_URL: postgresql://test:test@localhost:5432/percy_test
           NUXT_AUTH_SECRET: test-secret
           NUXT_AUTH_ORIGIN: http://localhost:3000
-          AUTH_ORIGIN: http://localhost:3000
+          AUTH_ORIGIN: http://localhost:3000/api/auth
