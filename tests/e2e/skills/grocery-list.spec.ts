@@ -16,25 +16,20 @@ async function registerAndLogin(page: import('@playwright/test').Page) {
   const email = `test-grocery-${Date.now()}-${testCounter}@example.com`
   const password = 'testpassword123'
 
-  await page.goto('/register')
+  // Navigate and wait for full load + hydration
+  await page.goto('/register', { waitUntil: 'networkidle' })
+
   await page.getByTestId('name').fill('Test User')
   await page.getByTestId('email').fill(email)
   await page.getByTestId('password').fill(password)
   await page.getByTestId('confirm-password').fill(password)
-  await page.getByTestId('register-button').click()
 
-  // Wait for navigation to dashboard or for an error to appear.
-  // The register page auto-logs in and redirects on success.
-  try {
-    await expect(page.getByTestId('dashboard-title')).toBeVisible({ timeout: 15_000 })
-  } catch {
-    // If dashboard didn't appear, capture the page state for debugging
-    const url = page.url()
-    const body = await page.textContent('body')
-    throw new Error(
-      `Registration failed. URL: ${url}\nPage content (first 500 chars): ${body?.slice(0, 500)}`,
-    )
-  }
+  // Use Promise.all to click and wait simultaneously — prevents race condition
+  // where navigation happens before waitForURL is set up
+  await Promise.all([
+    page.waitForURL(/\/dashboard/, { timeout: 15_000 }),
+    page.getByTestId('register-button').click(),
+  ])
 
   return email
 }
