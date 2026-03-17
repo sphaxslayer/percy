@@ -23,6 +23,8 @@ export interface QueuedAction {
 }
 
 export type RollbackFn = () => void
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type SuccessFn = (data: any) => void
 
 const STORAGE_KEY = 'percy:offline-queue'
 const MAX_RETRIES = 5
@@ -101,6 +103,7 @@ export function useOfflineQueue(storagePrefix = '') {
   function enqueue(
     action: Omit<QueuedAction, 'id' | 'timestamp' | 'retryCount'>,
     rollback?: RollbackFn,
+    onSuccess?: SuccessFn,
   ): string {
     const id = crypto.randomUUID()
     const queuedAction: QueuedAction = {
@@ -115,13 +118,13 @@ export function useOfflineQueue(storagePrefix = '') {
 
     // Try to flush immediately if online
     if (isOnline.value) {
-      flush(rollback)
+      flush(rollback, onSuccess)
     }
 
     return id
   }
 
-  async function flush(rollback?: RollbackFn) {
+  async function flush(rollback?: RollbackFn, onSuccess?: SuccessFn) {
     if (isSyncing.value || queue.value.length === 0) return
     isSyncing.value = true
 
@@ -129,13 +132,14 @@ export function useOfflineQueue(storagePrefix = '') {
     while (queue.value.length > 0) {
       const action = queue.value[0]!
       try {
-        await $fetch(action.endpoint, {
+        const data = await $fetch(action.endpoint, {
           method: action.method,
           body: action.body,
         })
-        // Success — remove from queue
+        // Success — remove from queue and notify caller
         queue.value = queue.value.slice(1)
         saveToStorage()
+        onSuccess?.(data)
       } catch (error: unknown) {
         const fetchError = error as { status?: number; statusCode?: number }
         const status = fetchError?.status ?? fetchError?.statusCode ?? 0
