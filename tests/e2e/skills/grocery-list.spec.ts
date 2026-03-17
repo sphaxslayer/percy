@@ -189,7 +189,9 @@ test.describe('Grocery List Skill', () => {
     await page.goto('/dashboard')
 
     await expect(page.getByTestId('skill-card-grocery-list')).toBeVisible()
-    await expect(page.getByText('Liste de courses')).toBeVisible()
+    // Use the skill card locator to scope the text check — "Liste de courses"
+    // may appear in multiple places (card title, summary, etc.)
+    await expect(page.getByTestId('skill-card-grocery-list').getByText('Liste de courses')).toBeVisible()
   })
 
   test('dashboard grocery card links to skill page', async ({ page, baseURL }) => {
