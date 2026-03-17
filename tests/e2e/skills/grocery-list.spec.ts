@@ -25,28 +25,19 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
   })
   expect(regResponse.ok()).toBeTruthy()
 
-  // Navigate to login — use 'load' and then wait for hydration
+  // Navigate to login
   await page.goto('/login')
 
-  // Wait for Vue hydration: the login button becomes enabled only after Vue mounts
-  const loginButton = page.getByTestId('login-button')
-  await expect(loginButton).toBeEnabled({ timeout: 10_000 })
+  // Wait for Vue/Nuxt hydration by checking for the __vue_app__ property on the root element
+  await page.waitForFunction(
+    () => document.querySelector('#__nuxt')?.__vue_app__ !== undefined,
+    { timeout: 15_000 },
+  )
 
-  // Use type() instead of fill() to simulate real keyboard input
-  await page.getByTestId('email').click()
-  await page.getByTestId('email').type(email)
-  await page.getByTestId('password').click()
-  await page.getByTestId('password').type(password)
-
-  // Click login and wait for navigation
-  await loginButton.click({ timeout: 10_000 })
-  try {
-    await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
-  } catch {
-    const url = page.url()
-    const content = await page.textContent('body')
-    throw new Error(`Login redirect failed. URL: ${url}\nContent: ${content?.slice(0, 800)}`)
-  }
+  await page.getByTestId('email').fill(email)
+  await page.getByTestId('password').fill(password)
+  await page.getByTestId('login-button').click()
+  await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
 
   return email
 }
