@@ -5,9 +5,15 @@
  */
 import { test, expect } from '@playwright/test'
 
+// Run grocery tests serially — each registers a user and hits the same DB
+test.describe.configure({ mode: 'serial' })
+
+let testCounter = 0
+
 /** Register a new user and auto-login. The register page auto-logs in and redirects to /dashboard. */
 async function registerAndLogin(page: import('@playwright/test').Page) {
-  const email = `test-grocery-${Date.now()}@example.com`
+  testCounter++
+  const email = `test-grocery-${Date.now()}-${testCounter}@example.com`
   const password = 'testpassword123'
 
   await page.goto('/register')
@@ -18,7 +24,7 @@ async function registerAndLogin(page: import('@playwright/test').Page) {
   await page.getByTestId('register-button').click()
 
   // Register auto-logs in and redirects to /dashboard
-  await page.waitForURL(/\/dashboard/)
+  await page.waitForURL(/\/dashboard/, { timeout: 15_000 })
 
   return email
 }
