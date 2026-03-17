@@ -36,7 +36,9 @@ export default defineConfig({
   // vite-plugin-checker issues). Locally, reuse any running dev server.
   webServer: {
     command: process.env.CI ? 'pnpm build && node .output/server/index.mjs' : 'pnpm dev',
-    url: 'http://localhost:3000',
+    // Use the auth CSRF endpoint as health check — it always returns 200
+    // without triggering auth middleware redirects.
+    url: 'http://localhost:3000/api/auth/csrf',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
