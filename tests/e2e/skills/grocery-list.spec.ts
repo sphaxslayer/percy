@@ -76,6 +76,15 @@ test.describe('Grocery List Skill', () => {
     // Verify the page loaded
     await expect(page.getByTestId('grocery-title')).toBeVisible({ timeout: 10_000 })
 
+    // Debug: check what testid elements exist on the page
+    const testids = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-testid]')).map(
+        (el) => `${el.tagName}[${el.getAttribute('data-testid')}]`,
+      ),
+    )
+    // eslint-disable-next-line no-console
+    console.log('Found data-testid elements:', testids)
+
     // Verify empty state
     await expect(page.getByTestId('grocery-empty')).toBeVisible()
 
