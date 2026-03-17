@@ -3,7 +3,7 @@
  * Returns both active (unchecked) and checked items, with category info.
  */
 export default defineEventHandler(async (event) => {
-  const userId = await requireUserId(event)
+  const userId = await requireUserId(event);
 
   const items = await prisma.groceryItem.findMany({
     where: { userId },
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       createdAt: true,
     },
     orderBy: [{ checked: 'asc' }, { sortOrder: 'asc' }, { createdAt: 'asc' }],
-  })
+  });
 
-  return { data: items }
-})
+  return { data: items };
+});

@@ -3,15 +3,12 @@
  * Extends the default theme with shadcn-vue CSS variables for consistent theming.
  * Color values reference CSS custom properties defined in app/assets/css/main.css.
  */
-import type { Config } from 'tailwindcss'
-import tailwindAnimate from 'tailwindcss-animate'
+import type { Config } from 'tailwindcss';
+import tailwindAnimate from 'tailwindcss-animate';
 
 export default {
   darkMode: 'class',
-  content: [
-    './app/**/*.{vue,ts,tsx}',
-    './components/**/*.{vue,ts,tsx}',
-  ],
+  content: ['./app/**/*.{vue,ts,tsx}', './components/**/*.{vue,ts,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -57,4 +54,4 @@ export default {
     },
   },
   plugins: [tailwindAnimate],
-} satisfies Config
+} satisfies Config;

@@ -4,19 +4,19 @@
   Shows as a slide-in overlay with skill navigation links.
 -->
 <script setup lang="ts">
-import { X, LayoutDashboard } from 'lucide-vue-next'
-import { skills } from '~/config/skills'
+import { X, LayoutDashboard } from 'lucide-vue-next';
+import { skills } from '~/config/skills';
 
 const props = defineProps<{
-  open: boolean
-}>()
+  open: boolean;
+}>();
 
 const emit = defineEmits<{
-  'update:open': [value: boolean]
-}>()
+  'update:open': [value: boolean];
+}>();
 
 function close() {
-  emit('update:open', false)
+  emit('update:open', false);
 }
 </script>
 
@@ -24,11 +24,7 @@ function close() {
   <!-- Backdrop overlay -->
   <Teleport to="body">
     <Transition name="fade">
-      <div
-        v-if="props.open"
-        class="fixed inset-0 z-40 bg-black/50 md:hidden"
-        @click="close"
-      />
+      <div v-if="props.open" class="fixed inset-0 z-40 bg-black/50 md:hidden" @click="close" />
     </Transition>
 
     <!-- Slide-in navigation panel -->
@@ -63,7 +59,7 @@ function close() {
           </NuxtLink>
 
           <NuxtLink
-            v-for="skill in skills.filter(s => s.enabled)"
+            v-for="skill in skills.filter((s) => s.enabled)"
             :key="skill.id"
             :to="skill.route"
             class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"

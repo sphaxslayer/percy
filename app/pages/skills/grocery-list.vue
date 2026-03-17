@@ -3,14 +3,14 @@
   Shows quick-add input, items grouped by category, and checked items section.
 -->
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { ShoppingCart, WifiOff } from 'lucide-vue-next'
-import { useGroceryList } from '~/composables/use-grocery-list'
-import type { GroceryItemInput } from '~/types/grocery'
+import { onMounted } from 'vue';
+import { ShoppingCart, WifiOff } from 'lucide-vue-next';
+import { useGroceryList } from '~/composables/use-grocery-list';
+import type { GroceryItemInput } from '~/types/grocery';
 
 definePageMeta({
   middleware: 'auth',
-})
+});
 
 const {
   loading,
@@ -27,15 +27,15 @@ const {
   toggleItem,
   removeItem,
   clearChecked,
-} = useGroceryList()
+} = useGroceryList();
 
 function handleAdd(input: GroceryItemInput) {
-  addItem(input)
+  addItem(input);
 }
 
 onMounted(async () => {
-  await Promise.all([fetchItems(), fetchCategories()])
-})
+  await Promise.all([fetchItems(), fetchCategories()]);
+});
 </script>
 
 <template>
@@ -47,16 +47,8 @@ onMounted(async () => {
           <ShoppingCart class="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1
-            class="text-2xl font-bold"
-            data-testid="grocery-title"
-          >
-            Liste de courses
-          </h1>
-          <p
-            v-if="activeCount > 0"
-            class="text-sm text-slate-500"
-          >
+          <h1 class="text-2xl font-bold" data-testid="grocery-title">Liste de courses</h1>
+          <p v-if="activeCount > 0" class="text-sm text-slate-500">
             {{ activeCount }} article{{ activeCount > 1 ? 's' : '' }} à acheter
           </p>
         </div>
@@ -68,26 +60,17 @@ onMounted(async () => {
         class="flex items-center gap-1.5 text-xs text-amber-600"
         data-testid="grocery-sync-status"
       >
-        <WifiOff
-          v-if="!isOnline"
-          class="h-3.5 w-3.5"
-        />
+        <WifiOff v-if="!isOnline" class="h-3.5 w-3.5" />
         <span v-if="!isOnline">Hors ligne</span>
         <span v-else-if="pendingSync">Synchronisation...</span>
       </div>
     </div>
 
     <!-- Quick add input -->
-    <GroceryAddInput
-      data-testid="grocery-add-section"
-      @add="handleAdd"
-    />
+    <GroceryAddInput data-testid="grocery-add-section" @add="handleAdd" />
 
     <!-- Loading state -->
-    <div
-      v-if="loading"
-      class="space-y-3"
-    >
+    <div v-if="loading" class="space-y-3">
       <Skeleton class="h-10 w-full" />
       <Skeleton class="h-10 w-full" />
       <Skeleton class="h-10 w-3/4" />
@@ -109,21 +92,19 @@ onMounted(async () => {
       data-testid="grocery-empty"
     >
       <ShoppingCart class="mx-auto h-12 w-12 text-slate-300" />
-      <p class="mt-3 text-sm text-slate-500">
-        Votre liste est vide
-      </p>
-      <p class="text-xs text-slate-400">
-        Ajoutez un produit avec le champ ci-dessus
-      </p>
+      <p class="mt-3 text-sm text-slate-500">Votre liste est vide</p>
+      <p class="text-xs text-slate-400">Ajoutez un produit avec le champ ci-dessus</p>
     </div>
 
     <!-- Item list grouped by category -->
-    <div
-      v-else
-      class="space-y-4"
-    >
+    <div v-else class="space-y-4">
       <!-- Grouped items (when categories exist) -->
-      <template v-if="itemsByCategory.length > 1 || (itemsByCategory.length === 1 && itemsByCategory[0]?.category)">
+      <template
+        v-if="
+          itemsByCategory.length > 1 ||
+          (itemsByCategory.length === 1 && itemsByCategory[0]?.category)
+        "
+      >
         <GroceryCategoryGroup
           v-for="group in itemsByCategory"
           :key="group.category?.id ?? 'uncategorized'"

@@ -3,23 +3,23 @@
   Shows checkbox, name, quantity/unit, and delete button on hover.
 -->
 <script setup lang="ts">
-import { Trash2 } from 'lucide-vue-next'
-import { Checkbox } from '~/components/ui/checkbox'
-import type { GroceryItem } from '~/types/grocery'
+import { Trash2 } from 'lucide-vue-next';
+import { Checkbox } from '~/components/ui/checkbox';
+import type { GroceryItem } from '~/types/grocery';
 
 const props = defineProps<{
-  item: GroceryItem
-}>()
+  item: GroceryItem;
+}>();
 
 const emit = defineEmits<{
-  toggle: [id: string]
-  remove: [id: string]
-}>()
+  toggle: [id: string];
+  remove: [id: string];
+}>();
 
 function formatQuantity(item: GroceryItem): string {
-  if (item.unit) return `× ${item.quantity} ${item.unit}`
-  if (item.quantity > 1) return `× ${item.quantity}`
-  return ''
+  if (item.unit) return `× ${item.quantity} ${item.unit}`;
+  if (item.quantity > 1) return `× ${item.quantity}`;
+  return '';
 }
 </script>
 
@@ -35,17 +35,11 @@ function formatQuantity(item: GroceryItem): string {
       @update:model-value="emit('toggle', props.item.id)"
     />
 
-    <span
-      class="flex-1 text-sm"
-      :class="{ 'line-through text-slate-400': props.item.checked }"
-    >
+    <span class="flex-1 text-sm" :class="{ 'line-through text-slate-400': props.item.checked }">
       {{ props.item.name }}
     </span>
 
-    <span
-      v-if="formatQuantity(props.item)"
-      class="text-xs text-slate-400"
-    >
+    <span v-if="formatQuantity(props.item)" class="text-xs text-slate-400">
       {{ formatQuantity(props.item) }}
     </span>
 

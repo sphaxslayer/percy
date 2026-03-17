@@ -8,8 +8,8 @@
  * 2. Import the icon component from lucide-vue-next
  * 3. Add a SkillDefinition entry to the `skills` array below
  */
-import type { Component } from 'vue'
-import { ShoppingCart } from 'lucide-vue-next'
+import type { Component } from 'vue';
+import { ShoppingCart } from 'lucide-vue-next';
 
 /**
  * Defines metadata for a skill module.
@@ -17,21 +17,21 @@ import { ShoppingCart } from 'lucide-vue-next'
  */
 export interface SkillDefinition {
   /** Unique kebab-case identifier (e.g., "grocery-list") */
-  id: string
+  id: string;
   /** Display name shown in sidebar and cards (e.g., "Liste de courses") */
-  name: string
+  name: string;
   /** One-line description shown on the dashboard card */
-  description: string
+  description: string;
   /** Lucide icon name for reference (e.g., "ShoppingCart") */
-  icon: string
+  icon: string;
   /** Resolved Vue component for the icon (from lucide-vue-next) */
-  iconComponent?: Component
+  iconComponent?: Component;
   /** Route path to the skill page (e.g., "/skills/grocery-list") */
-  route: string
+  route: string;
   /** Optional: component name for a dashboard summary widget */
-  dashboardComponent?: string
+  dashboardComponent?: string;
   /** Whether this skill is active and visible to the user */
-  enabled: boolean
+  enabled: boolean;
 }
 
 /**
@@ -48,4 +48,4 @@ export const skills: SkillDefinition[] = [
     route: '/skills/grocery-list',
     enabled: true,
   },
-]
+];

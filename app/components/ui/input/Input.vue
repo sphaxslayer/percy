@@ -1,23 +1,23 @@
 <!-- Input.vue — Standard text input with consistent styling and v-model support. -->
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { useVModel } from '@vueuse/core'
-import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'vue';
+import { useVModel } from '@vueuse/core';
+import { cn } from '@/lib/utils';
 
 const props = defineProps<{
-  defaultValue?: string | number
-  modelValue?: string | number
-  class?: HTMLAttributes['class']
-}>()
+  defaultValue?: string | number;
+  modelValue?: string | number;
+  class?: HTMLAttributes['class'];
+}>();
 
 const emits = defineEmits<{
-  'update:modelValue': [value: string | number]
-}>()
+  'update:modelValue': [value: string | number];
+}>();
 
 const modelValue = useVModel(props, 'modelValue', emits, {
   passive: true,
   defaultValue: props.defaultValue,
-})
+});
 </script>
 
 <template>

@@ -2,8 +2,7 @@
   layouts/auth.vue — Layout for authentication pages (login, register).
   Displays a centered card on a neutral background. No sidebar or header.
 -->
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="flex min-h-screen items-center justify-center bg-slate-50 px-4">

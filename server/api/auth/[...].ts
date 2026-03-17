@@ -4,9 +4,9 @@
  * Uses the Credentials provider with email + password (bcrypt hashing).
  * JWT strategy: tokens stored in httpOnly cookies (no server-side sessions).
  */
-import { NuxtAuthHandler } from '#auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import bcrypt from 'bcrypt'
+import { NuxtAuthHandler } from '#auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcrypt';
 
 export default NuxtAuthHandler({
   // Secret used to sign/encrypt JWTs — set via NUXT_AUTH_SECRET env var
@@ -26,23 +26,23 @@ export default NuxtAuthHandler({
       },
       async authorize(credentials: { email: string; password: string } | undefined) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          return null;
         }
 
         // Find user by email
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
-        })
+        });
 
         if (!user) {
-          return null
+          return null;
         }
 
         // Verify password against stored hash
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash)
+        const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
 
         if (!isValid) {
-          return null
+          return null;
         }
 
         // Return user object — this becomes the JWT payload via callbacks below
@@ -50,7 +50,7 @@ export default NuxtAuthHandler({
           id: user.id,
           email: user.email,
           name: user.name,
-        }
+        };
       },
     }),
   ],
@@ -65,18 +65,18 @@ export default NuxtAuthHandler({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jwt({ token, user }: any) {
       if (user) {
-        token.id = user.id
+        token.id = user.id;
       }
-      return token
+      return token;
     },
 
     // Include user.id in the session object so the client can access it
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     session({ session, token }: any) {
       if (session.user && token.id) {
-        session.user.id = token.id
+        session.user.id = token.id;
       }
-      return session
+      return session;
     },
   },
-})
+});
