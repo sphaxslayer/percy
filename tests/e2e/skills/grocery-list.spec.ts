@@ -11,8 +11,8 @@ test.describe.configure({ mode: 'serial' })
 let testCounter = 0
 
 /**
- * Register and authenticate via API calls (no UI interaction for auth).
- * This is more reliable in CI where hydration timing can cause click instability.
+ * Register via API, then login via the login page form.
+ * Uses force:true on click to bypass hydration stability issues in CI.
  */
 async function registerAndLogin(page: import('@playwright/test').Page, baseURL: string) {
   testCounter++
@@ -25,23 +25,19 @@ async function registerAndLogin(page: import('@playwright/test').Page, baseURL: 
   })
   expect(regResponse.ok()).toBeTruthy()
 
-  // Login via NextAuth credentials endpoint to get session cookie
-  const csrfResponse = await page.request.get(`${baseURL}/api/auth/csrf`)
-  const { csrfToken } = await csrfResponse.json()
+  // Navigate to login and fill credentials
+  await page.goto('/login', { waitUntil: 'networkidle' })
+  await page.getByTestId('email').fill(email)
+  await page.getByTestId('password').fill(password)
 
-  await page.request.post(`${baseURL}/api/auth/callback/credentials`, {
-    form: {
-      email,
-      password,
-      csrfToken,
-      json: 'true',
-    },
+  // Submit the form via JavaScript to bypass any hydration timing issues
+  await page.evaluate(() => {
+    const form = document.querySelector('form')
+    form?.requestSubmit()
   })
 
-  // Verify session is established by checking the session endpoint
-  const sessionResponse = await page.request.get(`${baseURL}/api/auth/session`)
-  const session = await sessionResponse.json()
-  expect(session.user).toBeTruthy()
+  // Wait for redirect to dashboard
+  await page.waitForURL(/\/dashboard/, { timeout: 20_000 })
 
   return email
 }
@@ -72,11 +68,9 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Add item with quantity syntax "Bananes x6"
     await page.getByTestId('grocery-add-input').fill('Bananes x6')
     await page.getByTestId('grocery-add-button').click()
 
-    // Item should appear with quantity
     await expect(page.getByText('Bananes')).toBeVisible()
     await expect(page.getByText('× 6')).toBeVisible()
   })
@@ -85,17 +79,14 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Add an item
     await page.getByTestId('grocery-add-input').fill('Lait')
     await page.getByTestId('grocery-add-button').click()
     await expect(page.getByText('Lait')).toBeVisible()
 
-    // Find the checkbox and check it
     const itemRow = page.locator('[data-testid^="grocery-item-"]').first()
     const checkbox = itemRow.locator('[data-testid^="grocery-checkbox-"]')
     await checkbox.click()
 
-    // The "Déjà acheté" section should now appear with a count badge
     await expect(page.getByTestId('grocery-checked-toggle')).toBeVisible()
     await expect(page.getByTestId('grocery-checked-toggle')).toContainText('1')
   })
@@ -104,7 +95,6 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Add and check an item
     await page.getByTestId('grocery-add-input').fill('Pain')
     await page.getByTestId('grocery-add-button').click()
     await expect(page.getByText('Pain')).toBeVisible()
@@ -112,21 +102,15 @@ test.describe('Grocery List Skill', () => {
     const checkbox = page.locator('[data-testid^="grocery-checkbox-"]').first()
     await checkbox.click()
 
-    // Expand checked section
     await page.getByTestId('grocery-checked-toggle').click()
 
-    // Item should be visible in the checked section
     const checkedItem = page.locator('[data-testid^="grocery-item-"]').first()
     await expect(checkedItem).toBeVisible()
 
-    // Uncheck it — click the checkbox again
     const uncheckedBox = checkedItem.locator('[data-testid^="grocery-checkbox-"]')
     await uncheckedBox.click()
 
-    // The checked section should disappear (no more checked items)
     await expect(page.getByTestId('grocery-checked-toggle')).not.toBeVisible()
-
-    // Item should be back in the active list
     await expect(page.getByText('Pain')).toBeVisible()
   })
 
@@ -134,7 +118,6 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Add two items
     await page.getByTestId('grocery-add-input').fill('Oeufs')
     await page.getByTestId('grocery-add-button').click()
     await expect(page.getByText('Oeufs')).toBeVisible()
@@ -143,23 +126,15 @@ test.describe('Grocery List Skill', () => {
     await page.getByTestId('grocery-add-button').click()
     await expect(page.getByText('Beurre')).toBeVisible()
 
-    // Check both items
     const checkboxes = page.locator('[data-testid^="grocery-checkbox-"]')
     await checkboxes.nth(0).click()
-    // Wait for the first check to register before clicking the second
     await expect(page.getByTestId('grocery-checked-toggle')).toBeVisible()
     await checkboxes.nth(0).click()
 
-    // Click "Vider" button
     await page.getByTestId('grocery-clear-button').click()
-
-    // Confirmation should appear
     await expect(page.getByText('Supprimer tout ?')).toBeVisible()
-
-    // Confirm
     await page.getByTestId('grocery-clear-confirm').click()
 
-    // Checked section should be gone, list should be empty
     await expect(page.getByTestId('grocery-checked-toggle')).not.toBeVisible()
     await expect(page.getByTestId('grocery-empty')).toBeVisible()
   })
@@ -168,11 +143,9 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Type and press Enter
     await page.getByTestId('grocery-add-input').fill('Tomates')
     await page.getByTestId('grocery-add-input').press('Enter')
 
-    // Item should appear
     await expect(page.getByText('Tomates')).toBeVisible()
   })
 
@@ -180,7 +153,6 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/skills/grocery-list')
 
-    // Button should be disabled with empty input
     await expect(page.getByTestId('grocery-add-button')).toBeDisabled()
   })
 
@@ -188,7 +160,6 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/dashboard')
 
-    // Dashboard should show the grocery skill card
     await expect(page.getByTestId('skill-card-grocery-list')).toBeVisible()
     await expect(page.getByText('Liste de courses')).toBeVisible()
   })
@@ -197,10 +168,7 @@ test.describe('Grocery List Skill', () => {
     await registerAndLogin(page, baseURL!)
     await page.goto('/dashboard')
 
-    // Click the grocery card
     await page.getByTestId('skill-card-grocery-list').click()
-
-    // Should navigate to the grocery list page
     await page.waitForURL(/\/skills\/grocery-list/)
     await expect(page.getByTestId('grocery-title')).toBeVisible()
   })
