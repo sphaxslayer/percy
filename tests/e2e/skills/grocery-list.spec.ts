@@ -11,26 +11,33 @@ test.describe.configure({ mode: 'serial' })
 let testCounter = 0
 
 /**
- * Register a new user via API, then log in via the login page.
- * Using the API for registration is more reliable in CI than form submission.
+ * Register and authenticate via API calls (no UI interaction for auth).
+ * This is more reliable in CI where hydration timing can cause click instability.
  */
 async function registerAndLogin(page: import('@playwright/test').Page, baseURL: string) {
   testCounter++
   const email = `test-grocery-${Date.now()}-${testCounter}@example.com`
   const password = 'testpassword123'
 
-  // Register via API directly — avoids form hydration timing issues
-  const response = await page.request.post(`${baseURL}/api/auth/register`, {
+  // Register via API
+  const regResponse = await page.request.post(`${baseURL}/api/auth/register`, {
     data: { email, password, name: 'Test User' },
   })
-  expect(response.ok()).toBeTruthy()
+  expect(regResponse.ok()).toBeTruthy()
 
-  // Login via the UI form
-  await page.goto('/login')
-  await page.getByTestId('email').fill(email)
-  await page.getByTestId('password').fill(password)
-  await page.getByTestId('login-button').click()
-  await page.waitForURL(/\/dashboard/, { timeout: 15_000 })
+  // Login via NextAuth credentials endpoint to get session cookie
+  const csrfResponse = await page.request.get(`${baseURL}/api/auth/csrf`)
+  const { csrfToken } = await csrfResponse.json()
+
+  const loginResponse = await page.request.post(`${baseURL}/api/auth/callback/credentials`, {
+    form: {
+      email,
+      password,
+      csrfToken,
+      json: 'true',
+    },
+  })
+  expect(loginResponse.ok()).toBeTruthy()
 
   return email
 }
@@ -175,6 +182,7 @@ test.describe('Grocery List Skill', () => {
 
   test('dashboard shows grocery skill card', async ({ page, baseURL }) => {
     await registerAndLogin(page, baseURL!)
+    await page.goto('/dashboard')
 
     // Dashboard should show the grocery skill card
     await expect(page.getByTestId('skill-card-grocery-list')).toBeVisible()
@@ -183,6 +191,7 @@ test.describe('Grocery List Skill', () => {
 
   test('dashboard grocery card links to skill page', async ({ page, baseURL }) => {
     await registerAndLogin(page, baseURL!)
+    await page.goto('/dashboard')
 
     // Click the grocery card
     await page.getByTestId('skill-card-grocery-list').click()
