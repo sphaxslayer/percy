@@ -20,7 +20,7 @@ function toggleMobileNav() {
 </script>
 
 <template>
-  <div class="flex h-screen overflow-hidden bg-slate-50">
+  <div class="flex h-screen overflow-hidden bg-percy-bg-page">
     <!-- Desktop sidebar -->
     <AppSidebar v-model:collapsed="sidebarCollapsed" />
 

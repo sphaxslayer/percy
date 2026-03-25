@@ -19,7 +19,7 @@ const enabledSkills = computed(() => skills.filter((s) => s.enabled));
 <template>
   <div>
     <!-- Page title -->
-    <h1 class="mb-6 text-2xl font-bold text-slate-900" data-testid="dashboard-title">Dashboard</h1>
+    <h1 class="mb-6 text-2xl font-bold text-percy-text-primary" data-testid="dashboard-title">Dashboard</h1>
 
     <!-- Skills grid — responsive: 1 col mobile, 2 tablet, 3 desktop -->
     <div
@@ -38,14 +38,14 @@ const enabledSkills = computed(() => skills.filter((s) => s.enabled));
     <!-- Empty state — shown when no skills are enabled -->
     <div
       v-else
-      class="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white px-6 py-16 text-center"
+      class="flex flex-col items-center justify-center rounded-lg border border-dashed border-percy-border bg-percy-bg-card px-6 py-16 text-center"
       data-testid="empty-state"
     >
       <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
         <Sparkles class="h-6 w-6 text-primary" />
       </div>
-      <h2 class="mb-2 text-lg font-semibold text-slate-900">Bienvenue sur Percy !</h2>
-      <p class="max-w-sm text-sm text-slate-600">
+      <h2 class="mb-2 text-lg font-semibold text-percy-text-primary">Bienvenue sur Percy !</h2>
+      <p class="max-w-sm text-sm text-percy-text-secondary">
         Votre assistant personnel est prêt. Les skills seront ajoutés ici au fur et à mesure de leur
         développement.
       </p>

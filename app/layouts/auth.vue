@@ -5,12 +5,12 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+  <div class="flex min-h-screen items-center justify-center bg-percy-bg-page px-4">
     <div class="w-full max-w-md">
       <!-- App branding -->
       <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-slate-900">Percy</h1>
-        <p class="mt-2 text-sm text-slate-600">Votre assistant personnel</p>
+        <h1 class="text-3xl font-bold text-percy-text-primary">Percy</h1>
+        <p class="mt-2 text-sm text-percy-text-secondary">Votre assistant personnel</p>
       </div>
 
       <!-- Page content (login or register form) -->

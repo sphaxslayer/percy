@@ -25,13 +25,13 @@ async function handleLogout() {
 
 <template>
   <header
-    class="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4"
+    class="flex h-14 items-center justify-between border-b border-percy-border bg-percy-bg-card px-4"
     data-testid="header"
   >
     <!-- Left side: mobile menu button + app name on mobile -->
     <div class="flex items-center gap-3">
       <button
-        class="rounded-md p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+        class="rounded-md p-2 text-percy-text-secondary hover:bg-percy-bg-nav md:hidden"
         data-testid="mobile-menu-button"
         @click="emit('toggle-mobile-nav')"
       >
@@ -39,14 +39,14 @@ async function handleLogout() {
       </button>
 
       <!-- App name visible only on mobile (sidebar hidden) -->
-      <span class="text-lg font-semibold text-slate-900 md:hidden"> Percy </span>
+      <span class="text-lg font-semibold text-percy-text-primary md:hidden"> Percy </span>
     </div>
 
     <!-- Right side: user dropdown -->
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <button
-          class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100"
+          class="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
           data-testid="user-menu-button"
         >
           <User class="h-4 w-4" />
@@ -58,7 +58,7 @@ async function handleLogout() {
         <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          class="cursor-pointer text-red-600 focus:text-red-600"
+          class="cursor-pointer text-percy-danger focus:text-percy-danger"
           data-testid="logout-button"
           @click="handleLogout"
         >
