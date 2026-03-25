@@ -23,12 +23,12 @@ const categoryName = props.group.category?.name ?? 'Sans catégorie';
 <template>
   <div class="space-y-1">
     <button
-      class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 transition-colors hover:bg-slate-100"
+      class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-xs font-semibold uppercase tracking-wide text-percy-text-muted transition-colors hover:bg-percy-bg-nav"
       @click="expanded = !expanded"
     >
       <ChevronDown class="h-3.5 w-3.5 transition-transform" :class="{ '-rotate-90': !expanded }" />
       <span>{{ categoryName }}</span>
-      <span class="text-slate-400">({{ props.group.items.length }})</span>
+      <span class="text-percy-text-muted">({{ props.group.items.length }})</span>
     </button>
 
     <div v-if="expanded" class="space-y-0.5 pl-2">

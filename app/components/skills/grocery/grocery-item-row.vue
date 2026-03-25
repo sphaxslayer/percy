@@ -25,7 +25,7 @@ function formatQuantity(item: GroceryItem): string {
 
 <template>
   <div
-    class="group flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-slate-50"
+    class="group flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-percy-bg-page"
     :class="{ 'opacity-50': props.item.checked }"
     :data-testid="`grocery-item-${props.item.id}`"
   >
@@ -35,16 +35,16 @@ function formatQuantity(item: GroceryItem): string {
       @update:model-value="emit('toggle', props.item.id)"
     />
 
-    <span class="flex-1 text-sm" :class="{ 'line-through text-slate-400': props.item.checked }">
+    <span class="flex-1 text-sm" :class="{ 'line-through text-percy-text-muted': props.item.checked }">
       {{ props.item.name }}
     </span>
 
-    <span v-if="formatQuantity(props.item)" class="text-xs text-slate-400">
+    <span v-if="formatQuantity(props.item)" class="text-xs text-percy-text-muted">
       {{ formatQuantity(props.item) }}
     </span>
 
     <button
-      class="invisible text-slate-400 transition-colors hover:text-red-500 group-hover:visible"
+      class="invisible text-percy-text-muted transition-colors hover:text-percy-danger group-hover:visible"
       :data-testid="`grocery-delete-${props.item.id}`"
       @click="emit('remove', props.item.id)"
     >

@@ -27,10 +27,10 @@ function handleClear() {
 </script>
 
 <template>
-  <div v-if="props.items.length > 0" class="border-t border-slate-200 pt-3">
+  <div v-if="props.items.length > 0" class="border-t border-percy-border pt-3">
     <div class="flex items-center justify-between">
       <button
-        class="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100"
+        class="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm font-medium text-percy-text-muted transition-colors hover:bg-percy-bg-nav"
         data-testid="grocery-checked-toggle"
         @click="expanded = !expanded"
       >
@@ -39,14 +39,14 @@ function handleClear() {
           :class="{ '-rotate-90': !expanded }"
         />
         <span>Déjà acheté</span>
-        <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs text-slate-600">
+        <span class="rounded-full bg-percy-bg-nav px-2 py-0.5 text-xs text-percy-text-secondary">
           {{ props.items.length }}
         </span>
       </button>
 
       <!-- Confirm dialog inline -->
       <div v-if="showConfirm" class="flex items-center gap-2 text-sm">
-        <span class="text-slate-500">Supprimer tout ?</span>
+        <span class="text-percy-text-muted">Supprimer tout ?</span>
         <Button
           variant="destructive"
           size="sm"
@@ -62,7 +62,7 @@ function handleClear() {
         v-else
         variant="ghost"
         size="sm"
-        class="text-slate-400 hover:text-red-500"
+        class="text-percy-text-muted hover:text-percy-danger"
         data-testid="grocery-clear-button"
         @click="showConfirm = true"
       >

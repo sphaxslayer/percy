@@ -31,14 +31,14 @@ function close() {
     <Transition name="slide">
       <nav
         v-if="props.open"
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl md:hidden"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-percy-bg-sidebar shadow-xl md:hidden"
         data-testid="mobile-nav"
       >
         <!-- Header with close button -->
-        <div class="flex h-14 items-center justify-between border-b border-slate-200 px-4">
-          <span class="text-lg font-semibold text-slate-900">Percy</span>
+        <div class="flex h-14 items-center justify-between border-b border-percy-border px-4">
+          <span class="text-lg font-semibold text-percy-text-primary">Percy</span>
           <button
-            class="rounded-md p-1 text-slate-500 hover:bg-slate-100"
+            class="rounded-md p-1 text-percy-text-muted hover:bg-percy-bg-nav"
             data-testid="mobile-nav-close"
             @click="close"
           >
@@ -50,8 +50,8 @@ function close() {
         <div class="overflow-y-auto p-2">
           <NuxtLink
             to="/dashboard"
-            class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
-            active-class="bg-slate-100 font-medium text-primary"
+            class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
+            active-class="bg-percy-primary text-percy-primary-text font-medium"
             @click="close"
           >
             <LayoutDashboard class="h-4 w-4 shrink-0" />
@@ -62,8 +62,8 @@ function close() {
             v-for="skill in skills.filter((s) => s.enabled)"
             :key="skill.id"
             :to="skill.route"
-            class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
-            active-class="bg-slate-100 font-medium text-primary"
+            class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
+            active-class="bg-percy-primary text-percy-primary-text font-medium"
             @click="close"
           >
             <component
