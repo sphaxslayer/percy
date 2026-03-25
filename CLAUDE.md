@@ -65,7 +65,8 @@ percy/
 
 ### Frontend (Vue 3 / Nuxt)
 - ALWAYS use `<script setup lang="ts">` syntax (Composition API).
-- NEVER use Options API.
+- NEVER use Options API — not in components, not in Pinia stores, nowhere.
+- Pinia stores: ALWAYS use the setup/Composition API syntax (`defineStore('id', () => { ... })`), NEVER the Options API syntax (`defineStore('id', { state, actions, getters })`).
 - Components: PascalCase in templates (`<MyComponent />`), kebab-case file names.
 - Props: define with `defineProps<{ ... }>()` (type-only syntax).
 - Emits: define with `defineEmits<{ ... }>()`.
