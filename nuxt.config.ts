@@ -5,6 +5,17 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
+  // Google Fonts — Quicksand (Percy design system primary font)
+  app: {
+    head: {
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap' },
+      ],
+    },
+  },
+
   // Use the app/ directory for all frontend code (pages, components, layouts, etc.)
   // This keeps frontend separate from server/ and prisma/
   future: {
