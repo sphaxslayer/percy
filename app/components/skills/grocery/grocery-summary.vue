@@ -14,7 +14,7 @@ onMounted(() => fetchItems());
 
 <template>
   <div
-    class="mt-3 space-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500"
+    class="mt-3 space-y-1 border-t border-percy-border pt-3 text-xs text-percy-text-muted"
     data-testid="grocery-summary"
   >
     <p v-if="activeCount > 0">
@@ -22,6 +22,6 @@ onMounted(() => fetchItems());
     </p>
     <p v-if="checkedCount > 0">{{ checkedCount }} déjà pris</p>
     <p v-if="activeCount === 0 && checkedCount === 0">Liste vide</p>
-    <p v-if="lastAddedName" class="truncate text-slate-400">Dernier ajout : {{ lastAddedName }}</p>
+    <p v-if="lastAddedName" class="truncate text-percy-text-muted">Dernier ajout : {{ lastAddedName }}</p>
   </div>
 </template>

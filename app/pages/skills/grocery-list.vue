@@ -48,7 +48,7 @@ onMounted(async () => {
         </div>
         <div>
           <h1 class="text-2xl font-bold" data-testid="grocery-title">Liste de courses</h1>
-          <p v-if="activeCount > 0" class="text-sm text-slate-500">
+          <p v-if="activeCount > 0" class="text-sm text-percy-text-muted">
             {{ activeCount }} article{{ activeCount > 1 ? 's' : '' }} à acheter
           </p>
         </div>
@@ -57,7 +57,7 @@ onMounted(async () => {
       <!-- Sync status -->
       <div
         v-if="!isOnline || pendingSync"
-        class="flex items-center gap-1.5 text-xs text-amber-600"
+        class="flex items-center gap-1.5 text-xs text-percy-warning"
         data-testid="grocery-sync-status"
       >
         <WifiOff v-if="!isOnline" class="h-3.5 w-3.5" />
@@ -79,7 +79,7 @@ onMounted(async () => {
     <!-- Error state -->
     <div
       v-else-if="error"
-      class="rounded-lg border border-red-200 bg-red-50 p-4 text-center text-sm text-red-600"
+      class="rounded-lg border border-percy-danger/30 bg-percy-danger-light p-4 text-center text-sm text-percy-danger"
       data-testid="grocery-error"
     >
       {{ error }}
@@ -91,9 +91,9 @@ onMounted(async () => {
       class="py-12 text-center"
       data-testid="grocery-empty"
     >
-      <ShoppingCart class="mx-auto h-12 w-12 text-slate-300" />
-      <p class="mt-3 text-sm text-slate-500">Votre liste est vide</p>
-      <p class="text-xs text-slate-400">Ajoutez un produit avec le champ ci-dessus</p>
+      <ShoppingCart class="mx-auto h-12 w-12 text-percy-text-muted" />
+      <p class="mt-3 text-sm text-percy-text-muted">Votre liste est vide</p>
+      <p class="text-xs text-percy-text-muted">Ajoutez un produit avec le champ ci-dessus</p>
     </div>
 
     <!-- Item list grouped by category -->
