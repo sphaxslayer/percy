@@ -37,8 +37,17 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@sidebase/nuxt-auth',
     '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/color-mode',
     '@nuxt/eslint',
   ],
+
+  // Color mode — adds 'dark' class on <html> (no suffix), respects OS preference
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light',
+  },
 
   // TypeScript strict mode everywhere
   // typeCheck is disabled in CI — CI runs lint + typecheck separately, and
