@@ -4,7 +4,7 @@
   Collapses to icons-only mode on toggle. Hidden on mobile (replaced by mobile-nav).
 -->
 <script setup lang="ts">
-import { LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { LayoutDashboard, ChevronLeft, ChevronRight, Settings } from 'lucide-vue-next';
 import { skills } from '~/config/skills';
 
 const props = defineProps<{
@@ -60,6 +60,19 @@ function toggleCollapsed() {
         <span v-if="!collapsed">{{ skill.name }}</span>
       </NuxtLink>
     </nav>
+
+    <!-- Settings link -->
+    <div class="border-t border-percy-border p-2">
+      <NuxtLink
+        to="/settings"
+        class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
+        active-class="bg-percy-primary text-percy-primary-text font-medium"
+        data-testid="sidebar-settings"
+      >
+        <Settings class="h-4 w-4 shrink-0" />
+        <span v-if="!collapsed">Réglages</span>
+      </NuxtLink>
+    </div>
 
     <!-- Collapse toggle button -->
     <div class="border-t border-percy-border p-2">
