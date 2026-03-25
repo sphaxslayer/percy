@@ -1,0 +1,184 @@
+/**
+ * themes.css — Percy design system color tokens.
+ * Defines CSS custom properties for both themes (Terracotta & Saphir),
+ * each with light and dark mode variants (4 combinations total).
+ * Semantic colors (success, warning, danger, info) are shared across themes.
+ */
+
+/* ============================================================
+   SEMANTIC COLORS — shared across all themes
+   ============================================================ */
+
+:root {
+  --percy-success: #3A7A3A;
+  --percy-success-light: #E6F2E6;
+  --percy-warning: #B8860B;
+  --percy-warning-light: #FFF3D6;
+  --percy-danger: #C04040;
+  --percy-danger-light: #FCEAEA;
+  --percy-info: #3566A8;
+  --percy-info-light: #E0EAF6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.10);
+}
+
+.dark {
+  --percy-success: #70C070;
+  --percy-success-light: #142014;
+  --percy-warning: #D4A836;
+  --percy-warning-light: #2E2410;
+  --percy-danger: #E07070;
+  --percy-danger-light: #2A1414;
+  --percy-info: #78B0E0;
+  --percy-info-light: #142240;
+
+  /* Shadows — stronger in dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   THEME 1: TERRACOTTA & SAUGE — Light
+   Warm, earthy, reassuring
+   ============================================================ */
+
+[data-theme="terracotta"] {
+  /* Primary */
+  --percy-primary: #C4653A;
+  --percy-primary-hover: #B3572E;
+  --percy-primary-light: #FCEEE6;
+  --percy-primary-text: #FFF8F2;
+
+  /* Secondary */
+  --percy-secondary: #8A9A5B;
+  --percy-secondary-hover: #7A894E;
+  --percy-secondary-light: #EEF1E6;
+  --percy-secondary-text: #F5F7F0;
+
+  /* Accent */
+  --percy-accent: #B8860B;
+  --percy-accent-light: #FFF3D6;
+  --percy-accent-text: #7A5A08;
+
+  /* Neutrals */
+  --percy-bg-page: #FBF7F2;
+  --percy-bg-card: #FFFFFF;
+  --percy-bg-sidebar: #FAF5EE;
+  --percy-bg-nav: #F0EAE0;
+  --percy-bg-input: #FFFCF8;
+  --percy-border: #E8DDD0;
+  --percy-border-input: #D9CEBD;
+  --percy-text-primary: #2A2218;
+  --percy-text-secondary: #6B5E50;
+  --percy-text-muted: #8A7B6B;
+  --percy-progress-bg: #EDE6DB;
+  --percy-progress-fill: linear-gradient(90deg, #C4653A, #D4844E);
+}
+
+/* ============================================================
+   THEME 1: TERRACOTTA & SAUGE — Dark
+   ============================================================ */
+
+[data-theme="terracotta"].dark {
+  --percy-primary: #D4844E;
+  --percy-primary-hover: #E89868;
+  --percy-primary-light: #3A2218;
+  --percy-primary-text: #FFF8F2;
+
+  --percy-secondary: #A4B87A;
+  --percy-secondary-hover: #B8CC8E;
+  --percy-secondary-light: #1E2418;
+  --percy-secondary-text: #F5F7F0;
+
+  --percy-accent: #D4A836;
+  --percy-accent-light: #2E2410;
+  --percy-accent-text: #D4A836;
+
+  --percy-bg-page: #1A1612;
+  --percy-bg-card: #2A2218;
+  --percy-bg-sidebar: #221E18;
+  --percy-bg-nav: #2A2218;
+  --percy-bg-input: #2A2218;
+  --percy-border: #3D3228;
+  --percy-border-input: #3D3228;
+  --percy-text-primary: #F0E8DA;
+  --percy-text-secondary: #C4B8A6;
+  --percy-text-muted: #A69882;
+  --percy-progress-bg: #3D3228;
+  --percy-progress-fill: linear-gradient(90deg, #D4844E, #E8A870);
+}
+
+/* ============================================================
+   THEME 2: SAPHIR, AMÉTHYSTE & OR — Light
+   Elegant, deep, tech but warm
+   ============================================================ */
+
+[data-theme="saphir"] {
+  /* Primary */
+  --percy-primary: #3566A8;
+  --percy-primary-hover: #2A5590;
+  --percy-primary-light: #E0EAF6;
+  --percy-primary-text: #EAF0FF;
+
+  /* Secondary (violet accent) */
+  --percy-secondary: #7A68B8;
+  --percy-secondary-hover: #6A58A0;
+  --percy-secondary-light: #EDE8F5;
+  --percy-secondary-text: #F4F0FF;
+
+  /* Accent (gold) */
+  --percy-accent: #C9A033;
+  --percy-accent-light: #FBF4E2;
+  --percy-accent-text: #7A6520;
+
+  /* Neutrals */
+  --percy-bg-page: #F4F7FC;
+  --percy-bg-card: #FFFFFF;
+  --percy-bg-sidebar: #F0F4FB;
+  --percy-bg-nav: #E4ECF4;
+  --percy-bg-input: #FAFCFF;
+  --percy-border: #C4D4EC;
+  --percy-border-input: #C4D4EC;
+  --percy-text-primary: #1A2A40;
+  --percy-text-secondary: #506880;
+  --percy-text-muted: #6888A8;
+  --percy-progress-bg: #CED8EA;
+  --percy-progress-fill: linear-gradient(90deg, #3566A8, #5A8AD0);
+}
+
+/* ============================================================
+   THEME 2: SAPHIR, AMÉTHYSTE & OR — Dark
+   ============================================================ */
+
+[data-theme="saphir"].dark {
+  --percy-primary: #5A8AD0;
+  --percy-primary-hover: #78A8E0;
+  --percy-primary-light: #142240;
+  --percy-primary-text: #EAF0FF;
+
+  --percy-secondary: #9A88D0;
+  --percy-secondary-hover: #B0A0E0;
+  --percy-secondary-light: #1E1838;
+  --percy-secondary-text: #F4F0FF;
+
+  --percy-accent: #DABA55;
+  --percy-accent-light: #2A2410;
+  --percy-accent-text: #DABA55;
+
+  --percy-bg-page: #0C1420;
+  --percy-bg-card: #14202E;
+  --percy-bg-sidebar: #101824;
+  --percy-bg-nav: #14202E;
+  --percy-bg-input: #14202E;
+  --percy-border: #1E3450;
+  --percy-border-input: #1E3450;
+  --percy-text-primary: #E0ECF4;
+  --percy-text-secondary: #8AB0D0;
+  --percy-text-muted: #6890B0;
+  --percy-progress-bg: #1E3450;
+  --percy-progress-fill: linear-gradient(90deg, #5A8AD0, #78A8E0);
+}
