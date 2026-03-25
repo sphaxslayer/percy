@@ -4,7 +4,7 @@
   Shows as a slide-in overlay with skill navigation links.
 -->
 <script setup lang="ts">
-import { X, LayoutDashboard } from 'lucide-vue-next';
+import { X, LayoutDashboard, Settings } from 'lucide-vue-next';
 import { skills } from '~/config/skills';
 
 const props = defineProps<{
@@ -73,6 +73,19 @@ function close() {
             />
             {{ skill.name }}
           </NuxtLink>
+
+          <!-- Settings link -->
+          <div class="mt-2 border-t border-percy-border pt-2">
+            <NuxtLink
+              to="/settings"
+              class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
+              active-class="bg-percy-primary text-percy-primary-text font-medium"
+              @click="close"
+            >
+              <Settings class="h-4 w-4 shrink-0" />
+              Réglages
+            </NuxtLink>
+          </div>
         </div>
       </nav>
     </Transition>
