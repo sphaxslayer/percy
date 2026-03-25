@@ -67,7 +67,7 @@ function handleKeydown(e: KeyboardEvent) {
           v-model="query"
           type="text"
           placeholder="Ajouter un produit..."
-          class="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm shadow-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          class="h-10 w-full rounded-md border border-percy-border-input bg-percy-bg-input px-3 text-sm text-percy-text-primary shadow-sm placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-1 focus:ring-percy-primary"
           data-testid="grocery-add-input"
           autocomplete="off"
           @keydown="handleKeydown"
@@ -76,7 +76,7 @@ function handleKeydown(e: KeyboardEvent) {
         <!-- Autocomplete dropdown -->
         <div
           v-if="showDropdown"
-          class="absolute z-10 mt-1 w-full rounded-md border border-slate-200 bg-white py-1 shadow-md"
+          class="absolute z-10 mt-1 w-full rounded-md border border-percy-border bg-percy-bg-card py-1 shadow-md"
           data-testid="grocery-autocomplete-dropdown"
         >
           <button
@@ -84,12 +84,12 @@ function handleKeydown(e: KeyboardEvent) {
             :key="product.id"
             type="button"
             class="flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors"
-            :class="index === selectedIndex ? 'bg-slate-100' : 'hover:bg-slate-50'"
+            :class="index === selectedIndex ? 'bg-percy-bg-nav' : 'hover:bg-percy-bg-page'"
             :data-testid="`grocery-suggestion-${index}`"
             @click="submitSuggestion(product)"
           >
             <span>{{ product.name }}</span>
-            <span v-if="product.category" class="text-xs text-slate-400">
+            <span v-if="product.category" class="text-xs text-percy-text-muted">
               {{ product.category.name }}
             </span>
           </button>
@@ -102,7 +102,7 @@ function handleKeydown(e: KeyboardEvent) {
     </div>
 
     <div v-if="loading" class="absolute right-14 top-2.5">
-      <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-primary" />
+      <div class="h-5 w-5 animate-spin rounded-full border-2 border-percy-border border-t-percy-primary" />
     </div>
   </form>
 </template>

@@ -54,13 +54,13 @@ async function handleLogin() {
     <CardContent>
       <form class="space-y-4" @submit.prevent="handleLogin">
         <!-- Error message -->
-        <div v-if="error" class="rounded-md bg-red-50 p-3 text-sm text-red-600" role="alert">
+        <div v-if="error" class="rounded-md bg-percy-danger-light p-3 text-sm text-percy-danger" role="alert">
           {{ error }}
         </div>
 
         <!-- Email field -->
         <div class="space-y-2">
-          <label for="email" class="text-sm font-medium text-slate-700"> Email </label>
+          <label for="email" class="text-sm font-medium text-percy-text-secondary"> Email </label>
           <Input
             id="email"
             v-model="email"
@@ -73,7 +73,7 @@ async function handleLogin() {
 
         <!-- Password field -->
         <div class="space-y-2">
-          <label for="password" class="text-sm font-medium text-slate-700"> Mot de passe </label>
+          <label for="password" class="text-sm font-medium text-percy-text-secondary"> Mot de passe </label>
           <Input
             id="password"
             v-model="password"
@@ -92,7 +92,7 @@ async function handleLogin() {
     </CardContent>
 
     <CardFooter class="justify-center">
-      <p class="text-sm text-slate-600">
+      <p class="text-sm text-percy-text-secondary">
         Pas encore de compte ?
         <NuxtLink to="/register" class="font-medium text-primary hover:underline">
           Créer un compte

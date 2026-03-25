@@ -20,6 +20,6 @@ watchEffect(() => {
 <template>
   <!-- Loading state while auth status is being determined -->
   <div class="flex h-screen items-center justify-center">
-    <div class="text-sm text-slate-500">Chargement...</div>
+    <div class="text-sm text-percy-text-muted">Chargement...</div>
   </div>
 </template>

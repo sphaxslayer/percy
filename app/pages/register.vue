@@ -73,21 +73,21 @@ async function handleRegister() {
     <CardContent>
       <form class="space-y-4" @submit.prevent="handleRegister">
         <!-- Error message -->
-        <div v-if="error" class="rounded-md bg-red-50 p-3 text-sm text-red-600" role="alert">
+        <div v-if="error" class="rounded-md bg-percy-danger-light p-3 text-sm text-percy-danger" role="alert">
           {{ error }}
         </div>
 
         <!-- Name field (optional) -->
         <div class="space-y-2">
-          <label for="name" class="text-sm font-medium text-slate-700">
-            Nom <span class="text-slate-400">(optionnel)</span>
+          <label for="name" class="text-sm font-medium text-percy-text-secondary">
+            Nom <span class="text-percy-text-muted">(optionnel)</span>
           </label>
           <Input id="name" v-model="name" type="text" placeholder="Votre nom" data-testid="name" />
         </div>
 
         <!-- Email field -->
         <div class="space-y-2">
-          <label for="email" class="text-sm font-medium text-slate-700"> Email </label>
+          <label for="email" class="text-sm font-medium text-percy-text-secondary"> Email </label>
           <Input
             id="email"
             v-model="email"
@@ -100,7 +100,7 @@ async function handleRegister() {
 
         <!-- Password field -->
         <div class="space-y-2">
-          <label for="password" class="text-sm font-medium text-slate-700"> Mot de passe </label>
+          <label for="password" class="text-sm font-medium text-percy-text-secondary"> Mot de passe </label>
           <Input
             id="password"
             v-model="password"
@@ -114,7 +114,7 @@ async function handleRegister() {
 
         <!-- Confirm password field -->
         <div class="space-y-2">
-          <label for="confirm-password" class="text-sm font-medium text-slate-700">
+          <label for="confirm-password" class="text-sm font-medium text-percy-text-secondary">
             Confirmer le mot de passe
           </label>
           <Input
@@ -135,7 +135,7 @@ async function handleRegister() {
     </CardContent>
 
     <CardFooter class="justify-center">
-      <p class="text-sm text-slate-600">
+      <p class="text-sm text-percy-text-secondary">
         Déjà un compte ?
         <NuxtLink to="/login" class="font-medium text-primary hover:underline">
           Se connecter
