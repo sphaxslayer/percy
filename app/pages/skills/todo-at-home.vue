@@ -4,7 +4,7 @@
   and orchestrates all composables.
 -->
 <script setup lang="ts">
-import { ClipboardList, Calendar, Settings } from 'lucide-vue-next';
+import { ClipboardList, Calendar, Settings, ChevronDown, ChevronUp } from 'lucide-vue-next';
 import { useHouseholdMembers } from '~/composables/use-household-members';
 import { useTodoDomains } from '~/composables/use-todo-domains';
 import { useTodoContexts } from '~/composables/use-todo-contexts';
@@ -43,6 +43,7 @@ const colorMode = ref<ColorMode>('context');
 const showTaskModal = ref(false);
 const editingTaskId = ref<string | null>(null);
 const showSettings = ref(false);
+const showContextAdd = ref(false);
 
 const selectedContext = computed<TodoContext | null>(() => {
   if (!selectedContextId.value) return null;
@@ -208,15 +209,8 @@ onMounted(initData);
     <template v-else>
       <!-- Dashboard view -->
       <template v-if="viewMode === 'dashboard'">
-        <!-- Quick add + context add -->
-        <div class="grid gap-3 lg:grid-cols-2">
-          <TodoQuickAdd :contexts="contexts" @add="handleQuickAdd" />
-          <TodoContextAdd
-            v-if="currentDomainId"
-            :domain-id="currentDomainId"
-            @add="handleAddContext"
-          />
-        </div>
+        <!-- Quick add -->
+        <TodoQuickAdd :contexts="contexts" @add="handleQuickAdd" />
 
         <!-- Filters -->
         <TodoFilters
@@ -226,7 +220,32 @@ onMounted(initData);
           :color-mode="colorMode"
           @update:filters="handleFilterUpdate"
           @update:color-mode="colorMode = $event"
-        />
+        >
+          <!-- Add context toggle, placed after the color mode pills -->
+          <button
+            v-if="currentDomainId"
+            class="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-xs text-percy-text-muted transition-colors hover:bg-percy-bg-card hover:text-percy-primary"
+            @click="showContextAdd = !showContextAdd"
+          >
+            Nouveau contexte
+            <ChevronUp v-if="showContextAdd" class="h-3.5 w-3.5" />
+            <ChevronDown v-else class="h-3.5 w-3.5" />
+          </button>
+        </TodoFilters>
+
+        <!-- Add context form (collapsible) -->
+        <Transition
+          enter-active-class="transition-all duration-200 ease-out"
+          leave-active-class="transition-all duration-150 ease-in"
+          enter-from-class="opacity-0 -translate-y-1"
+          leave-to-class="opacity-0 -translate-y-1"
+        >
+          <TodoContextAdd
+            v-if="showContextAdd && currentDomainId"
+            :domain-id="currentDomainId"
+            @add="handleAddContext"
+          />
+        </Transition>
 
         <!-- Context grid -->
         <TodoDashboard
@@ -243,7 +262,7 @@ onMounted(initData);
         >
           <ClipboardList class="mx-auto h-12 w-12 text-percy-text-muted" />
           <p class="mt-3 text-sm text-percy-text-muted">Aucun contexte créé</p>
-          <p class="text-xs text-percy-text-muted">Ajoutez un contexte ci-dessus pour commencer</p>
+          <p class="text-xs text-percy-text-muted">Cliquez sur « Ajouter un contexte » pour commencer</p>
         </div>
       </template>
 

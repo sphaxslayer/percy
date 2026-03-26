@@ -29,43 +29,45 @@ function handleSubmit() {
 
 <template>
   <form
-    class="flex flex-col gap-2 rounded-lg border border-dashed border-percy-border bg-percy-bg-card p-3 sm:flex-row sm:items-end"
+    class="flex flex-col gap-3 rounded-lg border border-dashed border-percy-border bg-percy-bg-card p-3"
     data-testid="todo-context-add"
     @submit.prevent="handleSubmit"
   >
-    <div class="flex-1">
-      <label class="mb-1 block text-xs font-semibold text-percy-text-secondary">Ajouter un contexte</label>
+    <label class="block text-xs font-semibold text-percy-text-secondary">Nouveau contexte</label>
+
+    <!-- Name input + submit button -->
+    <div class="flex gap-2">
       <input
         v-model="name"
         type="text"
-        placeholder="Nom du contexte (ex: Cuisine)"
-        class="w-full rounded-md border border-percy-border-input bg-percy-bg-input px-3 py-2 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
+        placeholder="Nom (ex: Cuisine)"
+        class="min-w-0 flex-1 rounded-md border border-percy-border-input bg-percy-bg-input px-3 py-2 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
         data-testid="todo-context-add-name"
       />
+      <button
+        type="submit"
+        :disabled="!name.trim()"
+        class="shrink-0 rounded-md bg-percy-secondary px-4 py-2 text-sm font-bold text-percy-secondary-text transition-colors hover:bg-percy-secondary-hover disabled:opacity-50"
+        data-testid="todo-context-add-submit"
+      >
+        Ajouter
+      </button>
     </div>
 
-    <div>
-      <label class="mb-1 block text-xs font-semibold text-percy-text-secondary">Couleur</label>
+    <!-- Color picker -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-xs text-percy-text-muted">Couleur</span>
       <div class="flex gap-1.5">
         <button
           v-for="c in presetColors"
           :key="c"
           type="button"
-          class="h-7 w-7 rounded-md border-2 transition-transform hover:scale-110"
+          class="h-6 w-6 rounded-full border-2 transition-transform hover:scale-110"
           :class="color === c ? 'border-percy-text-primary scale-110' : 'border-transparent'"
           :style="{ backgroundColor: c }"
           @click="color = c"
         />
       </div>
     </div>
-
-    <button
-      type="submit"
-      :disabled="!name.trim()"
-      class="rounded-md bg-percy-secondary px-4 py-2 text-sm font-bold text-percy-secondary-text transition-colors hover:bg-percy-secondary-hover disabled:opacity-50"
-      data-testid="todo-context-add-submit"
-    >
-      Ajouter
-    </button>
   </form>
 </template>
