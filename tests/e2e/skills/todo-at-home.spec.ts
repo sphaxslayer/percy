@@ -77,8 +77,8 @@ test.describe('TodoAtHome Skill', () => {
       (r) => r.url().includes('/api/skills/todo-at-home/contexts') && r.request().method() === 'POST',
     );
 
-    // New context should appear in the grid
-    await expect(page.getByText('Garage')).toBeVisible();
+    // New context should appear in the grid (use heading to avoid matching <option> elements)
+    await expect(page.getByRole('heading', { name: 'Garage' })).toBeVisible();
   });
 
   test('quick add creates a task in the right context', async ({ page, baseURL }) => {
