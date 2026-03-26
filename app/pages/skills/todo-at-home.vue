@@ -130,9 +130,13 @@ function handleFilterUpdate(newFilters: TodoTaskFilters) {
 }
 
 // ─── Init ────────────────────────────────────────────────────────────
-onMounted(async () => {
+async function initData() {
+  // Seed default data on first visit (idempotent)
+  await $fetch('/api/skills/todo-at-home/seed', { method: 'POST' }).catch(() => {});
   await Promise.all([fetchDomains(), fetchContexts(), fetchTasks(), fetchMembers()]);
-});
+}
+
+onMounted(initData);
 </script>
 
 <template>
