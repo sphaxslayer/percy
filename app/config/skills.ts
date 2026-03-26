@@ -9,7 +9,7 @@
  * 3. Add a SkillDefinition entry to the `skills` array below
  */
 import type { Component } from 'vue';
-import { ShoppingCart } from 'lucide-vue-next';
+import { ShoppingCart, ClipboardList } from 'lucide-vue-next';
 
 /**
  * Defines metadata for a skill module.
@@ -46,6 +46,16 @@ export const skills: SkillDefinition[] = [
     icon: 'ShoppingCart',
     iconComponent: ShoppingCart as Component,
     route: '/skills/grocery-list',
+    enabled: true,
+  },
+  {
+    id: 'todo-at-home',
+    name: 'Tâches à la maison',
+    description: 'Organisez vos tâches domestiques par pièce et contexte',
+    icon: 'ClipboardList',
+    iconComponent: ClipboardList as Component,
+    route: '/skills/todo-at-home',
+    dashboardComponent: 'TodoSummary',
     enabled: true,
   },
 ];
