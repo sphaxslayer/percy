@@ -37,41 +37,38 @@ function handleSubmit() {
 
 <template>
   <form
-    class="flex flex-col gap-2 rounded-lg border border-percy-border bg-percy-bg-card p-3 sm:flex-row sm:items-end"
+    class="flex flex-col gap-3 rounded-lg border border-percy-border bg-percy-bg-card p-3"
     data-testid="todo-quick-add"
     @submit.prevent="handleSubmit"
   >
-    <div class="flex-1">
-      <label class="mb-1 block text-xs font-semibold text-percy-text-secondary">TODO rapide</label>
+    <label class="block text-xs font-semibold text-percy-text-secondary">TODO rapide</label>
+
+    <!-- Title input + context selector + submit -->
+    <div class="flex gap-2">
       <input
         v-model="title"
         type="text"
         placeholder="Titre de la tâche..."
-        class="w-full rounded-md border border-percy-border-input bg-percy-bg-input px-3 py-2 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
+        class="min-w-0 flex-1 rounded-md border border-percy-border-input bg-percy-bg-input px-3 py-2 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
         data-testid="todo-quick-add-input"
       />
-    </div>
-
-    <div class="sm:w-40">
-      <label class="mb-1 block text-xs font-semibold text-percy-text-secondary">Contexte</label>
       <select
         v-model="selectedContextId"
-        class="w-full rounded-md border border-percy-border-input bg-percy-bg-input px-3 py-2 text-sm text-percy-text-primary focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
+        class="w-36 shrink-0 rounded-md border border-percy-border-input bg-percy-bg-input px-2 py-2 text-sm text-percy-text-primary focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
         data-testid="todo-quick-add-context"
       >
         <option v-for="ctx in contexts" :key="ctx.id" :value="ctx.id">
           {{ ctx.icon }} {{ ctx.name }}
         </option>
       </select>
+      <button
+        type="submit"
+        :disabled="!title.trim()"
+        class="shrink-0 rounded-md bg-percy-primary px-4 py-2 text-sm font-bold text-percy-primary-text transition-colors hover:bg-percy-primary-hover disabled:opacity-50"
+        data-testid="todo-quick-add-submit"
+      >
+        Créer
+      </button>
     </div>
-
-    <button
-      type="submit"
-      :disabled="!title.trim()"
-      class="rounded-md bg-percy-primary px-4 py-2 text-sm font-bold text-percy-primary-text transition-colors hover:bg-percy-primary-hover disabled:opacity-50"
-      data-testid="todo-quick-add-submit"
-    >
-      Créer
-    </button>
   </form>
 </template>

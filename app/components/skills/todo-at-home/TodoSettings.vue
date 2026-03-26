@@ -2,7 +2,7 @@
   TodoSettings.vue — Settings panel for contexts + household members.
 -->
 <script setup lang="ts">
-import { Trash2, X } from 'lucide-vue-next';
+import { Trash2 } from 'lucide-vue-next';
 import type { TodoContext, HouseholdMember } from '~/types/todo';
 
 defineProps<{
@@ -35,12 +35,6 @@ function handleAddMember() {
     <DialogContent class="max-h-[90vh] overflow-y-auto border-percy-border bg-percy-bg-card sm:max-w-md">
       <DialogHeader>
         <DialogTitle class="text-percy-text-primary">Paramètres</DialogTitle>
-        <button
-          class="absolute right-3 top-3 rounded-md p-1 text-percy-text-muted hover:bg-percy-bg-nav"
-          @click="emit('close')"
-        >
-          <X class="h-4 w-4" />
-        </button>
       </DialogHeader>
 
       <div class="space-y-6 pt-2">
