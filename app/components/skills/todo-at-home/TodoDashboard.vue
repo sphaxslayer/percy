@@ -68,8 +68,8 @@ function onDragEnd() {
       @end="onDragEnd"
     >
       <template #item="{ element: context }">
-        <div class="relative">
-          <!-- Drag handle — top-left corner of the card -->
+        <div class="group relative">
+          <!-- Drag handle — top-left corner of the card, visible on hover -->
           <button
             class="drag-handle absolute left-1.5 top-1.5 z-10 cursor-grab rounded p-0.5 text-white/70 opacity-0 transition-opacity hover:text-white active:cursor-grabbing group-hover:opacity-100 focus:opacity-100"
             aria-label="Réordonner"
@@ -79,7 +79,6 @@ function onDragEnd() {
           </button>
 
           <TodoContextCard
-            class="group"
             :context="context"
             :tasks="getTasksForContext(context.id)"
             @click="emit('select-context', context.id)"

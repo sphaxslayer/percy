@@ -3,10 +3,11 @@
   Shows quick-add input, items grouped by category, and checked items section.
 -->
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { ShoppingCart, WifiOff } from 'lucide-vue-next';
+import { onMounted, ref, watch } from 'vue';
+import { ShoppingCart, WifiOff, GripVertical } from 'lucide-vue-next';
+import draggable from 'vuedraggable';
 import { useGroceryList } from '~/composables/use-grocery-list';
-import type { GroceryItemInput } from '~/types/grocery';
+import type { GroceryItem, GroceryItemInput } from '~/types/grocery';
 
 definePageMeta({
   middleware: 'auth',
@@ -32,6 +33,15 @@ const {
 
 function handleAdd(input: GroceryItemInput) {
   addItem(input);
+}
+
+// Local ref for flat-list drag-to-reorder (synced from activeItems)
+const flatDraggableItems = ref<GroceryItem[]>([]);
+watch(activeItems, (items) => { flatDraggableItems.value = [...items]; }, { immediate: true });
+
+function onFlatListDragEnd() {
+  const updated = flatDraggableItems.value.map((item, idx) => ({ id: item.id, sortOrder: idx }));
+  reorderItems(updated);
 }
 
 onMounted(async () => {
@@ -116,15 +126,34 @@ onMounted(async () => {
         />
       </template>
 
-      <!-- Flat list (no categories) -->
+      <!-- Flat list (no categories) — draggable -->
       <template v-else>
-        <GroceryItemRow
-          v-for="item in activeItems"
-          :key="item.id"
-          :item="item"
-          @toggle="toggleItem($event)"
-          @remove="removeItem($event)"
-        />
+        <draggable
+          v-model="flatDraggableItems"
+          item-key="id"
+          handle=".drag-handle"
+          :animation="150"
+          ghost-class="opacity-30"
+          @end="onFlatListDragEnd"
+        >
+          <template #item="{ element: item }">
+            <div class="group flex items-center gap-1">
+              <button
+                class="drag-handle shrink-0 cursor-grab p-0.5 text-percy-text-muted opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+                aria-label="Réordonner"
+                @click.stop
+              >
+                <GripVertical class="h-3.5 w-3.5" />
+              </button>
+              <GroceryItemRow
+                :item="item"
+                class="flex-1"
+                @toggle="toggleItem($event)"
+                @remove="removeItem($event)"
+              />
+            </div>
+          </template>
+        </draggable>
       </template>
 
       <!-- Checked items section -->
