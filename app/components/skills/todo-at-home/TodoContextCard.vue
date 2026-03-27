@@ -33,8 +33,7 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
   >
     <!-- Title row — serves as drag handle for non-global cards -->
     <div
-      class="drag-handle group/title flex items-center justify-between px-3 py-2"
-      :class="context.isGlobal ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'"
+      class="drag-handle group/title flex cursor-grab items-center justify-between px-3 py-2 active:cursor-grabbing"
     >
       <h3 class="text-sm font-bold text-percy-text-primary">
         {{ context.icon }} {{ context.name }}
@@ -46,10 +45,7 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
         >
           Global
         </span>
-        <GripVertical
-          v-else
-          class="h-3.5 w-3.5 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60"
-        />
+        <GripVertical class="h-3.5 w-3.5 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60" />
       </div>
     </div>
 

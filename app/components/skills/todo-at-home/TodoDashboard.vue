@@ -1,7 +1,6 @@
 <!--
   TodoDashboard.vue — Drag-and-drop grid of context cards with progress.
-  The global context is pinned first and not draggable.
-  All other contexts can be reordered by grabbing their title row.
+  All contexts (including Global) are draggable via their title row.
 -->
 <script setup lang="ts">
 import draggable from 'vuedraggable';
@@ -17,17 +16,13 @@ const emit = defineEmits<{
   'reorder': [items: Array<{ id: string; sortOrder: number }>];
 }>();
 
-// The global context is pinned; remaining contexts are draggable
-const globalContext = computed(() => props.contexts.find((c) => c.isGlobal) ?? null);
 const draggableContexts = ref<TodoContext[]>([]);
 
-// Keep draggableContexts in sync with prop (non-global, sorted by sortOrder)
+// Keep in sync with prop, preserving DB sort order
 watch(
   () => props.contexts,
   (list) => {
-    draggableContexts.value = [...list]
-      .filter((c) => !c.isGlobal)
-      .sort((a, b) => a.sortOrder - b.sortOrder);
+    draggableContexts.value = [...list].sort((a, b) => a.sortOrder - b.sortOrder);
   },
   { immediate: true },
 );
@@ -37,42 +32,30 @@ function getTasksForContext(contextId: string) {
 }
 
 function onDragEnd() {
-  // Assign new sortOrder values based on current position in the list
   const updated = draggableContexts.value.map((ctx, idx) => ({
     id: ctx.id,
-    sortOrder: idx + 1, // global context occupies sortOrder=0
+    sortOrder: idx,
   }));
   emit('reorder', updated);
 }
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <!-- Global context card — pinned, not draggable -->
-    <TodoContextCard
-      v-if="globalContext"
-      :context="globalContext"
-      :tasks="getTasksForContext(globalContext.id)"
-      @click="emit('select-context', globalContext.id)"
-    />
-
-    <!-- Draggable non-global contexts — title row inside card is the handle -->
-    <draggable
-      v-model="draggableContexts"
-      item-key="id"
-      handle=".drag-handle"
-      :animation="150"
-      ghost-class="opacity-30"
-      class="contents"
-      @end="onDragEnd"
-    >
-      <template #item="{ element: context }">
-        <TodoContextCard
-          :context="context"
-          :tasks="getTasksForContext(context.id)"
-          @click="emit('select-context', context.id)"
-        />
-      </template>
-    </draggable>
-  </div>
+  <draggable
+    v-model="draggableContexts"
+    item-key="id"
+    handle=".drag-handle"
+    :animation="150"
+    ghost-class="opacity-30"
+    class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    @end="onDragEnd"
+  >
+    <template #item="{ element: context }">
+      <TodoContextCard
+        :context="context"
+        :tasks="getTasksForContext(context.id)"
+        @click="emit('select-context', context.id)"
+      />
+    </template>
+  </draggable>
 </template>
