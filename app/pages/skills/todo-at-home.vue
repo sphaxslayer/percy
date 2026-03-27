@@ -22,7 +22,6 @@ const { contexts, fetchContexts, addContext, updateContext, removeContext } = us
 const {
   tasks,
   filteredTasks,
-  hasActiveFilters,
   loading,
   error,
   filters,
@@ -258,36 +257,23 @@ onMounted(initData);
           />
         </Transition>
 
-        <!-- Search/filter active → flat task list -->
-        <TodoSearchResults
-          v-if="hasActiveFilters"
+        <!-- Context card grid — filteredTasks feeds bullet previews + counts inside each card -->
+        <TodoDashboard
+          :contexts="contexts"
           :tasks="filteredTasks"
-          :color-mode="colorMode"
-          @toggle="handleToggleTask"
-          @edit="openTaskModal($event)"
-          @delete="handleDeleteTask"
-          @toggle-subtask="handleToggleSubtask"
+          @select-context="selectContext"
+          @reorder="handleReorderContexts"
         />
 
-        <!-- No filter → context card grid -->
-        <template v-else>
-          <TodoDashboard
-            :contexts="contexts"
-            :tasks="tasks"
-            @select-context="selectContext"
-            @reorder="handleReorderContexts"
-          />
-
-          <div
-            v-if="contexts.length === 0"
-            class="py-12 text-center"
-            data-testid="todo-empty"
-          >
-            <ClipboardList class="mx-auto h-12 w-12 text-percy-text-muted" />
-            <p class="mt-3 text-sm text-percy-text-muted">Aucun contexte créé</p>
-            <p class="text-xs text-percy-text-muted">Cliquez sur « Ajouter un contexte » pour commencer</p>
-          </div>
-        </template>
+        <div
+          v-if="contexts.length === 0"
+          class="py-12 text-center"
+          data-testid="todo-empty"
+        >
+          <ClipboardList class="mx-auto h-12 w-12 text-percy-text-muted" />
+          <p class="mt-3 text-sm text-percy-text-muted">Aucun contexte créé</p>
+          <p class="text-xs text-percy-text-muted">Cliquez sur « Ajouter un contexte » pour commencer</p>
+        </div>
       </template>
 
       <!-- Context detail view -->
