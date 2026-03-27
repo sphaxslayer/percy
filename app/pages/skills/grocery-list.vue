@@ -27,6 +27,7 @@ const {
   toggleItem,
   removeItem,
   clearChecked,
+  reorderItems,
 } = useGroceryList();
 
 function handleAdd(input: GroceryItemInput) {
@@ -111,6 +112,7 @@ onMounted(async () => {
           :group="group"
           @toggle="toggleItem"
           @remove="removeItem"
+          @reorder="reorderItems"
         />
       </template>
 
