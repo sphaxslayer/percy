@@ -8,6 +8,7 @@ const createContextSchema = z.object({
   name: z.string().min(1).max(100),
   icon: z.string().max(10).optional(),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  imageUrl: z.string().max(500).nullable().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
 
@@ -39,6 +40,7 @@ export default defineEventHandler(async (event) => {
       name: parsed.data.name,
       icon: parsed.data.icon,
       color: parsed.data.color ?? '#F59E0B',
+      imageUrl: parsed.data.imageUrl ?? null,
       sortOrder: parsed.data.sortOrder ?? 0,
     },
     select: {

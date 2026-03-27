@@ -18,7 +18,7 @@ definePageMeta({
 // ─── Composables ─────────────────────────────────────────────────────
 const { members, fetchMembers, addMember, removeMember } = useHouseholdMembers();
 const { domains, fetchDomains } = useTodoDomains();
-const { contexts, fetchContexts, addContext, removeContext } = useTodoContexts();
+const { contexts, fetchContexts, addContext, updateContext, removeContext } = useTodoContexts();
 const {
   tasks,
   loading,
@@ -102,8 +102,13 @@ async function handleToggleSubtask(taskId: string, subtaskId: string) {
   await toggleSubtask(taskId, subtaskId);
 }
 
-async function handleAddContext(payload: { domainId: string; name: string; color: string }) {
+async function handleAddContext(payload: { domainId: string; name: string; color: string; imageUrl: string | null }) {
   await addContext(payload);
+  await fetchContexts();
+}
+
+async function handleUpdateContextImage(contextId: string, imageUrl: string | null) {
+  await updateContext(contextId, { imageUrl });
   await fetchContexts();
 }
 
@@ -279,6 +284,7 @@ onMounted(initData);
           @edit-task="openTaskModal($event)"
           @delete-task="handleDeleteTask"
           @toggle-subtask="handleToggleSubtask"
+          @update-image="handleUpdateContextImage"
         />
       </template>
 
