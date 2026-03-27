@@ -35,17 +35,22 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
     <div
       class="drag-handle group/title flex cursor-grab items-center justify-between px-3 py-2 active:cursor-grabbing"
     >
-      <!-- Name badge, colored by context color (same style as the Global tag) -->
-      <span
-        class="rounded-sm px-1.5 py-0.5 text-[11px] font-bold"
-        :style="{
-          backgroundColor: (context.color || '#6B7280') + '33',
-          color: context.color || '#6B7280',
-        }"
-      >
+      <h3 class="text-sm font-bold text-percy-text-primary">
         {{ context.icon }} {{ context.name }}
-      </span>
-      <GripVertical class="h-3.5 w-3.5 shrink-0 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60" />
+      </h3>
+      <div class="flex items-center gap-1">
+        <!-- Colored name badge for every card -->
+        <span
+          class="rounded-sm px-1.5 py-0.5 text-[11px] font-bold"
+          :style="{
+            backgroundColor: (context.color || '#6B7280') + '33',
+            color: context.color || '#6B7280',
+          }"
+        >
+          {{ context.name }}
+        </span>
+        <GripVertical class="h-3.5 w-3.5 shrink-0 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60" />
+      </div>
     </div>
 
     <!-- Illustration -->
