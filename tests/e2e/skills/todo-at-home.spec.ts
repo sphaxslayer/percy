@@ -68,6 +68,9 @@ test.describe('TodoAtHome Skill', () => {
     await registerAndLogin(page, baseURL!);
     await goToTodo(page);
 
+    // Open the collapsible add-context form
+    await page.getByTestId('todo-context-add-toggle').click();
+
     // Fill in context add form
     await page.getByTestId('todo-context-add-name').fill('Garage');
     await page.getByTestId('todo-context-add-submit').click();
