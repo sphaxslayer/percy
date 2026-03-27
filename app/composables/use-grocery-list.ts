@@ -23,7 +23,12 @@ export function useGroceryList() {
   const queue = useOfflineQueue('grocery');
 
   // ─── Computed ───────────────────────────────────────────────────────
-  const activeItems = computed(() => items.value.filter((i) => !i.checked));
+  // Sort by sortOrder so drag-and-drop state survives the watch() reset after
+  // the optimistic update. Without this, the watch would reset flatDraggableItems
+  // back to insertion order, visually reverting the drag.
+  const activeItems = computed(() =>
+    items.value.filter((i) => !i.checked).sort((a, b) => a.sortOrder - b.sortOrder),
+  );
 
   const checkedItems = computed(() => items.value.filter((i) => i.checked));
 
@@ -97,6 +102,9 @@ export function useGroceryList() {
       ? (categories.value.find((c) => c.id === input.categoryId) ?? null)
       : null;
 
+    // Give the new item a sortOrder lower than the current minimum so it
+    // appears at the top of the sorted active list while we wait for the server.
+    const minOrder = items.value.reduce((min, i) => Math.min(min, i.sortOrder), 0);
     const optimisticItem: GroceryItem = {
       id: tempId,
       name: input.name,
@@ -106,7 +114,7 @@ export function useGroceryList() {
       category,
       checked: false,
       checkedAt: null,
-      sortOrder: 0,
+      sortOrder: minOrder - 1,
       createdAt: new Date().toISOString(),
     };
 
@@ -129,11 +137,12 @@ export function useGroceryList() {
       () => {
         items.value = items.value.filter((i) => i.id !== tempId);
       },
-      // On success: replace temp ID with the real ID from the server
-      (response: { data: { id: string } }) => {
+      // On success: replace temp ID and sortOrder with the real values from the server
+      (response: { data: { id: string; sortOrder: number } }) => {
         const item = items.value.find((i) => i.id === tempId);
         if (item) {
           item.id = response.data.id;
+          item.sortOrder = response.data.sortOrder;
         }
       },
     );
