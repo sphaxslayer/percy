@@ -1,5 +1,6 @@
 <!--
   TodoContextAdd.vue — Inline form to add a new context (room/area).
+  Includes color picker and optional illustration picker.
 -->
 <script setup lang="ts">
 
@@ -8,22 +9,30 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  add: [payload: { domainId: string; name: string; color: string }];
+  add: [payload: { domainId: string; name: string; color: string; imageUrl: string | null }];
 }>();
 
 const name = ref('');
 const color = ref('#F59E0B');
+const imageUrl = ref<string | null>(null);
+const showImagePicker = ref(false);
 
 const presetColors = [
   '#F59E0B', '#EF4444', '#3B82F6', '#10B981',
   '#8B5CF6', '#F97316', '#EC4899', '#6366F1',
 ];
 
+function handleImageSelect(url: string | null) {
+  imageUrl.value = url;
+  showImagePicker.value = false;
+}
+
 function handleSubmit() {
   const trimmed = name.value.trim();
   if (!trimmed) return;
-  emit('add', { domainId: props.domainId, name: trimmed, color: color.value });
+  emit('add', { domainId: props.domainId, name: trimmed, color: color.value, imageUrl: imageUrl.value });
   name.value = '';
+  imageUrl.value = null;
 }
 </script>
 
@@ -33,9 +42,7 @@ function handleSubmit() {
     data-testid="todo-context-add"
     @submit.prevent="handleSubmit"
   >
-    <label class="block text-xs font-semibold text-percy-text-secondary">Nouveau contexte</label>
-
-    <!-- Name input + submit button -->
+    <!-- Name input + submit -->
     <div class="flex gap-2">
       <input
         v-model="name"
@@ -54,9 +61,8 @@ function handleSubmit() {
       </button>
     </div>
 
-    <!-- Color picker -->
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="text-xs text-percy-text-muted">Couleur</span>
+    <!-- Color swatches + illustration picker -->
+    <div class="flex flex-wrap items-center gap-3">
       <div class="flex gap-1.5">
         <button
           v-for="c in presetColors"
@@ -68,6 +74,33 @@ function handleSubmit() {
           @click="color = c"
         />
       </div>
+
+      <!-- Illustration picker trigger -->
+      <button
+        type="button"
+        class="flex items-center gap-1.5 rounded-md border border-percy-border bg-percy-bg-card px-2 py-1 text-xs font-medium text-percy-text-secondary transition-colors hover:border-percy-primary/60 hover:text-percy-primary"
+        @click="showImagePicker = true"
+      >
+        <img
+          v-if="imageUrl"
+          :src="imageUrl"
+          alt=""
+          class="h-4 w-4 rounded object-cover"
+        >
+        <span v-else aria-hidden="true">🖼️</span>
+        <span>{{ imageUrl ? 'Changer' : 'Illustration' }}</span>
+      </button>
     </div>
   </form>
+
+  <!-- Image picker modal — teleported to body to avoid z-index issues -->
+  <Teleport to="body">
+    <ContextImagePicker
+      v-if="showImagePicker"
+      :current-image-url="imageUrl"
+      :context-name="name"
+      @select="handleImageSelect"
+      @close="showImagePicker = false"
+    />
+  </Teleport>
 </template>

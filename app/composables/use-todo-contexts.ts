@@ -26,7 +26,7 @@ export function useTodoContexts() {
     }
   }
 
-  async function addContext(input: { domainId: string; name: string; icon?: string; color?: string }) {
+  async function addContext(input: { domainId: string; name: string; icon?: string; color?: string; imageUrl?: string | null }) {
     const res = await $fetch<{ data: TodoContext }>(API_BASE, {
       method: 'POST',
       body: input,
@@ -35,7 +35,7 @@ export function useTodoContexts() {
     return res.data;
   }
 
-  async function updateContext(id: string, data: Partial<Pick<TodoContext, 'name' | 'icon' | 'color'>>) {
+  async function updateContext(id: string, data: Partial<Pick<TodoContext, 'name' | 'icon' | 'color' | 'imageUrl'>>) {
     const res = await $fetch<{ data: TodoContext }>(`${API_BASE}/${id}`, {
       method: 'PATCH',
       body: data,

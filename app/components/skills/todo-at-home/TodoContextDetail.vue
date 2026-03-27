@@ -3,7 +3,7 @@
   Shows tasks grouped by status (todo, in_progress, done).
 -->
 <script setup lang="ts">
-import { ArrowLeft, Plus } from 'lucide-vue-next';
+import { ArrowLeft, Plus, Image } from 'lucide-vue-next';
 import type { TodoContext, TodoTask, ColorMode } from '~/types/todo';
 
 const props = defineProps<{
@@ -19,7 +19,15 @@ const emit = defineEmits<{
   'edit-task': [taskId: string];
   'delete-task': [taskId: string];
   'toggle-subtask': [taskId: string, subtaskId: string];
+  'update-image': [contextId: string, imageUrl: string | null];
 }>();
+
+const showImagePicker = ref(false);
+
+function handleImageSelect(url: string | null) {
+  emit('update-image', props.context.id, url);
+  showImagePicker.value = false;
+}
 
 const todoTasks = computed(() => props.tasks.filter((t) => t.status === 'todo'));
 const inProgressTasks = computed(() => props.tasks.filter((t) => t.status === 'in_progress'));
@@ -41,14 +49,36 @@ const doneTasks = computed(() => props.tasks.filter((t) => t.status === 'done'))
           {{ context.icon }} {{ context.name }}
         </h2>
       </div>
-      <button
-        class="flex items-center gap-1 rounded-md bg-percy-primary px-3 py-1.5 text-xs font-bold text-percy-primary-text transition-colors hover:bg-percy-primary-hover"
-        @click="emit('add-task')"
-      >
-        <Plus class="h-3.5 w-3.5" />
-        Ajouter
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- Change illustration -->
+        <button
+          class="rounded-md p-1.5 text-percy-text-muted hover:bg-percy-bg-nav hover:text-percy-primary"
+          title="Changer l'illustration"
+          @click="showImagePicker = true"
+        >
+          <Image class="h-4 w-4" />
+        </button>
+        <!-- Add task -->
+        <button
+          class="flex items-center gap-1 rounded-md bg-percy-primary px-3 py-1.5 text-xs font-bold text-percy-primary-text transition-colors hover:bg-percy-primary-hover"
+          @click="emit('add-task')"
+        >
+          <Plus class="h-3.5 w-3.5" />
+          Ajouter
+        </button>
+      </div>
     </div>
+
+    <!-- Image picker modal -->
+    <Teleport to="body">
+      <ContextImagePicker
+        v-if="showImagePicker"
+        :current-image-url="context.imageUrl"
+        :context-name="context.name"
+        @select="handleImageSelect"
+        @close="showImagePicker = false"
+      />
+    </Teleport>
 
     <!-- Todo section -->
     <section v-if="todoTasks.length > 0">
