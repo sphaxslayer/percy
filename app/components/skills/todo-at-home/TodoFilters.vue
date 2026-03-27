@@ -10,7 +10,7 @@
   it does NOT hide tasks — it's a display preference, not a filter.
 -->
 <script setup lang="ts">
-import { Search, ArrowUpDown } from 'lucide-vue-next';
+import { Search, ArrowUpDown, X } from 'lucide-vue-next';
 import type { TodoTaskFilters, ColorMode } from '~/types/todo';
 
 const props = defineProps<{
@@ -47,6 +47,16 @@ const COLOR_MODE_LABELS: Record<ColorMode, string> = {
   assignee: 'Par assigné',
   priority: 'Par priorité',
 };
+
+// True when at least one filter chip / search is active (sort doesn't count)
+const hasActiveFilters = computed(
+  () => !!(props.filters.search || props.filters.status || props.filters.priority),
+);
+
+function clearAllFilters() {
+  // Keep sort preference, wipe everything else
+  emit('update:filters', { sort: props.filters.sort });
+}
 </script>
 
 <template>
@@ -64,10 +74,20 @@ const COLOR_MODE_LABELS: Record<ColorMode, string> = {
           :value="filters.search ?? ''"
           type="text"
           placeholder="Rechercher une tâche…"
-          class="w-full rounded-md border border-percy-border-input bg-percy-bg-input py-1.5 pl-8 pr-3 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
+          class="w-full rounded-md border border-percy-border-input bg-percy-bg-input py-1.5 pl-8 text-sm text-percy-text-primary placeholder:text-percy-text-muted focus:border-percy-primary focus:outline-none focus:ring-2 focus:ring-percy-primary/30"
+          :class="filters.search ? 'pr-7' : 'pr-3'"
           data-testid="todo-filter-search"
           @input="updateFilter('search', ($event.target as HTMLInputElement).value)"
         />
+        <!-- Clear search -->
+        <button
+          v-if="filters.search"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-percy-text-muted hover:text-percy-text-primary"
+          aria-label="Effacer la recherche"
+          @click="updateFilter('search', undefined)"
+        >
+          <X class="h-3.5 w-3.5" />
+        </button>
       </div>
 
       <!-- Sort -->
@@ -140,6 +160,16 @@ const COLOR_MODE_LABELS: Record<ColorMode, string> = {
         @click="togglePriority('high')"
       >
         ⚡ Urgentes
+      </button>
+
+      <!-- Tout effacer — visible only when at least one filter is active -->
+      <button
+        v-if="hasActiveFilters"
+        class="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-percy-text-muted transition-colors hover:bg-percy-bg-card hover:text-percy-danger"
+        @click="clearAllFilters"
+      >
+        <X class="h-3 w-3" />
+        Tout effacer
       </button>
 
     </div>
