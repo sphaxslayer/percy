@@ -107,6 +107,11 @@ async function handleAddContext(payload: { domainId: string; name: string; color
   await fetchContexts();
 }
 
+async function handleReorderContexts(items: Array<{ id: string; sortOrder: number }>) {
+  await $fetch('/api/skills/todo-at-home/contexts-reorder', { method: 'PATCH', body: { items } });
+  await fetchContexts();
+}
+
 async function handleUpdateContextImage(contextId: string, imageUrl: string | null) {
   await updateContext(contextId, { imageUrl });
   await fetchContexts();
@@ -258,6 +263,7 @@ onMounted(initData);
           :contexts="contexts"
           :tasks="tasks"
           @select-context="selectContext"
+          @reorder="handleReorderContexts"
         />
 
         <!-- Empty state -->
