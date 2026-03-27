@@ -93,7 +93,7 @@ export interface TodoTaskFilters {
   priority?: string;
   assigneeId?: string;
   search?: string;
-  sort?: 'createdAt' | 'dueDate' | 'priority' | 'sortOrder';
+  sort?: 'createdAt' | 'dueDate' | 'priority' | 'name' | 'sortOrder';
   order?: 'asc' | 'desc';
   withDueDate?: boolean;
 }

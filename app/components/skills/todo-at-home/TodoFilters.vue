@@ -79,6 +79,7 @@ const COLOR_MODE_LABELS: Record<ColorMode, string> = {
           @change="updateFilter('sort', ($event.target as HTMLSelectElement).value)"
         >
           <option value="createdAt">Récent</option>
+          <option value="name">Nom A→Z</option>
           <option value="dueDate">Échéance</option>
           <option value="priority">Priorité</option>
         </select>

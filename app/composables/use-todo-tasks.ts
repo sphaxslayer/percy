@@ -66,10 +66,21 @@ export function useTodoTasks() {
       result = [...result].sort(
         (a, b) => (ORDER[a.priority] ?? 1) - (ORDER[b.priority] ?? 1),
       );
+    } else if (sort === 'name') {
+      result = [...result].sort((a, b) => a.title.localeCompare(b.title, 'fr'));
     }
     // 'createdAt' (default): API already returns newest-first, no re-sort needed
 
     return result;
+  });
+
+  /**
+   * True when any search or filter chip is active (not counting sort alone).
+   * Used by the page to switch from card grid → flat task list.
+   */
+  const hasActiveFilters = computed(() => {
+    const { search, status, priority, contextId, assigneeId } = filters.value;
+    return !!(search || status || priority || contextId || assigneeId);
   });
 
   // ─── Fetch ──────────────────────────────────────────────────────────
@@ -184,6 +195,7 @@ export function useTodoTasks() {
     urgentCount,
     // Computed (filtered)
     filteredTasks,
+    hasActiveFilters,
     // Actions
     fetchTasks,
     addTask,
