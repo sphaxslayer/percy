@@ -36,6 +36,7 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
         :is-global="context.isGlobal"
         :icon="context.icon ?? undefined"
         :color="context.color"
+        :image-url="context.imageUrl"
       />
     </div>
 

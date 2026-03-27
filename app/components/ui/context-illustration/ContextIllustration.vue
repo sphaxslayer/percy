@@ -1,5 +1,6 @@
 <!--
   ContextIllustration.vue — Displays an isometric illustration for a context card.
+  If a custom imageUrl is provided, it takes priority over the name-based path.
   Falls back to a colored rectangle with emoji if the image fails to load.
 -->
 <script setup lang="ts">
@@ -10,11 +11,26 @@ const props = defineProps<{
   isGlobal?: boolean;
   icon?: string;
   color?: string;
+  /** Custom image URL — takes priority over name-based illustration when provided */
+  imageUrl?: string | null;
 }>();
 
 const { getIllustrationPath } = useContextIllustration();
-const src = computed(() => getIllustrationPath(props.contextName, props.isGlobal ?? false));
+
+// Use custom imageUrl if provided, otherwise fall back to name-based path
+const src = computed(() => {
+  if (props.imageUrl) {
+    return props.imageUrl;
+  }
+  return getIllustrationPath(props.contextName, props.isGlobal ?? false);
+});
+
 const hasError = ref(false);
+
+// Reset error state when the image source changes (e.g. user uploads a new image)
+watch(src, () => {
+  hasError.value = false;
+});
 </script>
 
 <template>
