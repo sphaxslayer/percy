@@ -21,6 +21,7 @@ const { domains, fetchDomains } = useTodoDomains();
 const { contexts, fetchContexts, addContext, updateContext, removeContext } = useTodoContexts();
 const {
   tasks,
+  filteredTasks,
   loading,
   error,
   filters,
@@ -136,8 +137,8 @@ async function handleDeleteMember(memberId: string) {
 }
 
 function handleFilterUpdate(newFilters: TodoTaskFilters) {
+  // Client-side only — filteredTasks recomputes instantly, no re-fetch needed.
   setFilters(newFilters);
-  fetchTasks(newFilters);
 }
 
 // ─── Init ────────────────────────────────────────────────────────────
@@ -224,8 +225,6 @@ onMounted(initData);
 
         <!-- Filters -->
         <TodoFilters
-          :contexts="contexts"
-          :members="members"
           :filters="filters"
           :color-mode="colorMode"
           @update:filters="handleFilterUpdate"
@@ -258,10 +257,10 @@ onMounted(initData);
           />
         </Transition>
 
-        <!-- Context grid -->
+        <!-- Context grid — receives filteredTasks so search/chips apply to card previews -->
         <TodoDashboard
           :contexts="contexts"
-          :tasks="tasks"
+          :tasks="filteredTasks"
           @select-context="selectContext"
           @reorder="handleReorderContexts"
         />
@@ -297,7 +296,7 @@ onMounted(initData);
       <!-- Agenda view -->
       <template v-if="viewMode === 'agenda'">
         <TodoAgendaView
-          :tasks="tasks"
+          :tasks="filteredTasks"
           @toggle-task="handleToggleTask"
           @edit-task="openTaskModal($event)"
         />
