@@ -22,6 +22,7 @@ const { contexts, fetchContexts, addContext, updateContext, removeContext } = us
 const {
   tasks,
   filteredTasks,
+  hasActiveFilters,
   loading,
   error,
   filters,
@@ -257,24 +258,36 @@ onMounted(initData);
           />
         </Transition>
 
-        <!-- Context grid — receives filteredTasks so search/chips apply to card previews -->
-        <TodoDashboard
-          :contexts="contexts"
+        <!-- Search/filter active → flat task list -->
+        <TodoSearchResults
+          v-if="hasActiveFilters"
           :tasks="filteredTasks"
-          @select-context="selectContext"
-          @reorder="handleReorderContexts"
+          :color-mode="colorMode"
+          @toggle="handleToggleTask"
+          @edit="openTaskModal($event)"
+          @delete="handleDeleteTask"
+          @toggle-subtask="handleToggleSubtask"
         />
 
-        <!-- Empty state -->
-        <div
-          v-if="contexts.length === 0"
-          class="py-12 text-center"
-          data-testid="todo-empty"
-        >
-          <ClipboardList class="mx-auto h-12 w-12 text-percy-text-muted" />
-          <p class="mt-3 text-sm text-percy-text-muted">Aucun contexte créé</p>
-          <p class="text-xs text-percy-text-muted">Cliquez sur « Ajouter un contexte » pour commencer</p>
-        </div>
+        <!-- No filter → context card grid -->
+        <template v-else>
+          <TodoDashboard
+            :contexts="contexts"
+            :tasks="tasks"
+            @select-context="selectContext"
+            @reorder="handleReorderContexts"
+          />
+
+          <div
+            v-if="contexts.length === 0"
+            class="py-12 text-center"
+            data-testid="todo-empty"
+          >
+            <ClipboardList class="mx-auto h-12 w-12 text-percy-text-muted" />
+            <p class="mt-3 text-sm text-percy-text-muted">Aucun contexte créé</p>
+            <p class="text-xs text-percy-text-muted">Cliquez sur « Ajouter un contexte » pour commencer</p>
+          </div>
+        </template>
       </template>
 
       <!-- Context detail view -->
