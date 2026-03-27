@@ -1,23 +1,38 @@
 <!--
-  grocery-category-group.vue — Collapsible category section with item list.
-  Shows category name, item count, and a list of GroceryItemRow components.
+  grocery-category-group.vue — Collapsible category section with drag-to-reorder item list.
+  Items within each category can be reordered via drag handles.
 -->
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ChevronDown } from 'lucide-vue-next';
-import type { GroceryItemGroup } from '~/types/grocery';
+import { ref, watch } from 'vue';
+import { ChevronDown, GripVertical } from 'lucide-vue-next';
+import draggable from 'vuedraggable';
+import type { GroceryItem, GroceryItemGroup } from '~/types/grocery';
 
 const props = defineProps<{
   group: GroceryItemGroup;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   toggle: [id: string];
   remove: [id: string];
+  reorder: [items: Array<{ id: string; sortOrder: number }>];
 }>();
 
 const expanded = ref(true);
 const categoryName = props.group.category?.name ?? 'Sans catégorie';
+
+// Local copy for drag-and-drop — kept in sync with the prop
+const draggableItems = ref<GroceryItem[]>([...props.group.items]);
+
+watch(
+  () => props.group.items,
+  (items) => { draggableItems.value = [...items]; },
+);
+
+function onDragEnd() {
+  const updated = draggableItems.value.map((item, idx) => ({ id: item.id, sortOrder: idx }));
+  emit('reorder', updated);
+}
 </script>
 
 <template>
@@ -31,14 +46,35 @@ const categoryName = props.group.category?.name ?? 'Sans catégorie';
       <span class="text-percy-text-muted">({{ props.group.items.length }})</span>
     </button>
 
-    <div v-if="expanded" class="space-y-0.5 pl-2">
-      <GroceryItemRow
-        v-for="item in props.group.items"
-        :key="item.id"
-        :item="item"
-        @toggle="$emit('toggle', $event)"
-        @remove="$emit('remove', $event)"
-      />
-    </div>
+    <draggable
+      v-if="expanded"
+      v-model="draggableItems"
+      item-key="id"
+      handle=".drag-handle"
+      :animation="150"
+      ghost-class="opacity-30"
+      class="space-y-0.5 pl-2"
+      @end="onDragEnd"
+    >
+      <template #item="{ element: item }">
+        <div class="group flex items-center gap-1">
+          <!-- Drag handle -->
+          <button
+            class="drag-handle shrink-0 cursor-grab p-0.5 text-percy-text-muted opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+            aria-label="Réordonner"
+            @click.stop
+          >
+            <GripVertical class="h-3.5 w-3.5" />
+          </button>
+
+          <GroceryItemRow
+            :item="item"
+            class="flex-1"
+            @toggle="emit('toggle', $event)"
+            @remove="emit('remove', $event)"
+          />
+        </div>
+      </template>
+    </draggable>
   </div>
 </template>
