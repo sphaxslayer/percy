@@ -73,14 +73,15 @@ test.describe('TodoAtHome Skill', () => {
 
     // Fill in context add form
     await page.getByTestId('todo-context-add-name').fill('Garage');
-    await page.getByTestId('todo-context-add-submit').click();
 
-    // Wait for API response
-    await page.waitForResponse(
+    // Register the response listener BEFORE the click to avoid a race condition
+    const responsePromise = page.waitForResponse(
       (r) => r.url().includes('/api/skills/todo-at-home/contexts') && r.request().method() === 'POST',
     );
+    await page.getByTestId('todo-context-add-submit').click();
+    await responsePromise;
 
-    // New context should appear in the grid (use heading to avoid matching <option> elements)
+    // New context should appear in the grid
     await expect(page.getByRole('heading', { name: 'Garage' })).toBeVisible();
   });
 
@@ -142,16 +143,13 @@ test.describe('TodoAtHome Skill', () => {
       page.getByTestId('todo-quick-add-submit').click(),
     ]);
 
-    // Apply priority filter
-    await page.getByTestId('todo-filter-priority').selectOption('high');
+    // Apply priority filter via Urgentes chip (client-side — no API call)
+    await page.getByTestId('todo-filter-urgentes').click();
 
-    // Wait for filtered results
-    await page.waitForResponse((r) => r.url().includes('/tasks'));
-
-    // With "high" filter, no tasks should show (our task was created with "normal" default)
+    // With "high" filter, no tasks match (our task was created with "normal" default priority)
+    // All context cards are hidden because none have matching tasks
     const contextCards = page.locator('[data-testid^="context-card-"]');
-    // Context cards still show, but they should have 0 open tasks text or no preview
-    await expect(contextCards.first()).toBeVisible();
+    await expect(contextCards).toHaveCount(0);
   });
 
   test('agenda view groups tasks by day', async ({ page, baseURL }) => {
