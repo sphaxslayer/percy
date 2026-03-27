@@ -43,18 +43,41 @@ describe('useTodoTasks', () => {
     expect(urgentCount.value).toBe(1);
   });
 
-  it('fetchTasks builds query string from filters', async () => {
+  it('fetchTasks always fetches all tasks without query params', async () => {
     mockFetch.mockResolvedValue({ data: [] });
     const { fetchTasks } = useTodoTasks();
 
-    await fetchTasks({ status: 'todo', contextId: 'ctx-1' });
+    await fetchTasks();
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('status=todo'),
-    );
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringContaining('contextId=ctx-1'),
-    );
+    // Filtering is client-side — no query string is ever sent to the API
+    expect(mockFetch).toHaveBeenCalledWith('/api/skills/todo-at-home/tasks');
+  });
+
+  it('filteredTasks filters client-side by status and search', async () => {
+    const doneTask = { ...TEST_TASK, id: 'task-done', title: 'Ranger', status: 'done' as const };
+    mockFetch.mockResolvedValue({ data: [TEST_TASK, HIGH_TASK, doneTask] });
+
+    const { fetchTasks, filteredTasks, setFilters, hasActiveFilters } = useTodoTasks();
+    await fetchTasks();
+
+    // No filter → all tasks
+    expect(filteredTasks.value).toHaveLength(3);
+    expect(hasActiveFilters.value).toBe(false);
+
+    // Filter by status
+    setFilters({ status: 'todo' });
+    expect(filteredTasks.value).toHaveLength(2);
+    expect(filteredTasks.value.every((t) => t.status === 'todo')).toBe(true);
+    expect(hasActiveFilters.value).toBe(true);
+
+    // Filter by search (title)
+    setFilters({ search: 'urgent' });
+    expect(filteredTasks.value).toHaveLength(1);
+    expect(filteredTasks.value[0]!.title).toBe('Urgent');
+
+    // Filter by search (context name)
+    setFilters({ search: 'cuisine' });
+    expect(filteredTasks.value).toHaveLength(3); // all tasks belong to 'Cuisine' context
   });
 
   it('addTask prepends to task list', async () => {
