@@ -1,11 +1,10 @@
 <!--
   TodoDashboard.vue — Drag-and-drop grid of context cards with progress.
   The global context is pinned first and not draggable.
-  All other contexts can be reordered via drag handles.
+  All other contexts can be reordered by grabbing their title row.
 -->
 <script setup lang="ts">
 import draggable from 'vuedraggable';
-import { GripVertical } from 'lucide-vue-next';
 import type { TodoContext, TodoTask } from '~/types/todo';
 
 const props = defineProps<{
@@ -57,7 +56,7 @@ function onDragEnd() {
       @click="emit('select-context', globalContext.id)"
     />
 
-    <!-- Draggable non-global contexts -->
+    <!-- Draggable non-global contexts — title row inside card is the handle -->
     <draggable
       v-model="draggableContexts"
       item-key="id"
@@ -68,22 +67,11 @@ function onDragEnd() {
       @end="onDragEnd"
     >
       <template #item="{ element: context }">
-        <div class="group relative">
-          <!-- Drag handle — top-left corner of the card, visible on hover -->
-          <button
-            class="drag-handle absolute left-1.5 top-1.5 z-10 cursor-grab rounded p-0.5 text-white/70 opacity-0 transition-opacity hover:text-white active:cursor-grabbing group-hover:opacity-100 focus:opacity-100"
-            aria-label="Réordonner"
-            @click.stop
-          >
-            <GripVertical class="h-4 w-4" />
-          </button>
-
-          <TodoContextCard
-            :context="context"
-            :tasks="getTasksForContext(context.id)"
-            @click="emit('select-context', context.id)"
-          />
-        </div>
+        <TodoContextCard
+          :context="context"
+          :tasks="getTasksForContext(context.id)"
+          @click="emit('select-context', context.id)"
+        />
       </template>
     </draggable>
   </div>
