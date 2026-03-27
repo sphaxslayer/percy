@@ -7,6 +7,7 @@ const updateContextSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   icon: z.string().max(10).nullable().optional(),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  imageUrl: z.string().max(500).nullable().optional(),
   sortOrder: z.number().int().min(0).optional(),
 });
 
