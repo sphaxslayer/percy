@@ -22,6 +22,7 @@ const { contexts, fetchContexts, addContext, updateContext, removeContext } = us
 const {
   tasks,
   filteredTasks,
+  hasActiveFilters,
   loading,
   error,
   filters,
@@ -35,6 +36,20 @@ const {
   toggleSubtask,
   setFilters,
 } = useTodoTasks();
+
+// When filters are active, only show context cards that are relevant:
+// — the context name matches the search text, OR
+// — at least one task in that context matches the active filters
+const visibleContexts = computed(() => {
+  if (!hasActiveFilters.value) return contexts.value;
+  const contextIdsWithMatches = new Set(filteredTasks.value.map((t) => t.contextId));
+  const searchQuery = filters.value.search?.toLowerCase() ?? '';
+  return contexts.value.filter(
+    (c) =>
+      contextIdsWithMatches.has(c.id) ||
+      (searchQuery && c.name.toLowerCase().includes(searchQuery)),
+  );
+});
 
 // ─── View state ──────────────────────────────────────────────────────
 type ViewMode = 'dashboard' | 'detail' | 'agenda';
@@ -257,9 +272,9 @@ onMounted(initData);
           />
         </Transition>
 
-        <!-- Context card grid — filteredTasks feeds bullet previews + counts inside each card -->
+        <!-- Context card grid — filtered contexts + tasks update previews/counts in place -->
         <TodoDashboard
-          :contexts="contexts"
+          :contexts="visibleContexts"
           :tasks="filteredTasks"
           @select-context="selectContext"
           @reorder="handleReorderContexts"

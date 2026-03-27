@@ -38,7 +38,10 @@ export function useTodoTasks() {
 
     if (search) {
       const q = search.toLowerCase();
-      result = result.filter((t) => t.title.toLowerCase().includes(q));
+      // Match task title OR the context name it belongs to
+      result = result.filter(
+        (t) => t.title.toLowerCase().includes(q) || t.context.name.toLowerCase().includes(q),
+      );
     }
     if (contextId) {
       result = result.filter((t) => t.contextId === contextId);
