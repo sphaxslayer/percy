@@ -1,8 +1,10 @@
 <!--
   TodoContextCard.vue — A single context card showing name, illustration,
   task count, progress bar, and task preview.
+  The title row is the drag handle — it shows a grab cursor + grip icon on hover.
 -->
 <script setup lang="ts">
+import { GripVertical } from 'lucide-vue-next';
 import type { TodoContext, TodoTask } from '~/types/todo';
 
 const props = defineProps<{
@@ -25,10 +27,32 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
 
 <template>
   <div
-    class="group cursor-pointer overflow-hidden rounded-lg border border-percy-border bg-percy-bg-card transition-shadow hover:shadow-md"
+    class="overflow-hidden rounded-lg border border-percy-border bg-percy-bg-card transition-shadow hover:shadow-md"
     :data-testid="`context-card-${context.id}`"
     @click="emit('click')"
   >
+    <!-- Title row — serves as drag handle for non-global cards -->
+    <div
+      class="drag-handle group/title flex items-center justify-between px-3 py-2"
+      :class="context.isGlobal ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'"
+    >
+      <h3 class="text-sm font-bold text-percy-text-primary">
+        {{ context.icon }} {{ context.name }}
+      </h3>
+      <div class="flex items-center gap-1">
+        <span
+          v-if="context.isGlobal"
+          class="rounded-sm bg-percy-accent-light px-1.5 py-0.5 text-[11px] font-bold text-percy-accent-text"
+        >
+          Global
+        </span>
+        <GripVertical
+          v-else
+          class="h-3.5 w-3.5 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60"
+        />
+      </div>
+    </div>
+
     <!-- Illustration -->
     <div class="h-28 w-full">
       <ContextIllustration
@@ -41,19 +65,6 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
     </div>
 
     <div class="space-y-2 p-3">
-      <!-- Name + badge -->
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-bold text-percy-text-primary">
-          {{ context.icon }} {{ context.name }}
-        </h3>
-        <span
-          v-if="context.isGlobal"
-          class="rounded-sm bg-percy-accent-light px-1.5 py-0.5 text-[11px] font-bold text-percy-accent-text"
-        >
-          Global
-        </span>
-      </div>
-
       <!-- Task count -->
       <p class="text-xs text-percy-text-muted">
         <template v-if="openTasks.length > 0">
