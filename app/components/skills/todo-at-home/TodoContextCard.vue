@@ -31,22 +31,21 @@ const previewTasks = computed(() => openTasks.value.slice(0, 2));
     :data-testid="`context-card-${context.id}`"
     @click="emit('click')"
   >
-    <!-- Title row — serves as drag handle for non-global cards -->
+    <!-- Title row — drag handle -->
     <div
       class="drag-handle group/title flex cursor-grab items-center justify-between px-3 py-2 active:cursor-grabbing"
     >
-      <h3 class="text-sm font-bold text-percy-text-primary">
+      <!-- Name badge, colored by context color (same style as the Global tag) -->
+      <span
+        class="rounded-sm px-1.5 py-0.5 text-[11px] font-bold"
+        :style="{
+          backgroundColor: (context.color || '#6B7280') + '33',
+          color: context.color || '#6B7280',
+        }"
+      >
         {{ context.icon }} {{ context.name }}
-      </h3>
-      <div class="flex items-center gap-1">
-        <span
-          v-if="context.isGlobal"
-          class="rounded-sm bg-percy-accent-light px-1.5 py-0.5 text-[11px] font-bold text-percy-accent-text"
-        >
-          Global
-        </span>
-        <GripVertical class="h-3.5 w-3.5 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60" />
-      </div>
+      </span>
+      <GripVertical class="h-3.5 w-3.5 shrink-0 text-percy-text-muted opacity-0 transition-opacity group-hover/title:opacity-60" />
     </div>
 
     <!-- Illustration -->
