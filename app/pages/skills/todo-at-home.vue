@@ -225,6 +225,7 @@ onMounted(initData);
           <button
             v-if="currentDomainId"
             class="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-xs text-percy-text-muted transition-colors hover:bg-percy-bg-card hover:text-percy-primary"
+            data-testid="todo-context-add-toggle"
             @click="showContextAdd = !showContextAdd"
           >
             Nouveau contexte
