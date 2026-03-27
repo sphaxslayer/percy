@@ -27,21 +27,61 @@ export function useTodoTasks() {
   const openCount = computed(() => openTasks.value.length);
   const urgentCount = computed(() => urgentTasks.value.length);
 
+  /**
+   * Client-side filtered + sorted view of tasks.
+   * All filter/sort operations happen here — no extra API calls.
+   * The search input can type freely without re-fetching or losing focus.
+   */
+  const filteredTasks = computed(() => {
+    const { search, contextId, status, priority, assigneeId, sort } = filters.value;
+    let result = tasks.value;
+
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter((t) => t.title.toLowerCase().includes(q));
+    }
+    if (contextId) {
+      result = result.filter((t) => t.contextId === contextId);
+    }
+    if (status) {
+      result = result.filter((t) => t.status === status);
+    }
+    if (priority) {
+      result = result.filter((t) => t.priority === priority);
+    }
+    if (assigneeId) {
+      result = result.filter((t) => t.assigneeId === assigneeId);
+    }
+
+    // Sort on top of whatever order the API returned
+    if (sort === 'dueDate') {
+      result = [...result].sort((a, b) => {
+        if (!a.dueDate && !b.dueDate) return 0;
+        if (!a.dueDate) return 1; // tasks without due date go last
+        if (!b.dueDate) return -1;
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      });
+    } else if (sort === 'priority') {
+      const ORDER: Record<string, number> = { high: 0, normal: 1, low: 2 };
+      result = [...result].sort(
+        (a, b) => (ORDER[a.priority] ?? 1) - (ORDER[b.priority] ?? 1),
+      );
+    }
+    // 'createdAt' (default): API already returns newest-first, no re-sort needed
+
+    return result;
+  });
+
   // ─── Fetch ──────────────────────────────────────────────────────────
-  async function fetchTasks(filterOverrides?: TodoTaskFilters) {
+  /**
+   * Always fetches ALL tasks (no server-side filtering).
+   * Filtering/sorting is done client-side via filteredTasks.
+   */
+  async function fetchTasks() {
     loading.value = true;
     error.value = null;
     try {
-      const activeFilters = { ...filters.value, ...filterOverrides };
-      const query = new URLSearchParams();
-      for (const [key, value] of Object.entries(activeFilters)) {
-        if (value !== undefined && value !== '' && value !== null) {
-          query.set(key, String(value));
-        }
-      }
-      const queryStr = query.toString();
-      const url = queryStr ? `${API_BASE}?${queryStr}` : API_BASE;
-      const res = await $fetch<{ data: TodoTask[] }>(url);
+      const res = await $fetch<{ data: TodoTask[] }>(API_BASE);
       tasks.value = res.data;
     } catch {
       error.value = 'Impossible de charger les tâches';
@@ -142,6 +182,8 @@ export function useTodoTasks() {
     tasksByStatus,
     openCount,
     urgentCount,
+    // Computed (filtered)
+    filteredTasks,
     // Actions
     fetchTasks,
     addTask,
