@@ -24,6 +24,11 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  // Bind to all interfaces so the app is reachable from other devices on the LAN
+  devServer: {
+    host: '0.0.0.0',
+  },
+
   // Disable path-based prefixing for component auto-imports.
   // Without this, components in subdirectories (e.g., skills/grocery/) get
   // prefixed (SkillsGroceryAddInput) which breaks templates using short names
