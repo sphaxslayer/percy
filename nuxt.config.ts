@@ -24,9 +24,11 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-  // Bind to all interfaces so the app is reachable from other devices on the LAN
+  // Bind to all interfaces (dual-stack IPv4 + IPv6) so the app is reachable:
+  // - via localhost or 127.0.0.1 on this machine (::1 covered by ::)
+  // - via LAN IP from a phone or other device on the same network
   devServer: {
-    host: '0.0.0.0',
+    host: '::',
   },
 
   // Disable path-based prefixing for component auto-imports.
