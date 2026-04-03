@@ -37,3 +37,7 @@ coverage/
 *.swp
 *.swo
 *~
+
+# Local prompt files — kept locally only, never committed
+PROMPT_*.md
+BOOTSTRAP_PROMPT.md
