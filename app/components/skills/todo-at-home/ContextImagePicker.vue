@@ -230,7 +230,7 @@ function isSelected(url: string | null): boolean {
           <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-percy-text-muted">
             Image personnalisée
           </h3>
-          <p v-if="uploadError" class="mb-2 text-xs text-red-500">{{ uploadError }}</p>
+          <p v-if="uploadError" class="mb-2 text-xs text-percy-danger">{{ uploadError }}</p>
           <button
             type="button"
             :disabled="uploading"

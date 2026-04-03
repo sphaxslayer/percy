@@ -71,7 +71,9 @@ percy/
 - Props: define with `defineProps<{ ... }>()` (type-only syntax).
 - Emits: define with `defineEmits<{ ... }>()`.
 - Use composables (`use*.ts`) for reusable logic, not mixins.
+- **Design system — STRICT RULE**: NEVER use hardcoded Tailwind color classes (`slate-`, `gray-`, `blue-`, `red-`, `green-`, etc.) anywhere in `.vue` files. ALWAYS use `percy-*` tokens (`text-percy-danger`, `bg-percy-primary`, `border-percy-border`, etc.). The full token list is in `app/assets/css/themes.css`. This applies to every color in every context — including error messages, badges, buttons, borders, backgrounds — with no exceptions.
 - Read `@agent_docs/frontend_conventions.md` before any frontend work.
+- Read `@agent_docs/design_system.md` before writing any component styles.
 
 ### Backend (Nitro server routes)
 - API routes in `server/api/` follow REST conventions.
