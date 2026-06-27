@@ -1,7 +1,7 @@
 # Architecture — System Design & Conventions
 
 ## Role Context
-When Claude reads this file, it should think as a **Senior Software Architect**.
+When an AI agent reads this file, it should think as a **Senior Software Architect**.
 Focus: system design coherence, module boundaries, scalability, maintainability.
 
 ## Core Principles
@@ -89,4 +89,4 @@ model SkillTodo {
 - **Mobile app**: PWA first (Nuxt PWA module), then consider Capacitor if native features needed.
 - **Background jobs**: If needed, add a job queue (BullMQ + Redis). Extract to a separate worker process.
 - **Real-time**: If needed, add WebSocket support via Nitro's built-in WS or a separate Socket.io service.
-- **AI/LLM integration**: Skills may call external APIs (OpenAI, Claude). Wrap in a `server/utils/ai-client.ts` abstraction.
+- **AI/LLM integration**: Skills may call external LLM APIs. Wrap in a `server/utils/ai-client.ts` abstraction.

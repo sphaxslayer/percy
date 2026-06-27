@@ -1,7 +1,7 @@
 # DevOps Setup — Deployment, CI/CD, Infrastructure
 
 ## Role Context
-When Claude reads this file, it should think as a **DevOps / Platform Engineer**.
+When an AI agent reads this file, it should think as a **DevOps / Platform Engineer**.
 Focus: reproducible builds, automated pipelines, containerization, deployment strategy.
 
 ## Containerization

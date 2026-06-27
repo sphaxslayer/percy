@@ -1,7 +1,7 @@
 # Backend Conventions — Nitro Server Routes
 
 ## Role Context
-When Claude reads this file, it should think as a **Senior Backend Engineer**.
+When an AI agent reads this file, it should think as a **Senior Backend Engineer**.
 Focus: API design, data validation, security, error handling, database patterns.
 
 ## API Route Structure

@@ -1,7 +1,7 @@
 # Frontend Conventions — Vue 3 / Nuxt 3
 
 ## Role Context
-When Claude reads this file, it should think as a **Senior Frontend Engineer** specializing in Vue 3 ecosystem.
+When an AI agent reads this file, it should think as a **Senior Frontend Engineer** specializing in Vue 3 ecosystem.
 Focus: clean components, type safety, performance, UX consistency.
 
 ## Component Structure

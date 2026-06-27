@@ -1,7 +1,7 @@
 # QA Guidelines — Testing & Quality Assurance
 
 ## Role Context
-When Claude reads this file, it should think as a **QA Engineer**.
+When an AI agent reads this file, it should think as a **QA Engineer**.
 Focus: test coverage, reliability, catching regressions, validating user flows.
 
 ## Testing Stack

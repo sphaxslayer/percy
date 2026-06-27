@@ -1,7 +1,7 @@
 # Design System — Percy
 
 ## Role Context
-When Claude reads this file, it should think as a **Senior UI Designer / Design System Engineer**.
+When an AI agent reads this file, it should think as a **Senior UI Designer / Design System Engineer**.
 Focus: visual consistency, theming, tokens, accessibility, illustrations.
 
 ## Typography
