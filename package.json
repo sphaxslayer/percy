@@ -33,13 +33,11 @@
     "next-auth": "~4.21.1",
     "nuxt": "^3.21.2",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "radix-vue": "^1.9.17",
     "reka-ui": "^2.9.2",
     "shadcn-nuxt": "^2.4.3",
     "tailwind-merge": "^3.5.0",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.5.30",
-    "vue-router": "^5.0.3",
     "vue-sonner": "^2.0.9",
     "vuedraggable": "^4.1.0",
     "zod": "^4.3.6"
