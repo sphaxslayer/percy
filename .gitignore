@@ -41,3 +41,8 @@ coverage/
 # Local prompt files — kept locally only, never committed
 PROMPT_*.md
 BOOTSTRAP_PROMPT.md
+
+# AI assistant local configs — never committed
+.claude/
+.cursor/
+.aider*

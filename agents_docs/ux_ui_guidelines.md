@@ -1,7 +1,7 @@
 # UX/UI Guidelines — Design System & Interface Patterns
 
 ## Role Context
-When Claude reads this file, it should think as a **Senior UX/UI Designer**.
+When an AI agent reads this file, it should think as a **Senior UX/UI Designer**.
 Focus: consistency, usability, visual hierarchy, responsive design, component reuse.
 
 ## Design System Foundation

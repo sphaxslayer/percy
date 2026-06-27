@@ -17,8 +17,8 @@ Percy is a modular personal assistant web application. It provides the user with
 
 ```
 percy/
-├── CLAUDE.md                  # This file — project-level instructions
-├── agent_docs/                # Progressive disclosure docs for Claude
+├── AGENTS.md                  # This file — project-level instructions
+├── agents_docs/               # Progressive disclosure docs for AI agents
 │   ├── architecture.md        # System architecture & conventions
 │   ├── frontend_conventions.md
 │   ├── backend_conventions.md
@@ -72,27 +72,28 @@ percy/
 - Emits: define with `defineEmits<{ ... }>()`.
 - Use composables (`use*.ts`) for reusable logic, not mixins.
 - **Design system — STRICT RULE**: NEVER use hardcoded Tailwind color classes (`slate-`, `gray-`, `blue-`, `red-`, `green-`, etc.) anywhere in `.vue` files. ALWAYS use `percy-*` tokens (`text-percy-danger`, `bg-percy-primary`, `border-percy-border`, etc.). The full token list is in `app/assets/css/themes.css`. This applies to every color in every context — including error messages, badges, buttons, borders, backgrounds — with no exceptions.
-- Read `@agent_docs/frontend_conventions.md` before any frontend work.
-- Read `@agent_docs/design_system.md` before writing any component styles.
+- Read `@agents_docs/frontend_conventions.md` before any frontend work.
+- Read `@agents_docs/design_system.md` before writing any component styles.
 
 ### Backend (Nitro server routes)
 - API routes in `server/api/` follow REST conventions.
 - Route files: `server/api/skills/[id].get.ts`, `server/api/skills/index.post.ts`.
 - Always validate input with Zod schemas.
 - Use Prisma for all DB access. Never write raw SQL unless justified.
-- Read `@agent_docs/backend_conventions.md` before any backend work.
+- Read `@agents_docs/backend_conventions.md` before any backend work.
 
 ### Testing
 - Every new feature must include unit tests (Vitest) at minimum.
 - Critical user flows require e2e tests (Playwright).
 - Run `pnpm test` before any commit.
-- Read `@agent_docs/qa_guidelines.md` before writing tests.
+- Read `@agents_docs/qa_guidelines.md` before writing tests.
 
 ### Git Workflow
 - Branch naming: `feature/<skill-name>`, `fix/<description>`, `chore/<description>`.
 - Commits: Conventional Commits format (`feat:`, `fix:`, `chore:`, `test:`, `docs:`).
 - Always create a feature branch. Never commit directly to `main`.
 - Each PR must pass CI (lint + type-check + tests) before merge.
+- **NEVER add `Co-Authored-By` trailers referencing AI tools** (no `Claude`, `Anthropic`, `noreply@anthropic.com`, etc.). The sole author of every commit is the user. This applies to all commits, on all branches, without exception.
 
 ## Skills Architecture
 Each skill is a self-contained module:
@@ -104,7 +105,7 @@ server/api/skills/<skill-name>/        # API endpoints
 prisma/migrations/                     # DB migrations if needed
 ```
 
-To add a new skill, read `@agent_docs/architecture.md` for the full checklist.
+To add a new skill, read `@agents_docs/architecture.md` for the full checklist.
 
 ## Commands
 ```bash
@@ -120,7 +121,7 @@ pnpm db:studio    # Open Prisma Studio (DB GUI)
 ```
 
 ## Important Notes
-- ALWAYS read the relevant `agent_docs/*.md` file before starting work in a domain.
-- When in doubt about architecture decisions, refer to `agent_docs/architecture.md`.
+- ALWAYS read the relevant `agents_docs/*.md` file before starting work in a domain.
+- When in doubt about architecture decisions, refer to `agents_docs/architecture.md`.
 - The user is learning Vue 3/Nuxt/Node.js — explain non-obvious patterns in comments.
 - Prefer explicit code over clever abstractions. Readability > brevity.

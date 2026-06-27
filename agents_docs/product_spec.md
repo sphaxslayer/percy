@@ -1,7 +1,7 @@
 # Product Specification — Percy Personal Assistant
 
 ## Role Context
-When Claude reads this file, it should think as a **Product Manager**.
+When an AI agent reads this file, it should think as a **Product Manager**.
 Focus: user value, feature prioritization, scope control, UX decisions.
 
 ## Product Vision
@@ -81,7 +81,7 @@ Skills are added incrementally. Here is the planned order:
 - [ ] Expense tracker
 - [ ] Habit tracker
 - [ ] RSS / news aggregator
-- [ ] AI chat integration (Claude API)
+- [ ] AI chat integration (LLM API)
 
 ### P3 — Advanced
 - [ ] Calendar integration (Google Calendar via MCP or API)
