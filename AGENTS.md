@@ -94,6 +94,7 @@ percy/
 - Always create a feature branch. Never commit directly to `main`.
 - Each PR must pass CI (lint + type-check + tests) before merge.
 - **NEVER add `Co-Authored-By` trailers referencing AI tools** (no `Claude`, `Anthropic`, `noreply@anthropic.com`, etc.). The sole author of every commit is the user. This applies to all commits, on all branches, without exception.
+- **NEVER commit or push without explicit per-action user approval.** Before any `git commit` or `git push` (including `--force-with-lease`, tag pushes, remote branch deletions): list the changed files, show the diff, present the proposed commit message, and **wait for explicit validation**. If multiple logical changes are staged, propose splitting into separate commits so the user can validate/exclude individually. Exceptions only when the user explicitly authorizes them for that specific case.
 
 ## Skills Architecture
 Each skill is a self-contained module:
