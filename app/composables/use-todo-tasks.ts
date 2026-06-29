@@ -1,44 +1,49 @@
 /**
  * app/composables/use-todo-tasks.ts — CRUD composable for todo tasks.
- * Handles filtering, status changes, and subtask management.
+ * Wraps useCrudList for the basic CRUD and layers task-specific concerns
+ * on top: subtasks, status helpers, and client-side filtering / sorting.
  */
 import { ref, computed } from 'vue';
+import { useCrudList } from './use-crud-list';
 import type { TodoTask, TodoTaskInput, TodoTaskFilters, TodoSubtask } from '~/types/todo';
 
 const API_BASE = '/api/skills/todo-at-home/tasks';
 
 export function useTodoTasks() {
-  const tasks = ref<TodoTask[]>([]);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
+  const crud = useCrudList<TodoTask, TodoTaskInput, Partial<TodoTaskInput>>({
+    baseUrl: API_BASE,
+    fetchErrorMessage: 'Impossible de charger les tâches',
+  });
+
   const filters = ref<TodoTaskFilters>({});
 
-  // ─── Computed ───────────────────────────────────────────────────────
-  const openTasks = computed(() => tasks.value.filter((t) => t.status !== 'done'));
-  const doneTasks = computed(() => tasks.value.filter((t) => t.status === 'done'));
-  const urgentTasks = computed(() => tasks.value.filter((t) => t.priority === 'high' && t.status !== 'done'));
+  // ─── Computed views ─────────────────────────────────────────────────
+  const openTasks = computed(() => crud.items.value.filter((t) => t.status !== 'done'));
+  const doneTasks = computed(() => crud.items.value.filter((t) => t.status === 'done'));
+  const urgentTasks = computed(() =>
+    crud.items.value.filter((t) => t.priority === 'high' && t.status !== 'done'),
+  );
 
   const tasksByStatus = computed(() => ({
-    todo: tasks.value.filter((t) => t.status === 'todo'),
-    in_progress: tasks.value.filter((t) => t.status === 'in_progress'),
-    done: tasks.value.filter((t) => t.status === 'done'),
+    todo: crud.items.value.filter((t) => t.status === 'todo'),
+    in_progress: crud.items.value.filter((t) => t.status === 'in_progress'),
+    done: crud.items.value.filter((t) => t.status === 'done'),
   }));
 
   const openCount = computed(() => openTasks.value.length);
   const urgentCount = computed(() => urgentTasks.value.length);
 
   /**
-   * Client-side filtered + sorted view of tasks.
-   * All filter/sort operations happen here — no extra API calls.
-   * The search input can type freely without re-fetching or losing focus.
+   * Client-side filtered + sorted view of tasks. All filter/sort logic
+   * runs here so the search input never re-fetches or loses focus.
    */
   const filteredTasks = computed(() => {
     const { search, contextId, status, priority, assigneeId, sort } = filters.value;
-    let result = tasks.value;
+    let result = crud.items.value;
 
     if (search) {
       const q = search.toLowerCase();
-      // Match task title OR the context name it belongs to
+      // Match task title OR the context name it belongs to.
       result = result.filter(
         (t) => t.title.toLowerCase().includes(q) || t.context.name.toLowerCase().includes(q),
       );
@@ -56,7 +61,7 @@ export function useTodoTasks() {
       result = result.filter((t) => t.assigneeId === assigneeId);
     }
 
-    // Sort on top of whatever order the API returned
+    // Sort on top of whatever order the API returned.
     if (sort === 'dueDate') {
       result = [...result].sort((a, b) => {
         if (!a.dueDate && !b.dueDate) return 0;
@@ -72,72 +77,30 @@ export function useTodoTasks() {
     } else if (sort === 'name') {
       result = [...result].sort((a, b) => a.title.localeCompare(b.title, 'fr'));
     }
-    // 'createdAt' (default): API already returns newest-first, no re-sort needed
+    // 'createdAt' (default): API already returns newest-first, no re-sort needed.
 
     return result;
   });
 
   /**
-   * True when any search or filter chip is active (not counting sort alone).
-   * Used by the page to switch from card grid → flat task list.
+   * True when any search or filter chip is active (sort alone does not count).
+   * The page uses this to switch from the card grid to a flat task list.
    */
   const hasActiveFilters = computed(() => {
     const { search, status, priority, contextId, assigneeId } = filters.value;
     return !!(search || status || priority || contextId || assigneeId);
   });
 
-  // ─── Fetch ──────────────────────────────────────────────────────────
-  /**
-   * Always fetches ALL tasks (no server-side filtering).
-   * Filtering/sorting is done client-side via filteredTasks.
-   */
-  async function fetchTasks() {
-    loading.value = true;
-    error.value = null;
-    try {
-      const res = await $fetch<{ data: TodoTask[] }>(API_BASE);
-      tasks.value = res.data;
-    } catch {
-      error.value = 'Impossible de charger les tâches';
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  // ─── Mutations ──────────────────────────────────────────────────────
-  async function addTask(input: TodoTaskInput) {
-    const res = await $fetch<{ data: TodoTask }>(API_BASE, {
-      method: 'POST',
-      body: input,
-    });
-    tasks.value = [res.data, ...tasks.value];
-    return res.data;
-  }
-
-  async function updateTask(id: string, data: Partial<TodoTaskInput>) {
-    const res = await $fetch<{ data: TodoTask }>(`${API_BASE}/${id}`, {
-      method: 'PATCH',
-      body: data,
-    });
-    tasks.value = tasks.value.map((t) => (t.id === id ? res.data : t));
-    return res.data;
-  }
-
-  async function removeTask(id: string) {
-    await $fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-    tasks.value = tasks.value.filter((t) => t.id !== id);
-  }
-
-  // ─── Status changes ────────────────────────────────────────────────
+  // ─── Status helpers ────────────────────────────────────────────────
   async function toggleTaskDone(id: string) {
-    const task = tasks.value.find((t) => t.id === id);
+    const task = crud.items.value.find((t) => t.id === id);
     if (!task) return;
     const newStatus = task.status === 'done' ? 'todo' : 'done';
-    return updateTask(id, { status: newStatus });
+    return crud.update(id, { status: newStatus });
   }
 
   async function setTaskStatus(id: string, status: TodoTask['status']) {
-    return updateTask(id, { status });
+    return crud.update(id, { status });
   }
 
   // ─── Subtasks ───────────────────────────────────────────────────────
@@ -146,7 +109,7 @@ export function useTodoTasks() {
       method: 'POST',
       body: { title },
     });
-    const task = tasks.value.find((t) => t.id === taskId);
+    const task = crud.items.value.find((t) => t.id === taskId);
     if (task) {
       task.subtasks = [...task.subtasks, res.data];
     }
@@ -154,21 +117,21 @@ export function useTodoTasks() {
   }
 
   async function toggleSubtask(taskId: string, subtaskId: string) {
-    const task = tasks.value.find((t) => t.id === taskId);
+    const task = crud.items.value.find((t) => t.id === taskId);
     const subtask = task?.subtasks.find((s) => s.id === subtaskId);
     if (!task || !subtask) return;
 
-    const res = await $fetch<{ data: TodoSubtask }>(`${API_BASE}/${taskId}/subtasks/${subtaskId}`, {
-      method: 'PATCH',
-      body: { completed: !subtask.completed },
-    });
+    const res = await $fetch<{ data: TodoSubtask }>(
+      `${API_BASE}/${taskId}/subtasks/${subtaskId}`,
+      { method: 'PATCH', body: { completed: !subtask.completed } },
+    );
     task.subtasks = task.subtasks.map((s) => (s.id === subtaskId ? res.data : s));
     return res.data;
   }
 
   async function removeSubtask(taskId: string, subtaskId: string) {
     await $fetch(`${API_BASE}/${taskId}/subtasks/${subtaskId}`, { method: 'DELETE' });
-    const task = tasks.value.find((t) => t.id === taskId);
+    const task = crud.items.value.find((t) => t.id === taskId);
     if (task) {
       task.subtasks = task.subtasks.filter((s) => s.id !== subtaskId);
     }
@@ -185,9 +148,9 @@ export function useTodoTasks() {
 
   return {
     // State
-    tasks,
-    loading,
-    error,
+    tasks: crud.items,
+    loading: crud.loading,
+    error: crud.error,
     filters,
     // Computed
     openTasks,
@@ -199,11 +162,12 @@ export function useTodoTasks() {
     // Computed (filtered)
     filteredTasks,
     hasActiveFilters,
-    // Actions
-    fetchTasks,
-    addTask,
-    updateTask,
-    removeTask,
+    // CRUD (delegated to useCrudList)
+    fetchTasks: crud.fetchAll,
+    addTask: crud.add,
+    updateTask: crud.update,
+    removeTask: crud.remove,
+    // Status helpers
     toggleTaskDone,
     setTaskStatus,
     // Subtasks

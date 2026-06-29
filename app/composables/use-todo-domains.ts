@@ -1,59 +1,27 @@
 /**
  * app/composables/use-todo-domains.ts — CRUD composable for todo domains.
+ * Thin wrapper around useCrudList that exposes a skill-friendly API
+ * (domains/addDomain/...) while keeping the generic behaviour underneath.
  */
-import { ref } from 'vue';
+import { useCrudList } from './use-crud-list';
 import type { TodoDomain } from '~/types/todo';
 
-const API_BASE = '/api/skills/todo-at-home/domains';
+type DomainCreateInput = { name: string; icon?: string; description?: string };
+type DomainUpdateInput = Partial<Pick<TodoDomain, 'name' | 'icon' | 'description'>>;
 
 export function useTodoDomains() {
-  const domains = ref<TodoDomain[]>([]);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
-
-  async function fetchDomains() {
-    loading.value = true;
-    error.value = null;
-    try {
-      const res = await $fetch<{ data: TodoDomain[] }>(API_BASE);
-      domains.value = res.data;
-    } catch {
-      error.value = 'Impossible de charger les domaines';
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function addDomain(input: { name: string; icon?: string; description?: string }) {
-    const res = await $fetch<{ data: TodoDomain }>(API_BASE, {
-      method: 'POST',
-      body: input,
-    });
-    domains.value = [...domains.value, res.data];
-    return res.data;
-  }
-
-  async function updateDomain(id: string, data: Partial<Pick<TodoDomain, 'name' | 'icon' | 'description'>>) {
-    const res = await $fetch<{ data: TodoDomain }>(`${API_BASE}/${id}`, {
-      method: 'PATCH',
-      body: data,
-    });
-    domains.value = domains.value.map((d) => (d.id === id ? res.data : d));
-    return res.data;
-  }
-
-  async function removeDomain(id: string) {
-    await $fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-    domains.value = domains.value.filter((d) => d.id !== id);
-  }
+  const crud = useCrudList<TodoDomain, DomainCreateInput, DomainUpdateInput>({
+    baseUrl: '/api/skills/todo-at-home/domains',
+    fetchErrorMessage: 'Impossible de charger les domaines',
+  });
 
   return {
-    domains,
-    loading,
-    error,
-    fetchDomains,
-    addDomain,
-    updateDomain,
-    removeDomain,
+    domains: crud.items,
+    loading: crud.loading,
+    error: crud.error,
+    fetchDomains: crud.fetchAll,
+    addDomain: crud.add,
+    updateDomain: crud.update,
+    removeDomain: crud.remove,
   };
 }
