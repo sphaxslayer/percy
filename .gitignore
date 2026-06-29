@@ -49,3 +49,6 @@ BOOTSTRAP_PROMPT.md
 
 # Project state — kept locally only, never committed
 agents_docs/project_state.md
+
+# Prisma 7 generated client (run pnpm db:generate to regenerate)
+generated/
