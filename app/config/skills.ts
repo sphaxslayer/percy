@@ -9,7 +9,7 @@
  * 3. Add a SkillDefinition entry to the `skills` array below
  */
 import type { Component } from 'vue';
-import { ShoppingCart, ClipboardList } from 'lucide-vue-next';
+import { ShoppingCart, ClipboardList, ChefHat } from 'lucide-vue-next';
 import { ROUTES } from '~/lib/routes';
 
 /**
@@ -57,6 +57,16 @@ export const skills: SkillDefinition[] = [
     iconComponent: ClipboardList as Component,
     route: ROUTES.skills.todoAtHome,
     dashboardComponent: 'TodoSummary',
+    enabled: true,
+  },
+  {
+    id: 'meal-planner',
+    name: 'Planificateur de repas',
+    description: 'Gérez vos recettes et planifiez les repas de la semaine',
+    icon: 'ChefHat',
+    iconComponent: ChefHat as Component,
+    route: ROUTES.skills.mealPlanner,
+    dashboardComponent: 'MealPlannerSummary',
     enabled: true,
   },
 ];

@@ -33,6 +33,10 @@ model User {
   todoDomains  TodoDomain[]
   todoContexts TodoContext[]
   todoTasks    TodoTask[]
+
+  // Skill: Meal Planner
+  recipes    Recipe[]
+  mealSlots  MealSlot[]
 }
 
 // ─── Skill: Grocery List ───────────────────────────────────────────
@@ -179,4 +183,58 @@ model TodoSubtask {
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ─── Skill: Meal Planner ─────────────────────────────────────────────
+
+/// A reusable recipe with its ingredient list.
+model Recipe {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  imageUrl    String?
+  servings    Int      @default(2)
+  prepMinutes Int?
+  cookMinutes Int?
+
+  ingredients RecipeIngredient[]
+  mealSlots   MealSlot[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, name])
+}
+
+/// A single ingredient line of a recipe (name + optional quantity/unit).
+model RecipeIngredient {
+  id        String  @id @default(cuid())
+  recipeId  String
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  name      String
+  quantity  Float?
+  unit      String?
+  sortOrder Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// A planned meal: one row per (date, mealType) slot.
+/// recipeId is optional so a slot can be created empty and assigned later.
+model MealSlot {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime // stored at 00:00 UTC of the planned day
+  mealType  String   // "breakfast" | "lunch" | "dinner" | "snack"
+  recipeId  String?
+  recipe    Recipe?  @relation(fields: [recipeId], references: [id], onDelete: SetNull)
+  servings  Int?     // overrides Recipe.servings when set
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date, mealType])
 }
