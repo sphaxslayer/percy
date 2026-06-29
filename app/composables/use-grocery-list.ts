@@ -6,6 +6,7 @@
  */
 import { ref, computed } from 'vue';
 import { useOfflineQueue } from './use-offline-queue';
+import { useReorderableList } from './use-reorderable-list';
 import type {
   GroceryItem,
   GroceryItemInput,
@@ -234,15 +235,7 @@ export function useGroceryList() {
     );
   }
 
-  async function reorderItems(updates: Array<{ id: string; sortOrder: number }>) {
-    // Optimistic update — apply new sortOrders locally immediately
-    const sortMap = new Map(updates.map((u) => [u.id, u.sortOrder]));
-    items.value = items.value.map((i) =>
-      sortMap.has(i.id) ? { ...i, sortOrder: sortMap.get(i.id)! } : i,
-    );
-
-    await $fetch(`${API_BASE}/items-reorder`, { method: 'PATCH', body: { items: updates } });
-  }
+  const { reorder: reorderItems } = useReorderableList(items, `${API_BASE}/items-reorder`);
 
   return {
     // State

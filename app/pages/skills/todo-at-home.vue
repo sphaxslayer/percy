@@ -18,7 +18,14 @@ definePageMeta({
 // ─── Composables ─────────────────────────────────────────────────────
 const { members, fetchMembers, addMember, removeMember } = useHouseholdMembers();
 const { domains, fetchDomains } = useTodoDomains();
-const { contexts, fetchContexts, addContext, updateContext, removeContext } = useTodoContexts();
+const {
+  contexts,
+  fetchContexts,
+  addContext,
+  updateContext,
+  removeContext,
+  reorderContexts,
+} = useTodoContexts();
 const {
   tasks,
   filteredTasks,
@@ -124,7 +131,10 @@ async function handleAddContext(payload: { domainId: string; name: string; color
 }
 
 async function handleReorderContexts(items: Array<{ id: string; sortOrder: number }>) {
-  await $fetch('/api/skills/todo-at-home/contexts-reorder', { method: 'PATCH', body: { items } });
+  // useReorderableList applies the new sortOrder locally and PATCHes the bulk
+  // update; an explicit refetch keeps subsequent renders honest if the server
+  // re-normalised any values.
+  await reorderContexts(items);
   await fetchContexts();
 }
 

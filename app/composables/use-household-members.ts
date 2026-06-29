@@ -2,67 +2,34 @@
  * app/composables/use-household-members.ts — Shared composable for household members.
  * Used by TodoAtHome for task assignment, and potentially by other skills.
  */
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
+import { useCrudList } from './use-crud-list';
 import type { HouseholdMember } from '~/types/todo';
 
-const API_BASE = '/api/household/members';
+type MemberCreateInput = { name: string; avatar?: string; role?: string };
+type MemberUpdateInput = Partial<Pick<HouseholdMember, 'name' | 'avatar' | 'role'>>;
 
 export function useHouseholdMembers() {
-  const members = ref<HouseholdMember[]>([]);
-  const loading = ref(false);
-  const error = ref<string | null>(null);
+  const crud = useCrudList<HouseholdMember, MemberCreateInput, MemberUpdateInput>({
+    baseUrl: '/api/household/members',
+    fetchErrorMessage: 'Impossible de charger les membres du foyer',
+  });
 
-  const memberCount = computed(() => members.value.length);
-
-  async function fetchMembers() {
-    loading.value = true;
-    error.value = null;
-    try {
-      const res = await $fetch<{ data: HouseholdMember[] }>(API_BASE);
-      members.value = res.data;
-    } catch {
-      error.value = 'Impossible de charger les membres du foyer';
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function addMember(input: { name: string; avatar?: string; role?: string }) {
-    const res = await $fetch<{ data: HouseholdMember }>(API_BASE, {
-      method: 'POST',
-      body: input,
-    });
-    members.value = [...members.value, res.data];
-    return res.data;
-  }
-
-  async function updateMember(id: string, data: Partial<Pick<HouseholdMember, 'name' | 'avatar' | 'role'>>) {
-    const res = await $fetch<{ data: HouseholdMember }>(`${API_BASE}/${id}`, {
-      method: 'PATCH',
-      body: data,
-    });
-    members.value = members.value.map((m) => (m.id === id ? res.data : m));
-    return res.data;
-  }
-
-  async function removeMember(id: string) {
-    await $fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-    members.value = members.value.filter((m) => m.id !== id);
-  }
+  const memberCount = computed(() => crud.items.value.length);
 
   function getMemberById(id: string) {
-    return members.value.find((m) => m.id === id) ?? null;
+    return crud.items.value.find((m) => m.id === id) ?? null;
   }
 
   return {
-    members,
-    loading,
-    error,
+    members: crud.items,
+    loading: crud.loading,
+    error: crud.error,
     memberCount,
-    fetchMembers,
-    addMember,
-    updateMember,
-    removeMember,
+    fetchMembers: crud.fetchAll,
+    addMember: crud.add,
+    updateMember: crud.update,
+    removeMember: crud.remove,
     getMemberById,
   };
 }
