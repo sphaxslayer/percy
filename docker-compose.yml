@@ -10,7 +10,9 @@ services:
       POSTGRES_PASSWORD: percy
       POSTGRES_DB: percy
     ports:
-      - '5432:5432'
+      # Local host port 55432 → container 5432 to avoid collisions with other
+      # PostgreSQL instances running on the dev machine.
+      - '55432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
