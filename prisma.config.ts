@@ -2,9 +2,18 @@
  * prisma.config.ts — Prisma 7 CLI configuration.
  * Holds the database connection URL for CLI commands (migrate, db push, db execute).
  * Runtime queries instantiate PrismaClient with @prisma/adapter-pg (see server/utils/prisma.ts).
- * The Prisma CLI loads `.env` automatically — no need to import dotenv here.
+ *
+ * Local dev: load `.env` via Node 22's built-in `process.loadEnvFile` so
+ * developers don't have to remember to source it. CI sets DATABASE_URL
+ * directly in workflow env, so the file may be absent — we guard with
+ * existsSync to keep this no-op there.
  */
+import { existsSync } from 'node:fs';
 import { defineConfig } from 'prisma/config';
+
+if (existsSync('.env')) {
+  process.loadEnvFile('.env');
+}
 
 // We read DATABASE_URL via process.env (with empty fallback) instead of
 // Prisma's strict env() helper. The helper throws when the var is unset,

@@ -57,14 +57,22 @@ model SkillTodo {
 - Every `server/api/` route that handles user data MUST check authentication via `getServerSession()`.
 
 ### 5. Adding a New Skill — Checklist
-1. Create the page: `app/pages/skills/<name>.vue`
-2. Create components dir: `app/components/skills/<name>/`
-3. Create composable: `app/composables/use-<name>.ts`
-4. Create API routes: `server/api/skills/<name>/`
-5. If DB needed: add models to `prisma/schema.prisma` + run migration
-6. Register the skill in the dashboard skill registry (`app/config/skills.ts`)
-7. Write unit tests: `tests/unit/skills/<name>/`
-8. Write at least one e2e test: `tests/e2e/skills/<name>.spec.ts`
+1. Add models to `prisma/schema.prisma` (prefix names with the skill) + run `pnpm db:push` (or `pnpm db:migrate` for shippable migrations). Link the new models back to `User`.
+2. Add routes/endpoints to `app/lib/routes.ts`:
+   - `ROUTES.skills.<skillCamel>` for the page path
+   - `API.skills.<skillCamel>.<resource>` for every REST endpoint
+3. Create types: `app/types/<skill>.ts` (wire format — dates as ISO strings).
+4. Create API routes: `server/api/skills/<skill>/` (Zod-validated, Prisma-backed, all using `requireUserId`).
+5. Create composables: `app/composables/use-<skill>-<resource>.ts`.
+   - For standard CRUD lists, wrap `useCrudList<T>()` (see `app/composables/use-crud-list.ts`).
+   - For drag-drop reorder, use `useReorderableList<T>()` (PATCH bulk with optimistic local update).
+   - Keep skill-specific helpers (computed, status helpers, cross-skill bridges) inside the wrapper.
+6. Create the page: `app/pages/skills/<skill>.vue` (`definePageMeta({ middleware: 'auth' })`).
+7. Create components dir: `app/components/skills/<skill>/` (kebab-case file names).
+8. Register the skill in `app/config/skills.ts` (icon, name, `route: ROUTES.skills.<skillCamel>`).
+9. If the skill has a dashboard preview, add a `*-summary.vue` component and wire it in `app/pages/dashboard.vue`.
+10. Write unit tests: `tests/unit/skills/<skill>/` (composables — at minimum fetch + one mutation).
+11. Write at least one e2e happy path: `tests/e2e/skills/<skill>.spec.ts`.
 
 ### 6. API Design Conventions
 - RESTful routes.

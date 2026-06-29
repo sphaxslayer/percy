@@ -23,6 +23,7 @@ export const ROUTES = {
   skills: {
     groceryList: '/skills/grocery-list',
     todoAtHome: '/skills/todo-at-home',
+    mealPlanner: '/skills/meal-planner',
   },
 } as const;
 
@@ -50,6 +51,10 @@ export const API = {
       illustrations: '/api/skills/todo-at-home/illustrations',
       upload: '/api/skills/todo-at-home/upload',
       seed: '/api/skills/todo-at-home/seed',
+    },
+    mealPlanner: {
+      recipes: '/api/skills/meal-planner/recipes',
+      mealSlots: '/api/skills/meal-planner/meal-slots',
     },
   },
 } as const;
