@@ -10,6 +10,7 @@
 -->
 <script setup lang="ts">
 import { useThemeStore } from '~/stores/use-theme-store';
+import { API } from '~/lib/routes';
 
 interface IllustrationVariant {
   id: string;
@@ -46,7 +47,7 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 // Fetch available illustrations on mount
 onMounted(async () => {
   try {
-    const res = await $fetch<{ data: IllustrationGroup[] }>('/api/skills/todo-at-home/illustrations');
+    const res = await $fetch<{ data: IllustrationGroup[] }>(API.skills.todoAtHome.illustrations);
     groups.value = res.data;
   } catch {
     // Graceful degradation: picker still works with upload-only if API fails
@@ -82,7 +83,7 @@ async function handleFileChange(event: Event) {
   try {
     const formData = new FormData();
     formData.append('image', file);
-    const res = await $fetch<{ data: { url: string } }>('/api/skills/todo-at-home/upload', {
+    const res = await $fetch<{ data: { url: string } }>(API.skills.todoAtHome.upload, {
       method: 'POST',
       body: formData,
     });

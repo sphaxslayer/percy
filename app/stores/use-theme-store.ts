@@ -4,6 +4,7 @@
  * The theme is applied as a data-theme attribute on <html> so CSS variables resolve correctly.
  * Dark/light mode is handled separately by @nuxtjs/color-mode.
  */
+import { ASSETS } from '~/lib/routes';
 
 export type ThemeName = 'terracotta' | 'saphir';
 export type IllustrationSet = 'warm' | 'daylight';
@@ -13,7 +14,7 @@ export const useThemeStore = defineStore('theme', () => {
   const illustrationSet = ref<IllustrationSet>('warm');
 
   /** Base path for context illustrations (e.g. /images/contexts/warm) */
-  const illustrationBasePath = computed(() => `/images/contexts/${illustrationSet.value}`);
+  const illustrationBasePath = computed(() => `${ASSETS.contexts.base}/${illustrationSet.value}`);
 
   function setTheme(t: ThemeName) {
     theme.value = t;

@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useHouseholdMembers } from '~/composables/use-household-members';
+import { API } from '~/lib/routes';
 
 const mockFetch = vi.fn();
 vi.stubGlobal('$fetch', mockFetch);
@@ -29,7 +30,7 @@ describe('useHouseholdMembers', () => {
 
     expect(members.value).toEqual([TEST_MEMBER]);
     expect(memberCount.value).toBe(1);
-    expect(mockFetch).toHaveBeenCalledWith('/api/household/members');
+    expect(mockFetch).toHaveBeenCalledWith(API.household.members);
   });
 
   it('fetchMembers sets error on failure', async () => {

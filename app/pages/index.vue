@@ -4,14 +4,16 @@
   This page never renders any visible content.
 -->
 <script setup lang="ts">
+import { ROUTES } from '~/lib/routes';
+
 const { status } = useAuth();
 
 // Redirect based on authentication state
 watchEffect(() => {
   if (status.value === 'authenticated') {
-    navigateTo('/dashboard');
+    navigateTo(ROUTES.dashboard);
   } else if (status.value === 'unauthenticated') {
-    navigateTo('/login');
+    navigateTo(ROUTES.login);
   }
   // While status is 'loading', we wait (no redirect)
 });

@@ -10,6 +10,7 @@
  */
 import type { Component } from 'vue';
 import { ShoppingCart, ClipboardList } from 'lucide-vue-next';
+import { ROUTES } from '~/lib/routes';
 
 /**
  * Defines metadata for a skill module.
@@ -45,7 +46,7 @@ export const skills: SkillDefinition[] = [
     description: 'Gérez vos listes de courses intelligemment',
     icon: 'ShoppingCart',
     iconComponent: ShoppingCart as Component,
-    route: '/skills/grocery-list',
+    route: ROUTES.skills.groceryList,
     enabled: true,
   },
   {
@@ -54,7 +55,7 @@ export const skills: SkillDefinition[] = [
     description: 'Organisez vos tâches domestiques par pièce et contexte',
     icon: 'ClipboardList',
     iconComponent: ClipboardList as Component,
-    route: '/skills/todo-at-home',
+    route: ROUTES.skills.todoAtHome,
     dashboardComponent: 'TodoSummary',
     enabled: true,
   },

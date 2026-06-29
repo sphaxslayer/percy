@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { X, LayoutDashboard, Settings } from 'lucide-vue-next';
 import { skills } from '~/config/skills';
+import { ROUTES } from '~/lib/routes';
 
 const props = defineProps<{
   open: boolean;
@@ -49,7 +50,7 @@ function close() {
         <!-- Navigation links -->
         <div class="overflow-y-auto p-2">
           <NuxtLink
-            to="/dashboard"
+            :to="ROUTES.dashboard"
             class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
             active-class="bg-percy-primary text-percy-primary-text font-medium"
             @click="close"
@@ -77,7 +78,7 @@ function close() {
           <!-- Settings link -->
           <div class="mt-2 border-t border-percy-border pt-2">
             <NuxtLink
-              to="/settings"
+              :to="ROUTES.settings"
               class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
               active-class="bg-percy-primary text-percy-primary-text font-medium"
               @click="close"

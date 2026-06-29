@@ -9,6 +9,7 @@ import { useHouseholdMembers } from '~/composables/use-household-members';
 import { useTodoDomains } from '~/composables/use-todo-domains';
 import { useTodoContexts } from '~/composables/use-todo-contexts';
 import { useTodoTasks } from '~/composables/use-todo-tasks';
+import { API } from '~/lib/routes';
 import type { TodoTaskFilters, ColorMode, TodoContext } from '~/types/todo';
 
 definePageMeta({
@@ -169,7 +170,7 @@ function handleFilterUpdate(newFilters: TodoTaskFilters) {
 // ─── Init ────────────────────────────────────────────────────────────
 async function initData() {
   // Seed default data on first visit (idempotent)
-  await $fetch('/api/skills/todo-at-home/seed', { method: 'POST' }).catch(() => {});
+  await $fetch(API.skills.todoAtHome.seed, { method: 'POST' }).catch(() => {});
   await Promise.all([fetchDomains(), fetchContexts(), fetchTasks(), fetchMembers()]);
 }
 

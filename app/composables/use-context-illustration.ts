@@ -4,6 +4,7 @@
  * Uses the theme store to determine which illustration set (warm/daylight) to use.
  */
 import { useThemeStore } from '~/stores/use-theme-store';
+import { ASSETS } from '~/lib/routes';
 
 const CONTEXT_SLUGS: Record<string, string> = {
   'cuisine': 'kitchen',
@@ -36,7 +37,7 @@ export function useContextIllustration() {
     if (slug) {
       return `${themeStore.illustrationBasePath}/${slug}.webp`;
     }
-    return '/images/contexts/placeholder.webp';
+    return ASSETS.contexts.placeholder;
   }
 
   return { getIllustrationPath };
