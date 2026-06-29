@@ -2,8 +2,8 @@
  * prisma.config.ts — Prisma 7 CLI configuration.
  * Holds the database connection URL for CLI commands (migrate, db push, db execute).
  * Runtime queries instantiate PrismaClient with @prisma/adapter-pg (see server/utils/prisma.ts).
+ * The Prisma CLI loads `.env` automatically — no need to import dotenv here.
  */
-import 'dotenv/config';
 import { defineConfig } from 'prisma/config';
 
 // We read DATABASE_URL via process.env (with empty fallback) instead of
