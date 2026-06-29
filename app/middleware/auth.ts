@@ -3,9 +3,11 @@
  * Protects /dashboard and /skills/* routes — redirects to /login if not authenticated.
  * This is a Nuxt route middleware: it runs before page navigation on the client.
  */
+import { ROUTES } from '~/lib/routes';
+
 export default defineNuxtRouteMiddleware((to) => {
   // Only protect dashboard and skills routes
-  const protectedPaths = ['/dashboard', '/skills'];
+  const protectedPaths = [ROUTES.dashboard, '/skills'];
   const isProtected = protectedPaths.some((path) => to.path.startsWith(path));
 
   if (!isProtected) {
@@ -16,6 +18,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const { status } = useAuth();
 
   if (status.value === 'unauthenticated') {
-    return navigateTo('/login');
+    return navigateTo(ROUTES.login);
   }
 });

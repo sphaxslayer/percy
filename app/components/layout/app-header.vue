@@ -5,6 +5,7 @@
 -->
 <script setup lang="ts">
 import { Menu, LogOut, User } from 'lucide-vue-next';
+import { ROUTES } from '~/lib/routes';
 
 const emit = defineEmits<{
   'toggle-mobile-nav': [];
@@ -19,7 +20,7 @@ const userName = computed(
 );
 
 async function handleLogout() {
-  await signOut({ redirect: true, callbackUrl: '/login' });
+  await signOut({ redirect: true, callbackUrl: ROUTES.login });
 }
 </script>
 

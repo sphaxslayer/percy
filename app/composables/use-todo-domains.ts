@@ -4,6 +4,7 @@
  * (domains/addDomain/...) while keeping the generic behaviour underneath.
  */
 import { useCrudList } from './use-crud-list';
+import { API } from '~/lib/routes';
 import type { TodoDomain } from '~/types/todo';
 
 type DomainCreateInput = { name: string; icon?: string; description?: string };
@@ -11,7 +12,7 @@ type DomainUpdateInput = Partial<Pick<TodoDomain, 'name' | 'icon' | 'description
 
 export function useTodoDomains() {
   const crud = useCrudList<TodoDomain, DomainCreateInput, DomainUpdateInput>({
-    baseUrl: '/api/skills/todo-at-home/domains',
+    baseUrl: API.skills.todoAtHome.domains,
     fetchErrorMessage: 'Impossible de charger les domaines',
   });
 

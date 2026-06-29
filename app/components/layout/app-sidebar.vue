@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { LayoutDashboard, ChevronLeft, ChevronRight, Settings } from 'lucide-vue-next';
 import { skills } from '~/config/skills';
+import { ROUTES } from '~/lib/routes';
 
 const props = defineProps<{
   collapsed: boolean;
@@ -28,7 +29,7 @@ function toggleCollapsed() {
   >
     <!-- Sidebar header with app name -->
     <div class="flex h-14 items-center border-b border-percy-border px-4">
-      <NuxtLink to="/dashboard" class="flex items-center gap-2 overflow-hidden">
+      <NuxtLink :to="ROUTES.dashboard" class="flex items-center gap-2 overflow-hidden">
         <LayoutDashboard class="h-5 w-5 shrink-0 text-percy-primary" />
         <span v-if="!collapsed" class="text-lg font-semibold text-percy-text-primary"> Percy </span>
       </NuxtLink>
@@ -37,7 +38,7 @@ function toggleCollapsed() {
     <!-- Skill navigation links -->
     <nav class="flex-1 overflow-y-auto p-2">
       <NuxtLink
-        to="/dashboard"
+        :to="ROUTES.dashboard"
         class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
         active-class="bg-percy-primary text-percy-primary-text font-medium"
         data-testid="sidebar-dashboard"
@@ -64,7 +65,7 @@ function toggleCollapsed() {
     <!-- Settings link -->
     <div class="border-t border-percy-border p-2">
       <NuxtLink
-        to="/settings"
+        :to="ROUTES.settings"
         class="mb-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm text-percy-text-secondary hover:bg-percy-bg-nav"
         active-class="bg-percy-primary text-percy-primary-text font-medium"
         data-testid="sidebar-settings"

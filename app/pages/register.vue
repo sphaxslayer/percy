@@ -5,6 +5,7 @@
 -->
 <script setup lang="ts">
 import { ref } from 'vue';
+import { API, ROUTES } from '~/lib/routes';
 
 definePageMeta({
   layout: 'auth',
@@ -32,7 +33,7 @@ async function handleRegister() {
 
   try {
     // 1. Create the account via our register API
-    await $fetch('/api/auth/register', {
+    await $fetch(API.auth.register, {
       method: 'POST',
       body: {
         email: email.value,
@@ -51,7 +52,7 @@ async function handleRegister() {
     if (result?.error) {
       error.value = 'Compte créé, mais la connexion automatique a échoué. Veuillez vous connecter.';
     } else {
-      await navigateTo('/dashboard');
+      await navigateTo(ROUTES.dashboard);
     }
   } catch (e: unknown) {
     // Extract error message from the API response
@@ -137,7 +138,7 @@ async function handleRegister() {
     <CardFooter class="justify-center">
       <p class="text-sm text-percy-text-secondary">
         Déjà un compte ?
-        <NuxtLink to="/login" class="font-medium text-primary hover:underline">
+        <NuxtLink :to="ROUTES.login" class="font-medium text-primary hover:underline">
           Se connecter
         </NuxtLink>
       </p>

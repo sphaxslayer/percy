@@ -5,6 +5,7 @@
 -->
 <script setup lang="ts">
 import { ref } from 'vue';
+import { ROUTES } from '~/lib/routes';
 
 // Use the auth layout (centered card, no sidebar)
 definePageMeta({
@@ -34,7 +35,7 @@ async function handleLogin() {
       error.value = 'Email ou mot de passe incorrect';
     } else {
       // Successful login — redirect to dashboard
-      await navigateTo('/dashboard');
+      await navigateTo(ROUTES.dashboard);
     }
   } catch {
     error.value = 'Une erreur est survenue. Veuillez réessayer.';
@@ -94,7 +95,7 @@ async function handleLogin() {
     <CardFooter class="justify-center">
       <p class="text-sm text-percy-text-secondary">
         Pas encore de compte ?
-        <NuxtLink to="/register" class="font-medium text-primary hover:underline">
+        <NuxtLink :to="ROUTES.register" class="font-medium text-primary hover:underline">
           Créer un compte
         </NuxtLink>
       </p>
