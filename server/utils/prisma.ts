@@ -1,20 +1,26 @@
 /**
- * server/utils/prisma.ts — Prisma client singleton.
- * In development, Nuxt's hot-reload creates new module instances on each change.
- * Without the singleton pattern, this would create multiple DB connections and
- * eventually exhaust the connection pool. We store the client on globalThis
- * to reuse it across hot reloads.
+ * server/utils/prisma.ts — Prisma client singleton (Prisma 7).
+ * Prisma 7 uses the driver adapter pattern: the connection string is passed
+ * to the adapter at runtime, not via schema.prisma. The PrismaClient is
+ * reused across hot reloads via globalThis in dev to avoid exhausting the
+ * DB connection pool.
  */
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '~~/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    // Log SQL queries in dev to help debug — disabled in production for performance
+function createClient(): PrismaClient {
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL,
+  });
+  return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === 'development' ? ['query'] : [],
   });
+}
+
+export const prisma = globalForPrisma.prisma ?? createClient();
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   // - via LAN IP from a phone or other device on the same network
   devServer: {
     host: '::',
+    port: 53000,
   },
 
   // Disable path-based prefixing for component auto-imports.

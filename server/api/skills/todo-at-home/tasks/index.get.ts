@@ -3,7 +3,7 @@
  * Filters: contextId, domainId, status, priority, assigneeId, search, sort, order, withDueDate.
  */
 import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '~~/generated/prisma/client';
 
 const querySchema = z.object({
   contextId: z.string().optional(),
