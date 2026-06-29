@@ -165,6 +165,74 @@ A fast, offline-capable grocery list for adding products anytime and checking th
 - `useGroceryAutocomplete()` — Debounced product search with input parsing
 - `useOfflineQueue()` — Generic offline queue with FIFO processing, retry, deduplication
 
+### TodoAtHome (Tâches à la maison)
+
+Domestic task management organised by domain → context → task → subtask, with optional assignment to household members.
+
+**Features:**
+- Three-level hierarchy: domain (e.g. "Maison") → context (e.g. "Cuisine") → task → subtask
+- Context cards with built-in illustration set + custom upload
+- Drag-drop reorder for contexts and tasks (sortOrder persisted)
+- Client-side filtering and search (search, status, priority, assignee, context)
+- Weekly agenda view + dashboard summary
+- Optional task assignment to a `HouseholdMember`
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/skills/todo-at-home/domains` | List domains |
+| POST/PATCH/DELETE | `/api/skills/todo-at-home/domains[/...]` | Domain CRUD |
+| GET | `/api/skills/todo-at-home/contexts` | List contexts (optionally `?domainId=`) |
+| POST/PATCH/DELETE | `/api/skills/todo-at-home/contexts[/...]` | Context CRUD |
+| PATCH | `/api/skills/todo-at-home/contexts-reorder` | Bulk update context sortOrder |
+| GET/POST/PATCH/DELETE | `/api/skills/todo-at-home/tasks[/...]` | Task CRUD |
+| POST/PATCH/DELETE | `/api/skills/todo-at-home/tasks/:taskId/subtasks[/...]` | Subtask CRUD |
+| GET | `/api/skills/todo-at-home/illustrations` | List available context illustrations |
+| POST | `/api/skills/todo-at-home/upload` | Upload a custom context illustration |
+
+**Data models:** `TodoDomain`, `TodoContext`, `TodoTask`, `TodoSubtask`, `HouseholdMember` (shared).
+
+**Composables:**
+- `useTodoDomains()`, `useTodoContexts()`, `useTodoTasks()` — domain/context/task CRUD on top of `useCrudList`
+- `useTodoAgenda()` — week view derived from tasks with `dueDate`
+- `useHouseholdMembers()` — shared composable usable by any skill needing assignment
+
+### Meal Planner (Planificateur de repas)
+
+Recipe management with weekly meal planning and a one-click bridge to the Grocery List skill.
+
+**Features:**
+- Recipe library with name, description, servings, prep/cook times
+- Inline ingredient editor (name + optional quantity + optional unit)
+- Weekly planner: 7 days × 4 meal types (Petit-déjeuner / Déjeuner / Dîner / Collation)
+- Upsert semantics on `(date, mealType)` — assigning a recipe to a slot replaces any existing one
+- Week navigation (prev / next / current)
+- **Cross-skill bridge**: "Send to grocery list" button on any recipe pushes all its ingredients into the active grocery list, with optional servings multiplier
+
+**API Endpoints:**
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/skills/meal-planner/recipes` | List recipes (with ingredients) |
+| POST | `/api/skills/meal-planner/recipes` | Create a recipe (optionally with ingredients) |
+| PATCH | `/api/skills/meal-planner/recipes/:id` | Update recipe metadata |
+| DELETE | `/api/skills/meal-planner/recipes/:id` | Delete a recipe |
+| POST | `/api/skills/meal-planner/recipes/:id/ingredients` | Append an ingredient |
+| PATCH | `/api/skills/meal-planner/recipes/:id/ingredients/:ingId` | Update an ingredient |
+| DELETE | `/api/skills/meal-planner/recipes/:id/ingredients/:ingId` | Remove an ingredient |
+| POST | `/api/skills/meal-planner/recipes/:id/push-to-grocery` | Push all ingredients to the grocery list (body `{ servingsMultiplier? }`) |
+| GET | `/api/skills/meal-planner/meal-slots?from=&to=` | List meal slots in a date range (defaults to current week) |
+| POST | `/api/skills/meal-planner/meal-slots` | Upsert a slot on `(date, mealType)` |
+| PATCH | `/api/skills/meal-planner/meal-slots/:id` | Update a slot's recipe/servings/notes |
+| DELETE | `/api/skills/meal-planner/meal-slots/:id` | Remove a slot |
+
+**Data models:** `Recipe`, `RecipeIngredient`, `MealSlot` (unique on `userId+date+mealType`).
+
+**Composables:**
+- `useRecipes()` — CRUD via `useCrudList` + nested ingredient management + `pushToGrocery()` bridge
+- `useMealSlots()` — week-anchored fetch + upsert semantics + `slotsByDay` indexed lookup
+
 ## Project Structure
 
 ```

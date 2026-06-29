@@ -62,20 +62,22 @@ This registry drives the sidebar navigation, dashboard grid, and skill routing.
 ## Feature Backlog (Prioritized)
 Skills are added incrementally. Here is the planned order:
 
-### P0 — Foundation (MVP)
-- [ ] Auth: registration, login, session management
-- [ ] Dashboard: shell layout, sidebar, skill grid
-- [ ] Skill registry: dynamic skill loading from config
-- [ ] Shared model: HouseholdMember (reusable across skills)
-- [ ] First skill: **Grocery List** (see `skill_spec_grocery.md`)
-- [ ] Second skill: **TodoAtHome** (see `skill_spec_todo_at_home.md`)
+### P0 — Foundation (MVP) — shipped
+- [x] Auth: registration, login, session management
+- [x] Dashboard: shell layout, sidebar, skill grid
+- [x] Skill registry: dynamic skill loading from config
+- [x] Shared model: HouseholdMember (reusable across skills)
+- [x] First skill: **Grocery List**
+- [x] Second skill: **TodoAtHome** (domains / contexts / tasks / subtasks)
+- [x] Third skill: **Meal Planner** — recipes + weekly planning + cross-skill bridge that pushes a recipe's ingredients to the grocery list
 
 ### P1 — Essential Skills
 - [ ] Notes / quick capture
 - [ ] Bookmarks / link manager
-- [ ] Reminders / simple scheduling
+- [ ] Reminders / simple scheduling (driven by HouseholdMember birthdays + calendar events)
 - [ ] Weather widget
 - [ ] TodoAtHome extensions: domains "Vie scolaire", "Santé", "Voiture"
+- [ ] Meal Planner extensions: shopping-list aggregation for a whole week, recipe import from URL, ingredient ↔ GroceryProduct soft link
 
 ### P2 — Power Skills
 - [ ] Expense tracker
