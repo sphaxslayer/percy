@@ -6,9 +6,11 @@
  * To add a new skill:
  * 1. Create the skill files (see agents_docs/architecture.md checklist)
  * 2. Import the icon component from lucide-vue-next
- * 3. Add a SkillDefinition entry to the `skills` array below
+ * 3. If the skill has a dashboard preview widget, register it via
+ *    `defineAsyncComponent` below so it is lazy-loaded on the dashboard
+ * 4. Add a SkillDefinition entry to the `skills` array below
  */
-import type { Component } from 'vue';
+import { type Component, defineAsyncComponent } from 'vue';
 import { ShoppingCart, ClipboardList, ChefHat } from 'lucide-vue-next';
 import { ROUTES } from '~/lib/routes';
 
@@ -29,8 +31,12 @@ export interface SkillDefinition {
   iconComponent?: Component;
   /** Route path to the skill page (e.g., "/skills/grocery-list") */
   route: string;
-  /** Optional: component name for a dashboard summary widget */
-  dashboardComponent?: string;
+  /**
+   * Optional dashboard preview component (lazy-loaded). When set, it is
+   * rendered inside the SkillCard on the dashboard, wrapped in <ClientOnly>.
+   * Use `defineAsyncComponent(() => import('~/components/...'))`.
+   */
+  dashboardComponent?: Component;
   /** Whether this skill is active and visible to the user */
   enabled: boolean;
 }
@@ -47,6 +53,9 @@ export const skills: SkillDefinition[] = [
     icon: 'ShoppingCart',
     iconComponent: ShoppingCart as Component,
     route: ROUTES.skills.groceryList,
+    dashboardComponent: defineAsyncComponent(
+      () => import('~/components/skills/grocery/grocery-summary.vue'),
+    ),
     enabled: true,
   },
   {
@@ -56,7 +65,9 @@ export const skills: SkillDefinition[] = [
     icon: 'ClipboardList',
     iconComponent: ClipboardList as Component,
     route: ROUTES.skills.todoAtHome,
-    dashboardComponent: 'TodoSummary',
+    dashboardComponent: defineAsyncComponent(
+      () => import('~/components/skills/todo-at-home/todo-summary.vue'),
+    ),
     enabled: true,
   },
   {
@@ -66,7 +77,9 @@ export const skills: SkillDefinition[] = [
     icon: 'ChefHat',
     iconComponent: ChefHat as Component,
     route: ROUTES.skills.mealPlanner,
-    dashboardComponent: 'MealPlannerSummary',
+    dashboardComponent: defineAsyncComponent(
+      () => import('~/components/skills/meal-planner/meal-planner-summary.vue'),
+    ),
     enabled: true,
   },
 ];

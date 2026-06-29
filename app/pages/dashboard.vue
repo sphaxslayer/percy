@@ -28,10 +28,11 @@ const enabledSkills = computed(() => skills.filter((s) => s.enabled));
       data-testid="skills-grid"
     >
       <SkillCard v-for="skill in enabledSkills" :key="skill.id" :skill="skill">
-        <!-- Skill-specific dashboard summaries (client-only: use browser APIs) -->
-        <ClientOnly>
-          <GrocerySummary v-if="skill.id === 'grocery-list'" />
-          <MealPlannerSummary v-else-if="skill.id === 'meal-planner'" />
+        <!-- Dashboard summary component resolved from the skill registry.
+             The component must exist in app/components/ (Nuxt auto-imports
+             register them globally so `<component :is="'Name'">` resolves). -->
+        <ClientOnly v-if="skill.dashboardComponent">
+          <component :is="skill.dashboardComponent" />
         </ClientOnly>
       </SkillCard>
     </div>
