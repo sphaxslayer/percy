@@ -3,6 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useTodoTasks } from '~/composables/use-todo-tasks';
+import { API } from '~/lib/routes';
 
 const mockFetch = vi.fn();
 vi.stubGlobal('$fetch', mockFetch);
@@ -50,7 +51,7 @@ describe('useTodoTasks', () => {
     await fetchTasks();
 
     // Filtering is client-side — no query string is ever sent to the API
-    expect(mockFetch).toHaveBeenCalledWith('/api/skills/todo-at-home/tasks');
+    expect(mockFetch).toHaveBeenCalledWith(API.skills.todoAtHome.tasks);
   });
 
   it('filteredTasks filters client-side by status and search', async () => {
@@ -100,7 +101,7 @@ describe('useTodoTasks', () => {
     await toggleTaskDone('task-1');
 
     expect(mockFetch).toHaveBeenLastCalledWith(
-      '/api/skills/todo-at-home/tasks/task-1',
+      `${API.skills.todoAtHome.tasks}/task-1`,
       expect.objectContaining({ body: { status: 'done' } }),
     );
     expect(tasks.value[0]!.status).toBe('done');

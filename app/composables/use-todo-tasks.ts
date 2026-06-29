@@ -5,9 +5,10 @@
  */
 import { ref, computed } from 'vue';
 import { useCrudList } from './use-crud-list';
+import { API } from '~/lib/routes';
 import type { TodoTask, TodoTaskInput, TodoTaskFilters, TodoSubtask } from '~/types/todo';
 
-const API_BASE = '/api/skills/todo-at-home/tasks';
+const API_BASE = API.skills.todoAtHome.tasks;
 
 export function useTodoTasks() {
   const crud = useCrudList<TodoTask, TodoTaskInput, Partial<TodoTaskInput>>({

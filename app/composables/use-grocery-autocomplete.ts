@@ -5,9 +5,9 @@
  * sorted by usage frequency. Also parses quantity from input (e.g. "Bananes x6").
  */
 import { ref, watch } from 'vue';
+import { API } from '~/lib/routes';
 import type { GroceryProduct, ParsedItemInput } from '~/types/grocery';
 
-const API_BASE = '/api/skills/grocery';
 const DEBOUNCE_MS = 250;
 const MIN_QUERY_LENGTH = 2;
 
@@ -75,7 +75,7 @@ export function useGroceryAutocomplete() {
         return;
       }
 
-      const res = await $fetch<{ data: GroceryProduct[] }>(`${API_BASE}/products`, {
+      const res = await $fetch<{ data: GroceryProduct[] }>(API.skills.grocery.products, {
         query: { search: name },
       });
       suggestions.value = res.data;

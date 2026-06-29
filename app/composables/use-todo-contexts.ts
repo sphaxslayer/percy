@@ -6,6 +6,7 @@
 import { computed } from 'vue';
 import { useCrudList } from './use-crud-list';
 import { useReorderableList } from './use-reorderable-list';
+import { API } from '~/lib/routes';
 import type { TodoContext, TodoTask } from '~/types/todo';
 
 type ContextCreateInput = {
@@ -19,13 +20,13 @@ type ContextUpdateInput = Partial<Pick<TodoContext, 'name' | 'icon' | 'color' | 
 
 export function useTodoContexts() {
   const crud = useCrudList<TodoContext, ContextCreateInput, ContextUpdateInput>({
-    baseUrl: '/api/skills/todo-at-home/contexts',
+    baseUrl: API.skills.todoAtHome.contexts,
     fetchErrorMessage: 'Impossible de charger les contextes',
   });
 
   const { reorder } = useReorderableList(
     crud.items,
-    '/api/skills/todo-at-home/contexts-reorder',
+    API.skills.todoAtHome.contextsReorder,
   );
 
   /**

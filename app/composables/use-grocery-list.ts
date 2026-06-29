@@ -7,14 +7,13 @@
 import { ref, computed } from 'vue';
 import { useOfflineQueue } from './use-offline-queue';
 import { useReorderableList } from './use-reorderable-list';
+import { API } from '~/lib/routes';
 import type {
   GroceryItem,
   GroceryItemInput,
   GroceryItemGroup,
   GroceryCategory,
 } from '~/types/grocery';
-
-const API_BASE = '/api/skills/grocery';
 
 export function useGroceryList() {
   const items = ref<GroceryItem[]>([]);
@@ -77,7 +76,7 @@ export function useGroceryList() {
     loading.value = true;
     error.value = null;
     try {
-      const res = await $fetch<{ data: GroceryItem[] }>(`${API_BASE}/items`);
+      const res = await $fetch<{ data: GroceryItem[] }>(API.skills.grocery.items);
       items.value = res.data;
     } catch {
       error.value = 'Impossible de charger la liste';
@@ -88,7 +87,7 @@ export function useGroceryList() {
 
   async function fetchCategories() {
     try {
-      const res = await $fetch<{ data: GroceryCategory[] }>(`${API_BASE}/categories`);
+      const res = await $fetch<{ data: GroceryCategory[] }>(API.skills.grocery.categories);
       categories.value = res.data;
     } catch {
       // Silently fail — categories are optional
@@ -125,7 +124,7 @@ export function useGroceryList() {
       {
         entityKey: `item:${tempId}`,
         type: 'create',
-        endpoint: `${API_BASE}/items`,
+        endpoint: API.skills.grocery.items,
         method: 'POST',
         body: {
           name: input.name,
@@ -162,7 +161,7 @@ export function useGroceryList() {
       {
         entityKey: `item:${id}`,
         type: 'update',
-        endpoint: `${API_BASE}/items/${id}`,
+        endpoint: `${API.skills.grocery.items}/${id}`,
         method: 'PATCH',
         body: { checked: newChecked },
       },
@@ -188,7 +187,7 @@ export function useGroceryList() {
       {
         entityKey: `item:${id}`,
         type: 'update',
-        endpoint: `${API_BASE}/items/${id}`,
+        endpoint: `${API.skills.grocery.items}/${id}`,
         method: 'PATCH',
         body: data,
       },
@@ -209,7 +208,7 @@ export function useGroceryList() {
       {
         entityKey: `item:${id}`,
         type: 'delete',
-        endpoint: `${API_BASE}/items/${id}`,
+        endpoint: `${API.skills.grocery.items}/${id}`,
         method: 'DELETE',
       },
       () => {
@@ -226,7 +225,7 @@ export function useGroceryList() {
       {
         entityKey: 'items:checked',
         type: 'delete',
-        endpoint: `${API_BASE}/items/checked`,
+        endpoint: API.skills.grocery.itemsChecked,
         method: 'DELETE',
       },
       () => {
@@ -235,7 +234,7 @@ export function useGroceryList() {
     );
   }
 
-  const { reorder: reorderItems } = useReorderableList(items, `${API_BASE}/items-reorder`);
+  const { reorder: reorderItems } = useReorderableList(items, API.skills.grocery.itemsReorder);
 
   return {
     // State

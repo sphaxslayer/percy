@@ -4,6 +4,7 @@
  */
 import { computed } from 'vue';
 import { useCrudList } from './use-crud-list';
+import { API } from '~/lib/routes';
 import type { HouseholdMember } from '~/types/todo';
 
 type MemberCreateInput = { name: string; avatar?: string; role?: string };
@@ -11,7 +12,7 @@ type MemberUpdateInput = Partial<Pick<HouseholdMember, 'name' | 'avatar' | 'role
 
 export function useHouseholdMembers() {
   const crud = useCrudList<HouseholdMember, MemberCreateInput, MemberUpdateInput>({
-    baseUrl: '/api/household/members',
+    baseUrl: API.household.members,
     fetchErrorMessage: 'Impossible de charger les membres du foyer',
   });
 
