@@ -16,6 +16,7 @@ const emit = defineEmits<{
   toggle: [id: string];
   remove: [id: string];
   reorder: [items: Array<{ id: string; sortOrder: number }>];
+  edit: [item: GroceryItem];
 }>();
 
 const expanded = ref(true);
@@ -72,6 +73,7 @@ function onDragEnd() {
             class="flex-1"
             @toggle="emit('toggle', $event)"
             @remove="emit('remove', $event)"
+            @edit="emit('edit', item)"
           />
         </div>
       </template>

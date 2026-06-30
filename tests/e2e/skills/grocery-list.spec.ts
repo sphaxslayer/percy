@@ -212,4 +212,46 @@ test.describe('Grocery List Skill', () => {
     await page.waitForURL(/\/skills\/grocery-list/);
     await expect(page.getByTestId('grocery-title')).toBeVisible();
   });
+
+  test('can create a category from the Catégories tab', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!);
+    await page.goto('/skills/grocery-list');
+
+    // Switch to the Catégories tab.
+    await page.getByTestId('grocery-tab-categories').click();
+    await expect(page.getByTestId('grocery-category-empty')).toBeVisible();
+
+    // Add a category and verify the row appears.
+    await page.getByTestId('grocery-category-add-input').fill('Fruits & légumes');
+    await page.getByTestId('grocery-category-add-button').click();
+    await expect(page.getByText('Fruits & légumes', { exact: true })).toBeVisible({
+      timeout: 5_000,
+    });
+
+    // The category dropdown in the quick-add of the Liste tab now offers it.
+    await page.getByTestId('grocery-tab-list').click();
+    await expect(page.getByTestId('grocery-add-category')).toBeVisible();
+  });
+
+  test('can edit an existing item through the modal', async ({ page, baseURL }) => {
+    await registerAndLogin(page, baseURL!);
+    await page.goto('/skills/grocery-list');
+
+    // Seed one item.
+    await page.getByTestId('grocery-add-input').fill('Tomates');
+    await page.getByTestId('grocery-add-button').click();
+    await expect(page.getByText('Tomates')).toBeVisible({ timeout: 5_000 });
+
+    // Click the item's name → modal opens, pre-filled.
+    await page.locator('[data-testid^="grocery-item-edit-trigger-"]').first().click();
+    await expect(page.getByTestId('grocery-item-edit-modal')).toBeVisible();
+
+    // Bump the quantity and save.
+    await page.getByTestId('grocery-item-edit-quantity').fill('6');
+    await page.getByTestId('grocery-item-edit-save').click();
+
+    // Modal closes, item shows the new quantity inline.
+    await expect(page.getByTestId('grocery-item-edit-modal')).not.toBeVisible();
+    await expect(page.getByText('× 6')).toBeVisible({ timeout: 5_000 });
+  });
 });

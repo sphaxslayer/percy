@@ -1,12 +1,18 @@
 <!--
   grocery-add-input.vue — Quick-add input with autocomplete dropdown.
   Parses quantity from input (e.g. "Bananes x6") and shows product suggestions.
+  An optional category selector lets the user assign a category to new items
+  without leaving the in-store flow.
 -->
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Plus } from 'lucide-vue-next';
 import { useGroceryAutocomplete, parseItemInput } from '~/composables/use-grocery-autocomplete';
-import type { GroceryProduct, GroceryItemInput } from '~/types/grocery';
+import type { GroceryProduct, GroceryItemInput, GroceryCategory } from '~/types/grocery';
+
+const props = defineProps<{
+  categories?: GroceryCategory[];
+}>();
 
 const emit = defineEmits<{
   add: [input: GroceryItemInput];
@@ -17,6 +23,9 @@ const { query, suggestions, loading, selectedIndex, selectSuggestion, clear, mov
 
 const inputRef = ref<HTMLInputElement | null>(null);
 const showDropdown = computed(() => suggestions.value.length > 0);
+
+/** User's explicit category override. Reset after each successful submit. */
+const overrideCategoryId = ref<string | null>(null);
 
 function submit() {
   if (selectedIndex.value >= 0 && suggestions.value[selectedIndex.value]) {
@@ -31,8 +40,10 @@ function submit() {
     name: parsed.name,
     quantity: parsed.quantity,
     unit: parsed.unit,
+    categoryId: overrideCategoryId.value ?? undefined,
   });
   clear();
+  overrideCategoryId.value = null;
 }
 
 function submitSuggestion(product: GroceryProduct) {
@@ -41,8 +52,10 @@ function submitSuggestion(product: GroceryProduct) {
     name: result.name,
     quantity: result.quantity,
     unit: result.unit,
-    categoryId: product.categoryId ?? undefined,
+    // The explicit override wins over the product's own category.
+    categoryId: overrideCategoryId.value ?? product.categoryId ?? undefined,
   });
+  overrideCategoryId.value = null;
 }
 
 function handleKeydown(e: KeyboardEvent) {
@@ -56,6 +69,13 @@ function handleKeydown(e: KeyboardEvent) {
     clear();
   }
 }
+
+// Clear category override when the input is cleared by other means.
+watch(query, (q) => {
+  if (q === '') overrideCategoryId.value = null;
+});
+
+const hasCategories = computed(() => (props.categories?.length ?? 0) > 0);
 </script>
 
 <template>
@@ -95,6 +115,20 @@ function handleKeydown(e: KeyboardEvent) {
           </button>
         </div>
       </div>
+
+      <!-- Optional category override — only shown when categories exist -->
+      <select
+        v-if="hasCategories"
+        v-model="overrideCategoryId"
+        class="h-10 max-w-[140px] rounded-md border border-percy-border bg-percy-bg-input px-2 text-sm text-percy-text-primary"
+        data-testid="grocery-add-category"
+        :aria-label="'Catégorie'"
+      >
+        <option :value="null">Catégorie</option>
+        <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
 
       <Button type="submit" size="icon" :disabled="!query.trim()" data-testid="grocery-add-button">
         <Plus class="h-4 w-4" />

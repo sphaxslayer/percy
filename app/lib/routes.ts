@@ -42,6 +42,7 @@ export const API = {
       itemsChecked: '/api/skills/grocery/items/checked',
       products: '/api/skills/grocery/products',
       categories: '/api/skills/grocery/categories',
+      categoriesReorder: '/api/skills/grocery/categories-reorder',
     },
     todoAtHome: {
       tasks: '/api/skills/todo-at-home/tasks',
