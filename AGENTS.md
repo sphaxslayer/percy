@@ -94,6 +94,7 @@ percy/
 - Always create a feature branch. Never commit directly to `main`.
 - Each PR must pass CI (lint + type-check + tests) before merge.
 - **NEVER add `Co-Authored-By` trailers referencing AI tools** (no `Claude`, `Anthropic`, `noreply@anthropic.com`, etc.). The sole author of every commit is the user. This applies to all commits, on all branches, without exception.
+- **NEVER mention `Claude`, `Anthropic`, or related AI vendor names anywhere in commit messages** — neither in the subject nor in the body. GitHub's mention engine treats any matching word as a hint and adds the GitHub user `@claude` (an unrelated random account) to the repository's mentionable users, which then surfaces in the home-page Contributors widget. If you need to reference the previous `CLAUDE.md` file (now `AGENTS.md`), always use the new name. If you must describe an AI-driven change, phrase it as "AI assistant", "the assistant", "agent tooling" — never name the vendor. This applies to PR titles and descriptions too.
 - **NEVER commit or push without explicit per-action user approval.** Before any `git commit` or `git push` (including `--force-with-lease`, tag pushes, remote branch deletions): list the changed files, show the diff, present the proposed commit message, and **wait for explicit validation**. If multiple logical changes are staged, propose splitting into separate commits so the user can validate/exclude individually. Exceptions only when the user explicitly authorizes them for that specific case.
 
 ## Skills Architecture
