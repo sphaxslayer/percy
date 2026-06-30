@@ -3,7 +3,7 @@
   Shows checkbox, name, quantity/unit, and delete button on hover.
 -->
 <script setup lang="ts">
-import { Trash2 } from 'lucide-vue-next';
+import { Pencil, Trash2 } from 'lucide-vue-next';
 import { Checkbox } from '~/components/ui/checkbox';
 import type { GroceryItem } from '~/types/grocery';
 
@@ -14,6 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   toggle: [id: string];
   remove: [id: string];
+  edit: [];
 }>();
 
 function formatQuantity(item: GroceryItem): string {
@@ -35,13 +36,29 @@ function formatQuantity(item: GroceryItem): string {
       @update:model-value="emit('toggle', props.item.id)"
     />
 
-    <span class="flex-1 text-sm" :class="{ 'line-through text-percy-text-muted': props.item.checked }">
-      {{ props.item.name }}
-    </span>
+    <!-- Name + quantity together act as an inline edit trigger. -->
+    <button
+      type="button"
+      class="flex flex-1 items-center gap-2 text-left text-sm"
+      :class="{ 'text-percy-text-muted line-through': props.item.checked }"
+      :data-testid="`grocery-item-edit-trigger-${props.item.id}`"
+      :disabled="props.item.checked"
+      @click="emit('edit')"
+    >
+      <span class="flex-1">{{ props.item.name }}</span>
+      <span v-if="formatQuantity(props.item)" class="text-xs text-percy-text-muted">
+        {{ formatQuantity(props.item) }}
+      </span>
+    </button>
 
-    <span v-if="formatQuantity(props.item)" class="text-xs text-percy-text-muted">
-      {{ formatQuantity(props.item) }}
-    </span>
+    <button
+      class="invisible text-percy-text-muted transition-colors hover:text-percy-primary group-hover:visible"
+      :data-testid="`grocery-edit-${props.item.id}`"
+      :aria-label="`Modifier ${props.item.name}`"
+      @click="emit('edit')"
+    >
+      <Pencil class="h-4 w-4" />
+    </button>
 
     <button
       class="invisible text-percy-text-muted transition-colors hover:text-percy-danger group-hover:visible"

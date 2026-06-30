@@ -201,4 +201,94 @@ describe('useGroceryList', () => {
       expect(items.value[0]!.id).toBe('1');
     });
   });
+
+  describe('updateItem', () => {
+    it('updates fields optimistically and rehydrates category metadata', () => {
+      mockFetch.mockImplementation(() => new Promise(() => {}));
+
+      const { items, categories, updateItem } = useGroceryList();
+      categories.value = [
+        { id: 'cat-1', name: 'Produits laitiers', sortOrder: 0 },
+        { id: 'cat-2', name: 'Boulangerie', sortOrder: 1 },
+      ];
+      items.value = [{ ...TEST_ITEM }];
+
+      updateItem(TEST_ITEM.id, { name: 'Lait demi-écrémé', categoryId: 'cat-2' });
+
+      const updated = items.value[0]!;
+      expect(updated.name).toBe('Lait demi-écrémé');
+      expect(updated.categoryId).toBe('cat-2');
+      // Embedded category is rehydrated from the registry.
+      expect(updated.category?.name).toBe('Boulangerie');
+    });
+
+    it('clears the embedded category when categoryId is set to null', () => {
+      mockFetch.mockImplementation(() => new Promise(() => {}));
+
+      const { items, categories, updateItem } = useGroceryList();
+      categories.value = [{ id: 'cat-1', name: 'Produits laitiers', sortOrder: 0 }];
+      items.value = [{ ...TEST_ITEM }];
+
+      updateItem(TEST_ITEM.id, { categoryId: null });
+
+      expect(items.value[0]!.category).toBeNull();
+    });
+  });
+
+  describe('categories management', () => {
+    it('addCategory appends optimistically with a temp id', () => {
+      mockFetch.mockImplementation(() => new Promise(() => {}));
+
+      const { categories, addCategory } = useGroceryList();
+      categories.value = [];
+
+      addCategory('Fruits');
+
+      expect(categories.value).toHaveLength(1);
+      expect(categories.value[0]!.name).toBe('Fruits');
+      expect(categories.value[0]!.id).toMatch(/^temp-cat-/);
+    });
+
+    it('renameCategory updates the local name optimistically', () => {
+      mockFetch.mockImplementation(() => new Promise(() => {}));
+
+      const { categories, renameCategory } = useGroceryList();
+      categories.value = [{ id: 'cat-1', name: 'Fruits', sortOrder: 0 }];
+
+      renameCategory('cat-1', 'Fruits & légumes');
+
+      expect(categories.value[0]!.name).toBe('Fruits & légumes');
+    });
+
+    it('removeCategory drops the category and uncategorises affected items', () => {
+      mockFetch.mockImplementation(() => new Promise(() => {}));
+
+      const { categories, items, removeCategory } = useGroceryList();
+      categories.value = [{ id: 'cat-1', name: 'Fruits', sortOrder: 0 }];
+      items.value = [{ ...TEST_ITEM, categoryId: 'cat-1', category: categories.value[0]! }];
+
+      removeCategory('cat-1');
+
+      expect(categories.value).toHaveLength(0);
+      expect(items.value[0]!.categoryId).toBeNull();
+      expect(items.value[0]!.category).toBeNull();
+    });
+  });
+
+  describe('catalog', () => {
+    it('removeProduct strips the product from local state', async () => {
+      mockFetch.mockResolvedValueOnce({ data: { deleted: true } });
+
+      const { products, removeProduct } = useGroceryList();
+      products.value = [
+        { id: 'p1', name: 'Lait', categoryId: null, category: null, usageCount: 3 },
+        { id: 'p2', name: 'Pain', categoryId: null, category: null, usageCount: 1 },
+      ];
+
+      await removeProduct('p1');
+
+      expect(products.value).toHaveLength(1);
+      expect(products.value[0]!.id).toBe('p2');
+    });
+  });
 });

@@ -131,15 +131,23 @@ pnpm dev
 
 ### Grocery List (Liste de courses)
 
-A fast, offline-capable grocery list for adding products anytime and checking them off in-store.
+A fast, offline-capable grocery list for adding products anytime and checking them off in-store. The page is split into three tabs to keep the in-store flow separate from setup tasks:
+
+**Tabs:**
+- **Liste** — the in-store flow: quick-add with optional category, items grouped by category (collapsible) or flat list, drag-to-reorder, tap an item to edit, check off as you go, bulk-clear checked items.
+- **Catégories** — manage user categories (create, rename, delete, drag-to-reorder). Deleting a category leaves its items uncategorised (server cascades `onDelete: SetNull`).
+- **Catalogue** — manage the personal product catalog: search, sort (most used / alphabetical), remove outdated entries.
 
 **Features:**
 - Quick-add input with autocomplete from personal product catalog
 - Input parsing for quantities: "Bananes x6", "Lait 2L", "Oeufs 6"
+- Optional category dropdown next to the quick-add field
+- Inline edit modal for any active item (name, quantity, unit, category)
 - Items grouped by category (collapsible sections) or flat list
+- Drag-to-reorder items within a group AND categories themselves
 - Check items off in-store — checked items move to "Déjà acheté" section
 - Bulk clear checked items with confirmation
-- Offline-resilient: optimistic UI with localStorage-backed sync queue
+- Offline-resilient: optimistic UI with localStorage-backed sync queue for **every** in-store action (add / edit / check / delete / reorder / category CRUD)
 - Automatic product catalog building (usage frequency tracking for autocomplete sorting)
 
 **API Endpoints:**
@@ -148,22 +156,25 @@ A fast, offline-capable grocery list for adding products anytime and checking th
 |--------|----------|-------------|
 | GET | `/api/skills/grocery/items` | List all items (active + checked) |
 | POST | `/api/skills/grocery/items` | Add an item (auto-creates catalog entry) |
-| PATCH | `/api/skills/grocery/items/:id` | Update item (name, quantity, checked...) |
+| PATCH | `/api/skills/grocery/items/:id` | Update item (name, quantity, unit, categoryId, checked…) |
 | DELETE | `/api/skills/grocery/items/:id` | Remove an item |
 | DELETE | `/api/skills/grocery/items/checked` | Clear all checked items |
-| GET | `/api/skills/grocery/products` | Product catalog (for autocomplete) |
+| PATCH | `/api/skills/grocery/items-reorder` | Bulk update item sortOrder |
+| GET | `/api/skills/grocery/products` | Product catalog (for autocomplete + Catalogue tab) |
 | DELETE | `/api/skills/grocery/products/:id` | Remove a catalog product |
 | GET | `/api/skills/grocery/categories` | List categories |
 | POST | `/api/skills/grocery/categories` | Create a category |
 | PATCH | `/api/skills/grocery/categories/:id` | Update a category |
-| DELETE | `/api/skills/grocery/categories/:id` | Delete a category (items become uncategorized) |
+| DELETE | `/api/skills/grocery/categories/:id` | Delete a category (items become uncategorised) |
+| PATCH | `/api/skills/grocery/categories-reorder` | Bulk update category sortOrder |
 
 **Data models:** `GroceryCategory`, `GroceryProduct` (personal catalog with usage frequency), `GroceryItem` (active list)
 
 **Composables:**
-- `useGroceryList()` — CRUD operations with optimistic updates, computed groups by category
+- `useGroceryList()` — items + categories + products CRUD with optimistic updates, computed groups by category, item edit, category management, catalog management
 - `useGroceryAutocomplete()` — Debounced product search with input parsing
 - `useOfflineQueue()` — Generic offline queue with FIFO processing, retry, deduplication
+- `useReorderableList()` — Shared optimistic-then-PATCH reorder helper (also used by Categories)
 
 ### TodoAtHome (Tâches à la maison)
 
